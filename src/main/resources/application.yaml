@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/ql_kitucxa?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1234567
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  signerKey: "neuRQWr+VaV1iMOKj2Org7NWUdVmkgSaUIo4+o/84eUiOmv51Rp1wPK+4m5t5zzJ"
