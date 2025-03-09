@@ -22,7 +22,7 @@ Dự án này là một hệ thống quản lý ký túc xá trên nền tảng 
 ### Sao Chép Kho Lưu Trữ
 ```sh
 git clone https://github.com/thien1910/KiTucXa.git
-cd dormitory-management
+cd KTX
 ```
 
 ### Cài Đặt Các Gói Phụ Thuộc
@@ -47,7 +47,7 @@ Dự án bao gồm các bài kiểm thử bằng JUnit và Mockito. Để chạy
 KyTucXa/
 │── src/
 │   ├── main/
-│   │   ├── java/com/project/KyTucXa/    # Mã nguồn chính
+│   │   ├── java/com/project/KyTucXa/       # Mã nguồn chính
 │   │   ├── resources/                      # File cấu hình
 │   ├── test/                               # Kiểm thử
 │── pom.xml                                 # File cấu hình Maven
