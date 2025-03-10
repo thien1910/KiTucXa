@@ -18,16 +18,16 @@ import java.util.Date;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-     String userId;
-     String userName;
-     String passWord;
-     String fullName;
+    String userId;
+    String userName;
+    String passWord;
+    String fullName;
     @Enumerated(EnumType.STRING)
-     Gender gender;
-     String cccd;
-     String phoneNumber;
+    Gender gender;
+    String cccd;
+    String phoneNumber;
     @Enumerated(EnumType.STRING)
-     Status status;
-     String country;
+    Status status;
+    String country;
 
 }

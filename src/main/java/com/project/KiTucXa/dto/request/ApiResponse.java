@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@JsonInclude(JsonInclude.Include.NON_NULL)// bỏ qua nhg message lỗi ko cần thiết phải hiển thị
+@JsonInclude(JsonInclude.Include.NON_NULL) // bỏ qua nhg message lỗi ko cần thiết phải hiển thị
 public class ApiResponse<T> {
     @Builder.Default
     int code = 1000;

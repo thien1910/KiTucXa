@@ -24,32 +24,30 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping("/add")
-    ApiResponse<StudentResponse> createStudent (@RequestBody @Valid StudentDto studentDto){
+    ApiResponse<StudentResponse> createStudent(@RequestBody @Valid StudentDto studentDto) {
         ApiResponse<StudentResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(studentService.createStudent(studentDto));
         return apiResponse;
     }
+
     @GetMapping("/list")
     List<Student> getStudent() {
         return studentService.getStudent();
     }
 
-
     @GetMapping("/{studentId}")
-    StudentResponse getStudent(@PathVariable("studentId") String studentId){
+    StudentResponse getStudent(@PathVariable("studentId") String studentId) {
         return studentService.getStudent(studentId);
     }
 
-
     @PutMapping("/{studentId}")
     StudentResponse updateStudent(@PathVariable String studentId,
-                            @RequestBody StudentUpdateDto studentDto){
+            @RequestBody StudentUpdateDto studentDto) {
         return studentService.updateStudent(studentId, studentDto);
     }
 
-
     @DeleteMapping("/{studentId}")
-    String deleteStudent (@PathVariable String studentId){
+    String deleteStudent(@PathVariable String studentId) {
         studentService.deleteStudent(studentId);
         return "Student has been detele";
     }

@@ -19,32 +19,30 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/add")
-    ApiResponse<User> createUser (@RequestBody @Valid UserDto userDto){
+    ApiResponse<User> createUser(@RequestBody @Valid UserDto userDto) {
         ApiResponse<User> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(userDto));
         return apiResponse;
     }
+
     @GetMapping("/list")
     List<User> getUser() {
         return userService.getUser();
     }
 
-
     @GetMapping("/{userId}")
-    UserResponse getUser(@PathVariable("userId") String userId){
+    UserResponse getUser(@PathVariable("userId") String userId) {
         return userService.getUser(userId);
     }
 
-
     @PutMapping("/{userId}")
     UserResponse updateUser(@PathVariable String userId,
-                    @RequestBody UserUpdateDto userDto){
+            @RequestBody UserUpdateDto userDto) {
         return userService.updateUser(userId, userDto);
     }
 
-
     @DeleteMapping("/{userId}")
-    String deleteUser (@PathVariable String userId){
+    String deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
         return "User has been detele";
     }

@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-
 public class UtilityService extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

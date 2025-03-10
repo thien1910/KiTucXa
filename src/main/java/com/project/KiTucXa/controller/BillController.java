@@ -19,11 +19,8 @@ public class BillController {
     private BillService billService;
 
     @PostMapping("/add")
-    ApiResponse<BillResponse> createBill (
-            @RequestBody
-            @Valid
-            BillDto billDto
-    ){
+    ApiResponse<BillResponse> createBill(
+            @RequestBody @Valid BillDto billDto) {
         ApiResponse<BillResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(billService.createBill(billDto));
         return apiResponse;
@@ -36,8 +33,7 @@ public class BillController {
 
     @GetMapping("/{billId}")
     public BillResponse getBillById(
-            @PathVariable("billId")
-            String billId) {
+            @PathVariable("billId") String billId) {
         return billService.getBillById(billId);
     }
 

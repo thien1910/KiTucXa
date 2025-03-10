@@ -19,18 +19,18 @@ public class RoomDto {
     @NotNull(message = "UserId is required")
     String userId;
     @NotNull(message = "Room name is required")
-     String roomName;
+    String roomName;
     @NotNull(message = "Department is required")
-     String department;
+    String department;
     @NotNull(message = "Maximum occupancy is required")
-     int maximumOccupancy;
-     int currentOccupancy;
+    int maximumOccupancy;
+    int currentOccupancy;
     @NotNull(message = "Room type is required")
-     String roomType;
+    String roomType;
     @NotNull(message = "Room price is required")
-     BigDecimal roomPrice;
+    BigDecimal roomPrice;
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Room status is required")
-     RoomStatus roomStatus;
-     String note;
+    RoomStatus roomStatus;
+    String note;
 }

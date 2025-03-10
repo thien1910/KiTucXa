@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,5 +27,5 @@ public class BillResponse {
     BillStatus billStatus;
     String note;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

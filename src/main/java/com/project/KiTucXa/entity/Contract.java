@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.util.Date;
 
-
 @Entity
 @Getter
 @Setter
@@ -20,22 +19,22 @@ import java.util.Date;
 public class Contract extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-     String contractId;
+    String contractId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
     @ManyToOne
     @JoinColumn(name = "room_id")
-     Room room;
-     Date startDate;
-     Date endDate;
-     BigDecimal price;
+    Room room;
+    Date startDate;
+    Date endDate;
+    BigDecimal price;
     @Enumerated(EnumType.STRING)
-     DepositStatus depositStatus;
+    DepositStatus depositStatus;
 
     @Enumerated(EnumType.STRING)
-     ContractStatus contractStatus;
+    ContractStatus contractStatus;
 
-     String note;
+    String note;
 
 }

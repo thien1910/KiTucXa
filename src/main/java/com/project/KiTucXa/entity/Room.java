@@ -18,19 +18,19 @@ import java.util.Date;
 public class Room extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-     String roomId;
+    String roomId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
-     String roomName;
-     String department;
-     int maximumOccupancy;
-     int currentOccupancy;
-     String roomType;
-     BigDecimal roomPrice;
+    String roomName;
+    String department;
+    int maximumOccupancy;
+    int currentOccupancy;
+    String roomType;
+    BigDecimal roomPrice;
     @Enumerated(EnumType.STRING)
-     RoomStatus roomStatus;
+    RoomStatus roomStatus;
 
-     String note;
+    String note;
 
 }

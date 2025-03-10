@@ -19,11 +19,8 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping("/add")
-    ApiResponse<PaymentResponse> createPayment (
-            @RequestBody
-            @Valid
-            PaymentDto paymentDto
-    ){
+    ApiResponse<PaymentResponse> createPayment(
+            @RequestBody @Valid PaymentDto paymentDto) {
         ApiResponse<PaymentResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(paymentService.createPayment(paymentDto));
         return apiResponse;
@@ -36,8 +33,7 @@ public class PaymentController {
 
     @GetMapping("/{paymentId}")
     public PaymentResponse getPayment(
-            @PathVariable("paymentId")
-            String paymentId) {
+            @PathVariable("paymentId") String paymentId) {
         return paymentService.getPayment(paymentId);
     }
 

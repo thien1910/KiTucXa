@@ -13,15 +13,14 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-
 public class UserUpdateDto {
      String passWord;
      String fullName;
-    @Enumerated(EnumType.STRING)
+     @Enumerated(EnumType.STRING)
      Gender gender;
      String cccd;
      String phoneNumber;
-    @Enumerated(EnumType.STRING)
+     @Enumerated(EnumType.STRING)
      Status status;
      String country;
 

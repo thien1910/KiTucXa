@@ -15,5 +15,5 @@ public class StudentResponse {
     String userId;
     String maSinhVien;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

@@ -16,5 +16,5 @@ public class ManagerResponse {
     String userId;
     String department;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

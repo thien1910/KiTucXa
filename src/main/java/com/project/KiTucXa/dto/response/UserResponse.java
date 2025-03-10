@@ -26,5 +26,5 @@ public class UserResponse {
     Status status;
     String country;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

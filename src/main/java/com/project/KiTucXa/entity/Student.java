@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Student extends BaseEntity{
+public class Student extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String studentId;

@@ -23,13 +23,15 @@ import java.text.ParseException;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
     AuthenticationService authenticationService;
+
     @PostMapping("/login")
-    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest userDto){
+    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest userDto) {
         var result = authenticationService.authenticate(userDto);
         return ApiResponse.<AuthenticationResponse>builder()
                 .result(result)
                 .build();
     }
+
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest userDto)
             throws ParseException, JOSEException {

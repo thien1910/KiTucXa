@@ -17,5 +17,5 @@ public class BillDetailResponse {
     Integer quantity;
     BigDecimal totalPrice;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

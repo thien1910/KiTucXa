@@ -15,16 +15,16 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class UserDto {
-    @Size (min = 3, message = "USERNAME_INVALID")
-     String userName;
-    @Size (min = 8, message = "INVALID_PASSWORD")
-     String passWord;
-     String fullName;
+    @Size(min = 3, message = "USERNAME_INVALID")
+    String userName;
+    @Size(min = 8, message = "INVALID_PASSWORD")
+    String passWord;
+    String fullName;
     @Enumerated(EnumType.STRING)
-     Gender gender;
-     String cccd;
-     String phoneNumber;
+    Gender gender;
+    String cccd;
+    String phoneNumber;
     @Enumerated(EnumType.STRING)
-     Status status;
-     String country;
+    Status status;
+    String country;
 }

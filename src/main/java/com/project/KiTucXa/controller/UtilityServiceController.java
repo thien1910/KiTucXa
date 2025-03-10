@@ -22,7 +22,7 @@ public class UtilityServiceController {
     private UtilityServiceService utilityServiceService;
 
     @PostMapping("/add")
-    ApiResponse<UtilityServiceResponse> createUtilityService (@RequestBody @Valid UtilityServiceDto utilityServiceDto){
+    ApiResponse<UtilityServiceResponse> createUtilityService(@RequestBody @Valid UtilityServiceDto utilityServiceDto) {
         ApiResponse<UtilityServiceResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(utilityServiceService.createUtilityService(utilityServiceDto));
         return apiResponse;
@@ -35,8 +35,7 @@ public class UtilityServiceController {
 
     @GetMapping("/{utilityServiceId}")
     public UtilityServiceResponse getRoom(
-            @PathVariable("utilityServiceId")
-            String utilityServiceId) {
+            @PathVariable("utilityServiceId") String utilityServiceId) {
         return utilityServiceService.getUtilityServiceById(utilityServiceId);
     }
 
