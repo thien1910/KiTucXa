@@ -17,7 +17,8 @@ public enum ErrorCode {
     ROOM_SERVICE_NOT_FOUND(1013, "Room service not found"),
     CONTRACT_NOT_FOUND(1014, "Contract not found"),
     BILL_NOT_FOUND(1015, "Bill not found"),
-    BILL_DETAIL_NOT_FOUND(1016, "Bill detail not found")
+    BILL_DETAIL_NOT_FOUND(1016, "Bill detail not found"),
+    PAYMENT_NOT_FOUND(1017, "Payment not found")
 
     ;
 

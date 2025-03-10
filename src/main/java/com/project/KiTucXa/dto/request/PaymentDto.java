@@ -13,5 +13,4 @@ public class PaymentDto {
     @NotNull(message = "billId is required")
     String billId;
     int installmentCount; // số lần đóng (tối đa ba lần)
-    String note;
 }

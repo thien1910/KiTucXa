@@ -3,6 +3,7 @@ package com.project.KiTucXa.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 @Data
 @Builder
@@ -15,4 +16,6 @@ public class BillDetailResponse {
     String utilityServiceId;
     Integer quantity;
     BigDecimal totalPrice;
+    Timestamp createdAt;
+    Timestamp  updatedAt;
 }

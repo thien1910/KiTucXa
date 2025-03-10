@@ -19,12 +19,12 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping("/add")
-    ApiResponse<Payment> createPayment (
+    ApiResponse<PaymentResponse> createPayment (
             @RequestBody
             @Valid
             PaymentDto paymentDto
     ){
-        ApiResponse<Payment> apiResponse = new ApiResponse<>();
+        ApiResponse<PaymentResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(paymentService.createPayment(paymentDto));
         return apiResponse;
     }

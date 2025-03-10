@@ -17,4 +17,6 @@ public class RoomServiceResponse {
     String roomId;
     Integer utilityServiceId;
     BigDecimal price;
+    Timestamp createdAt;
+    Timestamp  updatedAt;
 }

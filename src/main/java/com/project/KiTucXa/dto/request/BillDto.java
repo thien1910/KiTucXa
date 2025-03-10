@@ -21,7 +21,7 @@ public class BillDto {
     String contractId;
     BigDecimal sumPrice;
     java.sql.Date paymentDate;
-    @Enumerated(EnumType.STRING)
+    //@Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)

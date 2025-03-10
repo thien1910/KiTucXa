@@ -13,14 +13,14 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Payment extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String paymentId;
 
     @ManyToOne
     @JoinColumn(name = "bill_id")
-    private Bill bill;
+    Bill bill;
     private int installmentCount; // số lần đóng (tối đa ba lần)
 
     @Column(name = "note")
-    private String note;
+    String note;
 }
