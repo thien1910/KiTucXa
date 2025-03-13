@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginForm from "./LoginForm";
+import Dashboard from "./Dashboard";
+import "./Login.css";
+import AccountManagement from "./AccountManagement";
+import UserProfile from "./UserProfile";
+import StudentManagement from "./StudentManagement";
+import ContractManagement from "./ContractManagement";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/account-management" element={<AccountManagement />} />
+        <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/student-mangement" element={<StudentManagement />} />
+        <Route path="/contract-management" element={<ContractManagement />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
