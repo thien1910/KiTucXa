@@ -1,9 +1,12 @@
 package com.project.KiTucXa.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.KiTucXa.Enum.Gender;
 import com.project.KiTucXa.Enum.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -27,4 +30,7 @@ public class UserDto {
     @Enumerated(EnumType.STRING)
      Status status;
      String country;
+    @NotNull(message = "roleId is required")
+    private Long roleId;
+
 }

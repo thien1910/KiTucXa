@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bills")
+@RequestMapping("/api/v1/bills")
 public class BillController {
     @Autowired
     private BillService billService;
@@ -41,14 +41,14 @@ public class BillController {
         return billService.getBillById(billId);
     }
 
-    @PutMapping("/{billId}")
+    @PutMapping("/update/{billId}")
     public BillResponse updateBill(
             @PathVariable("billId") String billId,
             @RequestBody BillUpdateDto billUpdateDto) {
         return billService.updateBill(billId, billUpdateDto);
     }
 
-    @DeleteMapping("/{billId}")
+    @DeleteMapping("delete/{billId}")
     public String deleteBill(@PathVariable("billId") String billId) {
         billService.deleteBill(billId);
         return "Bill has been deleted";

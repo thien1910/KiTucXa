@@ -41,14 +41,14 @@ public class StudentController {
     }
 
 
-    @PutMapping("/{studentId}")
+    @PutMapping("/update/{studentId}")
     StudentResponse updateStudent(@PathVariable String studentId,
                             @RequestBody StudentUpdateDto studentDto){
         return studentService.updateStudent(studentId, studentDto);
     }
 
 
-    @DeleteMapping("/{studentId}")
+    @DeleteMapping("/delete/{studentId}")
     String deleteStudent (@PathVariable String studentId){
         studentService.deleteStudent(studentId);
         return "Student has been detele";

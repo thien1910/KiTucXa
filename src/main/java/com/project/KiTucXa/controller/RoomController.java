@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/v1/rooms")
 public class RoomController {
     @Autowired
     private RoomService roomService;
@@ -39,14 +39,14 @@ public class RoomController {
         return roomService.getRoom(roomId);
     }
 
-    @PutMapping("/{roomId}")
+    @PutMapping("/update/{roomId}")
     public RoomResponse updateRoom(
             @PathVariable("roomId") String roomId,
             @RequestBody RoomUpdateDto roomUpdateDto) {
         return roomService.updateRoom(roomId, roomUpdateDto);
     }
 
-    @DeleteMapping("/{roomId}")
+    @DeleteMapping("/delete/{roomId}")
     public String deleteRoom(@PathVariable("roomId") String roomId) {
         roomService.deleteRoom(roomId);
         return "Room has been deleted";

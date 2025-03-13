@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Payment")
+@RequestMapping("/api/v1/Payment")
 public class PaymentController {
     @Autowired
     private PaymentService paymentService;
@@ -41,14 +41,14 @@ public class PaymentController {
         return paymentService.getPayment(paymentId);
     }
 
-    @PutMapping("/{paymentId}")
+    @PutMapping("/update/{paymentId}")
     public PaymentResponse updatePayment(
             @PathVariable("paymentId") String paymentId,
             @RequestBody PaymentUpdateDto paymentUpdateDto) {
         return paymentService.updatePayment(paymentId, paymentUpdateDto);
     }
 
-    @DeleteMapping("/{paymentId}")
+    @DeleteMapping("/delete/{paymentId}")
     public String deletePayment(@PathVariable("paymentId") String paymentId) {
         paymentService.deletePayment(paymentId);
         return "Payment has been deleted";

@@ -12,7 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/contracts")
+@RequestMapping("/api/v1/contracts")
 public class ContractController {
     @Autowired
     private ContractService contractService;
@@ -36,14 +36,14 @@ public class ContractController {
         return contractService.getContractById(contractId);
     }
 
-    @PutMapping("/{contractId}")
+    @PutMapping("/update/{contractId}")
     public ContractResponse updateContract(
             @PathVariable("contractId") String contractId,
             @RequestBody ContractUpdateDto contractUpdateDto) {
         return contractService.updateContract(contractId, contractUpdateDto);
     }
 
-    @DeleteMapping("/{contractId}")
+    @DeleteMapping("/delete/{contractId}")
     public String deleteContract(@PathVariable("contractId") String contractId) {
         contractService.deleteContract(contractId);
         return "Contract has been deleted";

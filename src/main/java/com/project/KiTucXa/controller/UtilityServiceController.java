@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/utility-services")
+@RequestMapping("/api/v1/utility-services")
 public class UtilityServiceController {
     @Autowired
     private UtilityServiceService utilityServiceService;
@@ -40,14 +40,14 @@ public class UtilityServiceController {
         return utilityServiceService.getUtilityServiceById(utilityServiceId);
     }
 
-    @PutMapping("/{utilityServiceId}")
+    @PutMapping("/update/{utilityServiceId}")
     public UtilityServiceResponse updateUtilityService(
             @PathVariable("roomId") String utilityServiceId,
             @RequestBody UtilityServiceUpdateDto utilityServiceDto) {
         return utilityServiceService.updateUtilityService(utilityServiceId, utilityServiceDto);
     }
 
-    @DeleteMapping("/{utilityServiceId}")
+    @DeleteMapping("/delete/{utilityServiceId}")
     public String deleteUtilityService(@PathVariable("utilityServiceId") String utilityServiceId) {
         utilityServiceService.deleteUtilityService(utilityServiceId);
         return "Room has been deleted";

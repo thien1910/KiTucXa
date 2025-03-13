@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/managers")
+@RequestMapping("/api/v1/managers")
 public class ManagerController {
     @Autowired
     private ManagerService managerService;
@@ -39,14 +39,14 @@ public class ManagerController {
         return managerService.getManager(managerId);
     }
 
-    @PutMapping("/{managerId}")
+    @PutMapping("update/{managerId}")
     public ManagerResponse updateManager(
             @PathVariable("managerId") String managerId,
             @RequestBody ManagerUpdateDto managerUpdateDto) {
         return managerService.updateManager(managerId, managerUpdateDto);
     }
 
-    @DeleteMapping("/{managerId}")
+    @DeleteMapping("delete/{managerId}")
     public String deleteManager(@PathVariable("managerId") String managerId) {
         managerService.deleteManager(managerId);
         return "Manager has been deleted";

@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Data
 @Builder
@@ -27,4 +28,5 @@ public class UserResponse {
     String country;
     Timestamp createdAt;
     Timestamp  updatedAt;
+    String roleId;
 }

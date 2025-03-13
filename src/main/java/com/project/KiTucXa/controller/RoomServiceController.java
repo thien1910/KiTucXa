@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/room-services")
+@RequestMapping("/api/v1/room-services")
 public class RoomServiceController {
     @Autowired
     private RoomServiceService roomServiceService;
@@ -40,9 +40,9 @@ public class RoomServiceController {
         return roomServiceService.getRoomServiceById(roomServiceId);
     }
 
-    @DeleteMapping("/{roomServiceId}")
+    @DeleteMapping("/delete/{roomServiceId}")
     String deleteRoomService (@PathVariable String roomServiceId){
         roomServiceService.deleteRoomService(roomServiceId);
-        return "RoomService has been detele";
+        return "RoomService has been Delete";
     }
 }

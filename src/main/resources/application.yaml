@@ -11,5 +11,9 @@ spring:
       ddl-auto: update
     show-sql: true
 
+api:
+  prefix: api/v1
+
 jwt:
-  signerKey: "neuRQWr+VaV1iMOKj2Org7NWUdVmkgSaUIo4+o/84eUiOmv51Rp1wPK+4m5t5zzJ"
+  expiration: 2592000 #30 days = 30*24*60*60
+  secretKey: KaGTrWxigGRmBCJcN0zc7fs4DRR5iWoEieDtrun7CDs=
