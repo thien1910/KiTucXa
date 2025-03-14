@@ -23,13 +23,18 @@
 
 /* Sidebar */
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 230px;
+  height: 100vh; /* Chiều cao toàn màn hình */
   background: linear-gradient(135deg, #1e3c72, #2a5298);
   color: white;
   padding: 20px;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease-in-out;
+  overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
 }
 
 .sidebar-header {
@@ -73,6 +78,7 @@
 
 /* Main Content */
 .main-content {
+  margin-left: 230px; /* Để tránh bị che khuất bởi sidebar */
   flex-grow: 1;
   padding: 20px;
   background: #f8f9fa;
