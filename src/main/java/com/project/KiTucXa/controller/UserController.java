@@ -30,11 +30,12 @@ public class UserController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/add")
-    ApiResponse<User> createUser (@RequestBody @Valid UserDto userDto){
+    ApiResponse<User> createUser(@RequestBody @Valid UserDto userDto) {
         ApiResponse<User> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(userDto));
         return apiResponse;
     }
+
     @GetMapping("/list")
     ApiResponse<List<UserResponse>>getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,11 +46,11 @@ public class UserController {
                 .build();
     }
 
-
     @GetMapping("/{userId}")
-    UserResponse getUser(@PathVariable("userId") String userId){
+    UserResponse getUser(@PathVariable("userId") String userId) {
         return userService.getUser(userId);
     }
+
 
     @GetMapping("/myInfo")
     ApiResponse<UserResponse> getMyInfo() {
@@ -59,9 +60,10 @@ public class UserController {
     }
 
 
-    @PutMapping("/update/{userId}")
+
+    @PutMapping("/{userId}")
     UserResponse updateUser(@PathVariable String userId,
-                    @RequestBody UserUpdateDto userDto){
+            @RequestBody UserUpdateDto userDto) {
         return userService.updateUser(userId, userDto);
     }
 

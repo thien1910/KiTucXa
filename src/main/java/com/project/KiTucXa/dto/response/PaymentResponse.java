@@ -16,5 +16,5 @@ public class PaymentResponse {
     int installmentCount; // số lần đóng (tối đa ba lần)
     String note;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

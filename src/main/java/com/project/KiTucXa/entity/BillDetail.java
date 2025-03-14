@@ -14,8 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-
-public class BillDetail extends BaseEntity{
+public class BillDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String billDetailId;

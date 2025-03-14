@@ -18,5 +18,5 @@ public class RoomServiceResponse {
     Integer utilityServiceId;
     BigDecimal price;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

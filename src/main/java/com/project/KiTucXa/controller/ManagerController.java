@@ -21,7 +21,7 @@ public class ManagerController {
     private ManagerService managerService;
 
     @PostMapping("/add")
-    ApiResponse<ManagerResponse> createManager (@RequestBody @Valid ManagerDto managerDto){
+    ApiResponse<ManagerResponse> createManager(@RequestBody @Valid ManagerDto managerDto) {
         ApiResponse<ManagerResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(managerService.createManager(managerDto));
         return apiResponse;
@@ -34,8 +34,7 @@ public class ManagerController {
 
     @GetMapping("/{managerId}")
     public ManagerResponse getManager(
-            @PathVariable("managerId")
-            String managerId) {
+            @PathVariable("managerId") String managerId) {
         return managerService.getManager(managerId);
     }
 

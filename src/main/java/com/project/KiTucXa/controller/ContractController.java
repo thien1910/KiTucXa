@@ -18,7 +18,7 @@ public class ContractController {
     private ContractService contractService;
 
     @PostMapping("/add")
-    ApiResponse<ContractResponse> createContract (@RequestBody @Valid ContractDto contractDto){
+    ApiResponse<ContractResponse> createContract(@RequestBody @Valid ContractDto contractDto) {
         ApiResponse<ContractResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(contractService.createContract(contractDto));
         return apiResponse;
@@ -31,8 +31,7 @@ public class ContractController {
 
     @GetMapping("/{contractId}")
     public ContractResponse getContractById(
-            @PathVariable("contractId")
-            String contractId) {
+            @PathVariable("contractId") String contractId) {
         return contractService.getContractById(contractId);
     }
 

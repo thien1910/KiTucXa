@@ -7,7 +7,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 
-
 @Entity
 @Getter
 @Setter
@@ -16,23 +15,21 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-
-public class Bill extends BaseEntity{
+public class Bill extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String billId;
 
     @ManyToOne
     @JoinColumn(name = "contract_id")
-     Contract contract;
-     BigDecimal sumPrice;
-     java.sql.Date paymentDate;
+    Contract contract;
+    BigDecimal sumPrice;
+    java.sql.Date paymentDate;
     @Enumerated(EnumType.STRING)
-     PaymentMethod paymentMethod;
+    PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
-     BillStatus billStatus;
-     String note;
-
+    BillStatus billStatus;
+    String note;
 
 }

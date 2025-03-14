@@ -21,21 +21,20 @@ import java.util.*;
 public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-     String userId;
-     String userName;
-     String passWord;
-     String fullName;
+    String userId;
+    String userName;
+    String passWord;
+    String fullName;
     @Enumerated(EnumType.STRING)
-     Gender gender;
-     String cccd;
-     String phoneNumber;
+    Gender gender;
+    String cccd;
+    String phoneNumber;
     @Enumerated(EnumType.STRING)
      Status status;
      String country;
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

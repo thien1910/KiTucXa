@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,6 +27,85 @@ public class WebSecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
     @Value("${api.prefix}")
     private String apiPrefix;
+    // all quyen
+    private final String[] PUBLIC_ENDPOINTS = {
+            "/api/v1/user/login",
+            "/api/v1/user/add",
+            "/api/v1/user/guest-login",
+            "/api/v1/user/myInfo",
+            "/api/v1/user/guest-login",
+
+    };
+    // quyen của ADMINISTRATOR
+    private final String[] ADMINISTRATOR_ENDPOINTS = {
+            "/api/v1/user/add",
+            "/api/v1/user/list",
+            "/api/v1/user/{userId}",
+            "/api/v1/user/update/{userId}",
+            "/api/v1/user/delete/{userId}"
+
+    };
+    // QUYEN CUA GUEST
+    private final String[] GUEST_ENDPOINTS ={
+            "/api/v1/rooms/list"
+    };
+    // quyền của student
+    private final String[] STUDENT_ENDPOINTS = {
+            "/api/v1/user/{userId}",
+            "/api/v1/user/update/{userId}",
+            "/api/v1/bills/{billId}",
+            "/api/v1/bill-details/{billDetailId}",
+            "/api/v1/Payment/{paymentId}",
+            "/api/v1/rooms/list","/api/rooms/{roomId}",
+            "/api/v1/room-services/{roomServiceId}",
+            "/api/v1/contracts/{contractId}"
+    };
+    // QUYEN CUA DUTY_STAFF
+    private final String[] DUTY_STAFF_ENDPOINTS = {
+            "/api/v1/user/{userId}",
+            "/api/v1/user/update/{userId}",
+            "/api/v1/bills/{billId}",
+            "/api/v1/bill-details/{billDetailId}",
+            "/api/v1/Payment/{paymentId}",
+            "/api/v1/rooms/list","/api/rooms/{roomId}",
+            "/api/v1/room-services/{roomServiceId}",
+            "/api/v1/contracts/{contractId}"
+    };
+    // QUYEN CUA MANAGER
+    private final String[] MANAGER_ENDPOINTS = {
+            "/api/v1/user/{userId}","/api/v1/user/list","/api/v1/user/update/{userId}",
+            "/api/v1/bills/{billId}","/api/v1/bills/list","/api/v1/bills/add","/api/v1/bills/update/{billId}","/api/v1/bills/delete/{billId}",
+            "/api/v1/bill-details/{billDetailId}","/api/v1/bill-details/list","/api/v1/bill-details/add","/api/v1/bill-details/update/{billDetailId}",
+            "/api/v1/Payment/add","/api/v1/Payment/list","/api/v1/Payment/{paymentId}","/api/v1/Payment/update/{paymentId}",
+            "/api/v1/rooms/list","/api/v1/rooms/{roomId}","/api/v1/rooms/add","/api/v1/rooms/update/{roomId}","/api/v1/rooms/delete/{roomId}",
+            "/api/v1/room-services/add", "/api/v1/room-services/{roomServiceId}", "/api/v1/room-services/list", "/api/v1/room-services/update/{roomServiceId}", "/api/v1/room-services/delete/{roomServiceId}",
+            "/api/v1/contracts/{contractId}","/api/v1/contracts/add","/api/v1/contracts/list","/api/v1/contracts/update/{contractId}","/api/v1/contracts/delete/{contractId}",
+            "/api/v1/utility-services/add","/api/v1/utility-services/{utilityServiceId}","/api/v1/utility-services/list","/api/v1/utility-services/update/{utilityServiceId}","/api/v1/utility-services/delete/{utilityServiceId}",
+    };
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(requests -> {
+                    requests
+                            .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                            .requestMatchers(ADMINISTRATOR_ENDPOINTS).permitAll()
+                            .requestMatchers(GUEST_ENDPOINTS).permitAll()
+                            .requestMatchers(STUDENT_ENDPOINTS).permitAll()
+                            .requestMatchers(MANAGER_ENDPOINTS).permitAll()
+                            .anyRequest().authenticated();
+
+                })
+        ;
+        return http.build();
+    }
+}
+/*public class WebSecurityConfig {
+    private final JwtTokenFilter jwtTokenFilter;
+    @Value("${api.prefix}")
+    private String apiPrefix;
     @Bean
     //Pair.of(String.format("%s/products", apiPrefix), "GET"),
     public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception{
@@ -43,7 +123,7 @@ public class WebSecurityConfig {
                             )
                             .permitAll()
 
-                            .requestMatchers(GET,
+                            *//*.requestMatchers(GET,
                                     String.format("%s/user/list", apiPrefix)).hasAnyRole(Role.ADMINISTRATOR,Role.MANAGER,Role.DUTY_STAFF)
 
                             .requestMatchers(GET,
@@ -147,10 +227,11 @@ public class WebSecurityConfig {
 
                             .requestMatchers(GET,
                                     String.format("%s/utility-services/list", apiPrefix)).hasRole(Role.MANAGER)
-
+*//*
                             .anyRequest().authenticated();
 
                 });
         return http.build();
     }
-}
+}*/
+

@@ -24,5 +24,5 @@ public class UtilityServiceResponse {
     @Enumerated(EnumType.STRING)
     ContractStatus status;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

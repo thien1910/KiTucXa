@@ -21,7 +21,7 @@ public class RoomController {
     private RoomService roomService;
 
     @PostMapping("/add")
-    ApiResponse<RoomResponse> createRoom (@RequestBody @Valid RoomDto roomDto){
+    ApiResponse<RoomResponse> createRoom(@RequestBody @Valid RoomDto roomDto) {
         ApiResponse<RoomResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(roomService.createRoom(roomDto));
         return apiResponse;
@@ -34,8 +34,7 @@ public class RoomController {
 
     @GetMapping("/{roomId}")
     public RoomResponse getRoom(
-            @PathVariable("roomId")
-            String roomId) {
+            @PathVariable("roomId") String roomId) {
         return roomService.getRoom(roomId);
     }
 

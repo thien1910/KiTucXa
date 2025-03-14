@@ -17,7 +17,6 @@ import java.util.Date;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-
 public class ContractResponse {
     String contractId;
     String userId;
@@ -33,5 +32,5 @@ public class ContractResponse {
 
     String note;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

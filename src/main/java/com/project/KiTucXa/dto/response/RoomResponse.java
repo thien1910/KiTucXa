@@ -27,5 +27,5 @@ public class RoomResponse {
     RoomStatus roomStatus;
     String note;
     Timestamp createdAt;
-    Timestamp  updatedAt;
+    Timestamp updatedAt;
 }

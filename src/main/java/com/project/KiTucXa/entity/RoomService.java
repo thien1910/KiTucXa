@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoomService extends BaseEntity{
+public class RoomService extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String roomServiceId;

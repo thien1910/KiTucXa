@@ -14,13 +14,12 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-
 public class UtilityServiceDto {
      String serviceName;
      String description;
      BigDecimal pricePerUnit;
      String calculationUnit;
-    @Enumerated(EnumType.STRING)
+     @Enumerated(EnumType.STRING)
      ContractStatus status;
 
 }

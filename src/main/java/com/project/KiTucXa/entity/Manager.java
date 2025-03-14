@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Manager extends BaseEntity{
+public class Manager extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String managerId;

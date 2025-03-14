@@ -24,21 +24,22 @@ public class RoomServiceController {
     private RoomServiceService roomServiceService;
 
     @PostMapping("/add")
-    ApiResponse<RoomServiceResponse> createRoomService (@RequestBody @Valid RoomServiceDto roomServiceDto){
+    ApiResponse<RoomServiceResponse> createRoomService(@RequestBody @Valid RoomServiceDto roomServiceDto) {
         ApiResponse<RoomServiceResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(roomServiceService.createRoomService(roomServiceDto));
         return apiResponse;
     }
+
     @GetMapping("/list")
     List<RoomServiceResponse> getAllRoomService() {
         return roomServiceService.getAllRoomServices();
     }
 
-
     @GetMapping("/{roomServiceId}")
-    RoomServiceResponse getRoomServiceById(@PathVariable("roomServiceId") String roomServiceId){
+    RoomServiceResponse getRoomServiceById(@PathVariable("roomServiceId") String roomServiceId) {
         return roomServiceService.getRoomServiceById(roomServiceId);
     }
+
 
     @DeleteMapping("/delete/{roomServiceId}")
     String deleteRoomService (@PathVariable String roomServiceId){
