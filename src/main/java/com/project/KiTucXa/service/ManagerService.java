@@ -32,6 +32,7 @@ public class ManagerService {
     private ManagerMapper managerMapper;
     @Autowired
     private UserRepository userRepository;
+
     public List<ManagerResponse> getAllManager() {
         return managerRepository.findAll().stream()
                 .map(managerMapper::toManagerResponse)

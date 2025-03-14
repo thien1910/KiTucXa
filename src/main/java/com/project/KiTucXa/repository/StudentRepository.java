@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student, String> {
 
     boolean existsByMaSinhVien(String maSinhVien);
+
     Optional<Student> findByMaSinhVien(String maSinhVien);
 }

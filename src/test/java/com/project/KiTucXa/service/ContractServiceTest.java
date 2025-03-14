@@ -40,9 +40,9 @@ class ContractServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         contract = new Contract();
-//        contract.setContractId("1");
-//        contract.setStudent("stu123");
-//        contract.("room456");
+        // contract.setContractId("1");
+        // contract.setStudent("stu123");
+        // contract.("room456");
         contract.setPrice(BigDecimal.valueOf(1000));
 
         contractDto = new ContractDto();

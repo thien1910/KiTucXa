@@ -1,6 +1,5 @@
 package com.project.KiTucXa.service;
 
-
 import com.project.KiTucXa.Exception.AppException;
 import com.project.KiTucXa.Exception.ErrorCode;
 import com.project.KiTucXa.dto.request.UtilityServiceDto;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @Data
 @Builder
@@ -30,6 +28,7 @@ public class UtilityServiceService {
     private UtilityServiceRepository utilityServiceRepository;
     @Autowired
     private UtilityServiceMapper utilityServiceMapper;
+
     public UtilityServiceResponse createUtilityService(UtilityServiceDto utilityServiceDto) {
         UtilityService utilityService = utilityServiceMapper.toUtilityService(utilityServiceDto);
         utilityServiceRepository.save(utilityService);
@@ -55,10 +54,10 @@ public class UtilityServiceService {
         }
         utilityServiceRepository.deleteById(utilityServiceId);
     }
+
     public UtilityServiceResponse updateUtilityService(
             String utilityServiceId,
-            UtilityServiceUpdateDto utilityServiceDto
-    ) {
+            UtilityServiceUpdateDto utilityServiceDto) {
         UtilityService utilityService = utilityServiceRepository.findById(utilityServiceId)
                 .orElseThrow(() -> new RuntimeException("Service not found"));
         utilityServiceMapper.updateUtilityService(utilityService, utilityServiceDto);

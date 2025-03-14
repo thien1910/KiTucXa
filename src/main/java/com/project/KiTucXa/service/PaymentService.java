@@ -32,6 +32,7 @@ public class PaymentService {
     private BillRepository billRepository;
     @Autowired
     private PaymentMapper paymentMapper;
+
     public PaymentResponse createPayment(PaymentDto paymentDto) {
         Bill bill = billRepository.findById(paymentDto.getBillId())
                 .orElseThrow(() -> new AppException(ErrorCode.BILL_NOT_FOUND));
@@ -53,7 +54,6 @@ public class PaymentService {
                 .map(paymentMapper::toPaymentResponse)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
     }
-
 
     public PaymentResponse updatePayment(String paymentId, PaymentUpdateDto paymentUpdateDto) {
         Payment payment = paymentRepository.findById(paymentId)

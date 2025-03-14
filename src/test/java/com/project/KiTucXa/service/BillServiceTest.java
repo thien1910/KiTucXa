@@ -45,7 +45,7 @@ class BillServiceTest {
 
         bill = new Bill();
         bill.setBillId("1");
-        bill.setContract(contract);  // Đặt đối tượng Contract thay vì String
+        bill.setContract(contract); // Đặt đối tượng Contract thay vì String
         bill.setSumPrice(BigDecimal.valueOf(500));
 
         billDto = new BillDto();
@@ -57,7 +57,6 @@ class BillServiceTest {
         billResponse.setContractId("contract123");
         billResponse.setSumPrice(BigDecimal.valueOf(500));
     }
-
 
     @Test
     void getAllBills_ShouldReturnList() {

@@ -56,12 +56,13 @@ public class StudentService {
 
     public StudentResponse getStudent(String studentId) {
         return studentMapper.toStudentResponse(studentRepository.findById(studentId)
-                .orElseThrow(()-> new RuntimeException("Student not found")));
+                .orElseThrow(() -> new RuntimeException("Student not found")));
     }
+
     public StudentResponse updateStudent(String studentId, StudentUpdateDto studentDto) {
 
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(()-> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new RuntimeException("Student not found"));
 
         studentMapper.updateStudent(student, studentDto);
 
@@ -69,7 +70,7 @@ public class StudentService {
 
     }
 
-    public void deleteStudent(String studentId){
+    public void deleteStudent(String studentId) {
         studentRepository.deleteById(studentId);
     }
 }

@@ -10,6 +10,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     User toUser(UserDto userDto);
-    UserResponse toUserResponse(User user );
+
+    UserResponse toUserResponse(User user);
+
     void updateUser(@MappingTarget User user, UserUpdateDto userDto);
 }

@@ -33,6 +33,7 @@ public class RoomService {
     private RoomMapper roomMapper;
     @Autowired
     private UserRepository userRepository;
+
     public List<RoomResponse> getAllRoom() {
         return roomRepository.findAll().stream()
                 .map(roomMapper::toRoomResponse)
@@ -58,7 +59,6 @@ public class RoomService {
 
         return roomMapper.toRoomResponse(room);
     }
-
 
     public RoomResponse updateRoom(String roomId, RoomUpdateDto roomDto) {
         Room room = roomRepository.findById(roomId)

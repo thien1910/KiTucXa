@@ -15,6 +15,6 @@ public interface BillMapper {
 
     @Mapping(source = "contract.contractId", target = "contractId")
     BillResponse toBillResponse(Bill bill);
+
     void updateBill(@MappingTarget Bill bill, BillUpdateDto billDto);
 }
-

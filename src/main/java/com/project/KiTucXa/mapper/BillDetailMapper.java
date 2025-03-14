@@ -17,6 +17,6 @@ public interface BillDetailMapper {
     @Mapping(source = "bill.billId", target = "billId")
     @Mapping(source = "utilityService.utilityServiceId", target = "utilityServiceId")
     BillDetailResponse toBillDetailResponse(BillDetail billDetail);
+
     void updateBillDetail(@MappingTarget BillDetail billDetail, BillDetailUpdateDto billDetailDto);
 }
-

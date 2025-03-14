@@ -19,5 +19,6 @@ public interface RoomServiceMapper {
     @Mapping(target = "roomId", source = "room.roomId")
     @Mapping(target = "utilityServiceId", source = "utilityService.utilityServiceId")
     RoomServiceResponse toRoomServiceResponse(RoomService roomService);
+
     void updateRoomService(@MappingTarget RoomService roomService, RoomServiceUpdateDto roomServiceDto);
 }

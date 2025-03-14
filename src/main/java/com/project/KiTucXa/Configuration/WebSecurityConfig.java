@@ -12,7 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.Arrays;
 
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -84,23 +89,37 @@ public class WebSecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Kích hoạt CORS
+                .csrf(AbstractHttpConfigurer::disable) // Tắt CSRF nếu không cần thiết
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(requests -> {
-                    requests
-                            .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                            .requestMatchers(ADMINISTRATOR_ENDPOINTS).permitAll()
-                            .requestMatchers(GUEST_ENDPOINTS).permitAll()
-                            .requestMatchers(STUDENT_ENDPOINTS).permitAll()
-                            .requestMatchers(MANAGER_ENDPOINTS).permitAll()
-                            .anyRequest().authenticated();
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(ADMINISTRATOR_ENDPOINTS).hasAuthority("ADMINISTRATOR")
+                        .requestMatchers(GUEST_ENDPOINTS).hasAuthority("GUEST")
+                        .requestMatchers(STUDENT_ENDPOINTS).hasAuthority("STUDENT")
+                        .requestMatchers(DUTY_STAFF_ENDPOINTS).hasAuthority("DUTY_STAFF")
+                        .requestMatchers(MANAGER_ENDPOINTS).hasAuthority("MANAGER")
+                        .anyRequest().authenticated()
+                );
 
-                })
-        ;
         return http.build();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Chỉ định domain frontend
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        corsConfiguration.setAllowCredentials(true); // Bật nếu gửi cookie/token
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
 }
 /*public class WebSecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;

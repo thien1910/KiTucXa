@@ -56,10 +56,11 @@ public class ContractService {
 
         return contractMapper.toContractResponse(contract);
     }
+
     public ContractResponse updateContract(String contractId, ContractUpdateDto contractDto) {
 
         Contract contract = contractRepository.findById(contractId)
-                .orElseThrow(()-> new RuntimeException("Contract not found"));
+                .orElseThrow(() -> new RuntimeException("Contract not found"));
 
         contractMapper.updateContract(contract, contractDto);
 

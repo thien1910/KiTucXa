@@ -10,6 +10,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UtilityServiceMapper {
     UtilityService toUtilityService(UtilityServiceDto utilityServiceDto);
+
     UtilityServiceResponse toUtilityServiceResponse(UtilityService utilityService);
+
     void updateUtilityService(@MappingTarget UtilityService utilityService, UtilityServiceUpdateDto utilityServiceDto);
 }

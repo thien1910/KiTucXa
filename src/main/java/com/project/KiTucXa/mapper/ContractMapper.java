@@ -19,5 +19,6 @@ public interface ContractMapper {
     @Mapping(source = "user.userId", target = "userId")
     @Mapping(source = "room.roomId", target = "roomId")
     ContractResponse toContractResponse(Contract contract);
+
     void updateContract(@MappingTarget Contract contract, ContractUpdateDto contractDto);
 }

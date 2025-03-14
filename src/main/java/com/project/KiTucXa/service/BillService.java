@@ -49,10 +49,11 @@ public class BillService {
 
         return billMapper.toBillResponse(bill);
     }
+
     public BillResponse updateBill(String billId, BillUpdateDto billDto) {
 
         Bill bill = billRepository.findById(billId)
-                .orElseThrow(()-> new RuntimeException("Bill not found"));
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
 
         billMapper.updateBill(bill, billDto);
 

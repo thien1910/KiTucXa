@@ -16,5 +16,6 @@ public interface RoomMapper {
 
     @Mapping(target = "userId", source = "user.userId")
     RoomResponse toRoomResponse(Room room);
+
     void updateRoom(@MappingTarget Room room, RoomUpdateDto roomDto);
 }

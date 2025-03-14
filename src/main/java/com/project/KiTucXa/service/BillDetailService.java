@@ -36,7 +36,8 @@ public class BillDetailService {
         UtilityService utilityService = utilityServiceRepository.findById(billDetailDto.getUtilityServiceId())
                 .orElseThrow(() -> new AppException(ErrorCode.UTILITY_SERVICE_NOT_FOUND));
 
-        BigDecimal totalPrice = utilityService.getPricePerUnit().multiply(BigDecimal.valueOf(billDetailDto.getQuantity()));
+        BigDecimal totalPrice = utilityService.getPricePerUnit()
+                .multiply(BigDecimal.valueOf(billDetailDto.getQuantity()));
 
         BillDetail billDetail = billDetailMapper.toBillDetail(billDetailDto);
         billDetail.setBill(bill);
@@ -66,10 +67,11 @@ public class BillDetailService {
         }
         billDetailRepository.deleteById(billDetailId);
     }
+
     public BillDetailResponse updateBillDetail(String billDetailId, BillDetailUpdateDto billDetailDto) {
 
         BillDetail billDetail = billDetailRepository.findById(billDetailId)
-                .orElseThrow(()-> new RuntimeException("BillDetail not found"));
+                .orElseThrow(() -> new RuntimeException("BillDetail not found"));
 
         billDetailMapper.updateBillDetail(billDetail, billDetailDto);
 
