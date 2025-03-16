@@ -38,9 +38,10 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName().toUpperCase()));
-        return authorityList;
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
+//        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+//        authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName().toUpperCase()));
+//        return authorityList;
     }
 
     @Override // UserName này sẽ đc hiểu là trường đc dùng để đăng nhập vào

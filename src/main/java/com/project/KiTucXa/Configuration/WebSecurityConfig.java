@@ -96,11 +96,11 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(ADMINISTRATOR_ENDPOINTS).hasAuthority("ADMINISTRATOR")
-                        .requestMatchers(GUEST_ENDPOINTS).hasAuthority("GUEST")
-                        .requestMatchers(STUDENT_ENDPOINTS).hasAuthority("STUDENT")
-                        .requestMatchers(DUTY_STAFF_ENDPOINTS).hasAuthority("DUTY_STAFF")
-                        .requestMatchers(MANAGER_ENDPOINTS).hasAuthority("MANAGER")
+                        .requestMatchers(ADMINISTRATOR_ENDPOINTS).hasAuthority("ROLE_ADMINISTRATOR")
+                        .requestMatchers(GUEST_ENDPOINTS).hasAuthority("ROLE_GUEST")
+                        .requestMatchers(STUDENT_ENDPOINTS).hasAuthority("ROLE_STUDENT")
+                        .requestMatchers(DUTY_STAFF_ENDPOINTS).hasAuthority("ROLE_DUTY_STAFF")
+                        .requestMatchers(MANAGER_ENDPOINTS).hasAuthority("ROLE_MANAGER")
                         .anyRequest().authenticated()
                 );
 
