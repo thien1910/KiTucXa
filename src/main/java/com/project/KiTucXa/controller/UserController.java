@@ -7,7 +7,6 @@ import com.project.KiTucXa.dto.update.UserUpdateDto;
 import com.project.KiTucXa.dto.request.ApiResponse;
 import com.project.KiTucXa.dto.request.UserDto;
 import com.project.KiTucXa.dto.response.UserResponse;
-import com.project.KiTucXa.entity.Role;
 import com.project.KiTucXa.entity.User;
 import com.project.KiTucXa.service.UserService;
 import jakarta.validation.Valid;
@@ -16,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/user")

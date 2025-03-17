@@ -19,7 +19,7 @@ public class Manager extends BaseEntity {
     String managerId;
     @OneToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
     String department;
 
 }

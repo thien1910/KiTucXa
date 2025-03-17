@@ -82,7 +82,6 @@ public class WebSecurityConfig {
             "/api/v1/contracts/{contractId}","/api/v1/contracts/add","/api/v1/contracts/list","/api/v1/contracts/update/{contractId}","/api/v1/contracts/delete/{contractId}",
             "/api/v1/utility-services/add","/api/v1/utility-services/{utilityServiceId}","/api/v1/utility-services/list","/api/v1/utility-services/update/{utilityServiceId}","/api/v1/utility-services/delete/{utilityServiceId}",
     };
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception {
         http
@@ -91,10 +90,25 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(requests -> {
                     requests
                             .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                            .requestMatchers(ADMINISTRATOR_ENDPOINTS).permitAll()
-                            .requestMatchers(GUEST_ENDPOINTS).permitAll()
-                            .requestMatchers(STUDENT_ENDPOINTS).permitAll()
-                            .requestMatchers(MANAGER_ENDPOINTS).permitAll()
+                            .requestMatchers(HttpMethod.GET, ADMINISTRATOR_ENDPOINTS).hasRole(Role.ADMINISTRATOR)
+                            .requestMatchers(HttpMethod.PUT, ADMINISTRATOR_ENDPOINTS).hasRole(Role.ADMINISTRATOR)
+                            .requestMatchers(HttpMethod.DELETE, ADMINISTRATOR_ENDPOINTS).hasRole(Role.ADMINISTRATOR)
+
+                            .requestMatchers(HttpMethod.GET, GUEST_ENDPOINTS).hasRole(Role.GUEST)
+
+                            .requestMatchers(HttpMethod.GET, DUTY_STAFF_ENDPOINTS).hasRole(Role.DUTY_STAFF)
+                            .requestMatchers(HttpMethod.PUT, DUTY_STAFF_ENDPOINTS).hasRole(Role.DUTY_STAFF)
+
+
+                            .requestMatchers(HttpMethod.GET, STUDENT_ENDPOINTS).hasRole(Role.STUDENT)
+                            .requestMatchers(HttpMethod.PUT, STUDENT_ENDPOINTS).hasRole(Role.STUDENT)
+
+                            .requestMatchers(HttpMethod.POST, MANAGER_ENDPOINTS).hasRole(Role.MANAGER)
+                            .requestMatchers(HttpMethod.GET, MANAGER_ENDPOINTS).hasRole(Role.MANAGER)
+                            .requestMatchers(HttpMethod.PUT, MANAGER_ENDPOINTS).hasRole(Role.MANAGER)
+                            .requestMatchers(HttpMethod.DELETE, MANAGER_ENDPOINTS).hasRole(Role.MANAGER)
+
+
                             .anyRequest().authenticated();
 
                 })
