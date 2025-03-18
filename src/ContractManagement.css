@@ -1,62 +1,113 @@
 .contract-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Hiệu ứng nhập liệu mượt mà */
+.search-input, .contract-form input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.search-input:focus, .contract-form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Hiệu ứng cho nút bấm */
+.contract-form button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.contract-form button:hover {
+  background-color: #218838;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hiệu ứng hiển thị bảng */
+.contract-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out 0.2s forwards;
+}
+
+.contract-table th, .contract-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  transition: background 0.3s ease-in-out;
+}
+
+.contract-table th {
+  background-color: #f4f4f4;
+}
+
+.contract-table tr {
+  transition: background 0.3s ease-in-out;
+}
+
+.contract-table tr:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Hiệu ứng trạng thái hợp đồng */
+.contract-table .signed {
+  background-color: #d4edda;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.contract-table .pending {
+  background-color: #f8d7da;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Hiệu ứng cho nút bấm trong bảng */
+.contract-table button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.contract-table button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation xuất hiện mượt */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .search-input, .contract-form input {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .contract-form button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .contract-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-  }
-  
-  .contract-table th, .contract-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .contract-table th {
-    background-color: #f4f4f4;
-  }
-  
-  .contract-table .signed {
-    background-color: #d4edda;
-  }
-  
-  .contract-table .pending {
-    background-color: #f8d7da;
-  }
-  
-  .contract-table button {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
+}

@@ -5,34 +5,38 @@ import UserProfile from "./UserProfile";
 import StudentManagement from "./StudentManagement";
 import ContractManagement from "./ContractManagement";
 import InvoiceManagement from "./InvoiceManagement";
+import RoomManagement from "./RoomManagement";
 
 const Dashboard = () => {
   const [view, setView] = useState<string>("dashboard");
 
   return (
-    <div className="dashboard-container full-screen">
+    <div className="dashboard-container">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <div className="logo">🏠</div>
+          <div className="logo">
+            <span style={{ fontSize: "40px" }}>🏠</span>
+          </div>
           <h2>Hệ thống quản lý</h2>
           <p>support@example.com</p>
         </div>
         <nav>
           <ul>
             <li onClick={() => setView("dashboard")}>Dashboard</li>
-            <li onClick={() => setView("accountManagement")}>Quản lí tài khoản</li>
-            <li onClick={() => setView("userProfile")}>Quản lí thông tin cá nhân</li>
-            <li onClick={() => setView("studentManagement")}>Quản lí sinh viên</li>
-            <li onClick={() => setView("contractManagement")}>Quản lí hợp đồng</li>
+            <li onClick={() => setView("accountManagement")}>Quản lý tài khoản</li>
+            <li onClick={() => setView("userProfile")}>Quản lý thông tin cá nhân</li>
+            <li onClick={() => setView("studentManagement")}>Quản lý sinh viên</li>
+            <li onClick={() => setView("contractManagement")}>Quản lý hợp đồng</li>
             <li onClick={() => setView("invoiceManagement")}>Quản lý hóa đơn</li>
-            <li>Quản lý dịch vụ</li>
-            <li>Quản lí phòng</li>
+            <li onClick={() => setView("serviceManagement")}>Dịch vụ</li>
+            <li onClick={() => setView("settings")}>Cài đặt</li>
+            <li onClick={() => setView("roomManagement")}>Quản lý phòng</li>
             <li>Thanh toán</li>
-            <li>Xem thống kê</li>
+            <li onClick={() => setView("statistics")}>Xem thống kê</li>
           </ul>
         </nav>
       </aside>
-      <main className="main-content full-width">
+      <main className="main-content">
         {view === "accountManagement" ? (
           <AccountManagement />
         ) : view === "userProfile" ? (
@@ -43,6 +47,8 @@ const Dashboard = () => {
           <ContractManagement />
         ) : view === "invoiceManagement" ? (
           <InvoiceManagement />
+        ) : view === "roomManagement" ? (
+          <RoomManagement />
         ) : (
           <>
             <header className="dashboard-header">
@@ -56,8 +62,6 @@ const Dashboard = () => {
                 <button onClick={() => setView("studentManagement")}>Quản lý sinh viên</button>
                 <button onClick={() => setView("contractManagement")}>Quản lý hợp đồng</button>
                 <button onClick={() => setView("accountManagement")}>Quản lý tài khoản</button>
-                <button onClick={() => setView("userProfile")}>Thông tin cá nhân</button>
-                <button onClick={() => setView("serviceManagement")}>Quản lý dịch vụ</button>
               </div>
             </section>
 
@@ -69,6 +73,7 @@ const Dashboard = () => {
                   <li>🏠 <b>Quản lý sinh viên:</b> Xem danh sách, tìm kiếm và cập nhật thông tin.</li>
                   <li>📜 <b>Quản lý hợp đồng:</b> Ký hợp đồng mới, gia hạn hoặc chấm dứt.</li>
                   <li>💳 <b>Quản lý thanh toán:</b> Kiểm tra hóa đơn và xác nhận thanh toán.</li>
+                  <li>🏡 <b>Quản lý phòng:</b> Thêm, sửa, xóa và xếp phòng.</li>
                 </ul>
               </div>
               <div className="dashboard-box">
