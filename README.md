@@ -1,7 +1,7 @@
 # Hệ thống quản lý ký túc xá (FrontEnd)
 
 ## Giới Thiệu
-Dự án này là một hệ thống quản lý ký túc xá trên nền tảng web, được xây dựng bằng Spring Boot (Java). Hệ thống giúp quản lý sinh viên, hợp đồng, hóa đơn, dịch vụ tiện ích và các phòng ở trong ký túc xá một cách hiệu quả.
+Dự án này là một hệ thống quản lý ký túc xá trên nền tảng web, được xây dựng bằng React Typescript. Hệ thống giúp quản lý sinh viên, hợp đồng, hóa đơn, dịch vụ tiện ích và các phòng ở trong ký túc xá một cách hiệu quả.
 
 ## Tính Năng
 - Xác thực người dùng (đăng nhập/đăng xuất)
