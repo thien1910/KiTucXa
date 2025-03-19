@@ -1,46 +1,68 @@
-# Getting Started with Create React App
+# Hệ thống quản lý ký túc xá (FrontEnd)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Giới Thiệu
+Dự án này là một hệ thống quản lý ký túc xá trên nền tảng web, được xây dựng bằng Spring Boot (Java). Hệ thống giúp quản lý sinh viên, hợp đồng, hóa đơn, dịch vụ tiện ích và các phòng ở trong ký túc xá một cách hiệu quả.
 
-## Available Scripts
+## Tính Năng
+- Xác thực người dùng (đăng nhập/đăng xuất)
+- Quản lý thông tin cá nhân
+- Quản lý sinh viên và hợp đồng
+- Quản lý hóa đơn và dịch vụ tiện ích
+- Quản lý phòng ở
+- Hệ thống báo cáo và thống kê
+- Hỗ trợ thanh toán hóa đơn trực tuyến
+- Giao diện API RESTful
 
-In the project directory, you can run:
+## Cài Đặt
+### Yêu Cầu
+- Đã cài đặt npm
+- Đã khởi động backend ở nhánh main
+### Sao Chép Kho Lưu Trữ
+```sh
+git clone https://github.com/thien1910/KiTucXa.git
+git switch admin
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Cài Đặt Các Gói Phụ Thuộc
+```sh
+npm install
+```
 
-### `npm test`
+### Chạy Ứng Dụng
+```sh
+npm start
+```
+Ứng dụng sẽ chạy tại `http://localhost:3000`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Testing
+Dự án bao gồm các bài kiểm thử bằng Selenium
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Cấu Trúc Thư Mục
+```
+KyTucXa/
+│── src/
+│   ├── main/
+│   │   ├── java/com/project/KyTucXa/       # Mã nguồn chính
+│   │   ├── resources/                      # File cấu hình
+│   ├── test/                               # Kiểm thử
+│── pom.xml                                 # File cấu hình Maven
+│── README.md                               # Tài liệu dự án
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Người Đóng Góp
+- Nguyễn Đình Việt - Developer
+- Nguyễn Sơn Tùng - Developer
+- Nguyễn Minh Huy - Developer
+- Nguyễn Văn Thiện - Developer
+- Trần Mai Trung - Developer
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Giảng Viên Hướng Dẫn
+- Vũ Việt Vũ
+- Trương Anh Hoàng
+- Đặng Quốc Hữu
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Liên Hệ
+Nếu bạn có bất kỳ câu hỏi hoặc góp ý nào, vui lòng liên hệ qua email hoặc GitHub của nhóm phát triển.
