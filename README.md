@@ -44,13 +44,14 @@ Dự án bao gồm các bài kiểm thử bằng JUnit và Mockito. Để chạy
 
 ## Cấu Trúc Thư Mục
 ```
-|── node_modules/                     #chứa toàn bộ module của dự án
-|── public/                           #Chứa các tài nguyên tĩnh                
-│── src/                              #Mã nguồn chính
-│── package-lock.json                 #Ghi lại mã nguồn đã cài đặt
-│── package.json                      #cấu hình dự án
-│── README.md                         #Tài liệu tổng quan
-│── tsconfig.json                     #cấu hình trình biên dịch typescript
+KyTucXa/
+│── src/
+│   ├── main/
+│   │   ├── java/com/project/KyTucXa/       # Mã nguồn chính
+│   │   ├── resources/                      # File cấu hình
+│   ├── test/                               # Kiểm thử
+│── pom.xml                                 # File cấu hình Maven
+│── README.md                               # Tài liệu dự án
 ```
 
 ## Người Đóng Góp
