@@ -1,0 +1,21 @@
+.service-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+  }
+  
+  .add-button {
+    margin-bottom: 10px;
+  }
+  
+  .service-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .edit-button,
+  .delete-button {
+    margin-right: 8px;
+  }

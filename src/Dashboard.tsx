@@ -6,6 +6,8 @@ import StudentManagement from "./StudentManagement";
 import ContractManagement from "./ContractManagement";
 import InvoiceManagement from "./InvoiceManagement";
 import RoomManagement from "./RoomManagement";
+import PaymentPage from "./PaymentPage";
+import ServiceManagement from "./ServiceManagement"; // Import ServiceManagement
 
 const Dashboard = () => {
   const [view, setView] = useState<string>("dashboard");
@@ -28,11 +30,10 @@ const Dashboard = () => {
             <li onClick={() => setView("studentManagement")}>Quản lý sinh viên</li>
             <li onClick={() => setView("contractManagement")}>Quản lý hợp đồng</li>
             <li onClick={() => setView("invoiceManagement")}>Quản lý hóa đơn</li>
-            <li onClick={() => setView("serviceManagement")}>Dịch vụ</li>
-            <li onClick={() => setView("settings")}>Cài đặt</li>
+            <li onClick={() => setView("serviceManagement")}>Quản lý dịch vụ</li> {/* Update this line */}
             <li onClick={() => setView("roomManagement")}>Quản lý phòng</li>
-            <li>Thanh toán</li>
-            <li onClick={() => setView("statistics")}>Xem thống kê</li>
+            <li onClick={() => setView("payment")}>Thanh toán</li>
+            <li>Xem thống kê</li>
           </ul>
         </nav>
       </aside>
@@ -47,8 +48,12 @@ const Dashboard = () => {
           <ContractManagement />
         ) : view === "invoiceManagement" ? (
           <InvoiceManagement />
+        ) : view === "serviceManagement" ? ( // Add this condition
+          <ServiceManagement />
         ) : view === "roomManagement" ? (
           <RoomManagement />
+        ) : view === "payment" ? (
+          <PaymentPage />
         ) : (
           <>
             <header className="dashboard-header">

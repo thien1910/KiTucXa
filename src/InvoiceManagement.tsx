@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Table, Input, Button, Modal, Form, InputNumber, Select, Switch } from "antd";
+import { Table, Input, Button, Modal, Form, InputNumber, Switch } from "antd";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 import "./InvoiceManagement.css";
 
 const { Search } = Input;
@@ -74,11 +76,54 @@ const InvoiceManagement: React.FC = () => {
     form.resetFields();
   };
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(invoices);
+  
+    // Set column widths
+    const columnWidths = [
+      { wch: 10 }, // id
+      { wch: 10 }, // studentId
+      { wch: 20 }, // studentName
+      { wch: 10 }, // roomNumber
+      { wch: 15 }, // period
+      { wch: 30 }, // charges
+      { wch: 15 }, // totalAmount
+      { wch: 10 }, // status
+      { wch: 15 }  // createdAt
+    ];
+    worksheet['!cols'] = columnWidths;
+  
+    // Apply styles to header row
+    const headerStyle = {
+      font: { bold: true },
+      alignment: { horizontal: 'center', vertical: 'center' },
+      fill: { fgColor: { rgb: 'FFFF00' } }
+    };
+  
+    if (worksheet['!ref']) {
+      const range = XLSX.utils.decode_range(worksheet['!ref']);
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ c: C, r: 0 });
+        if (!worksheet[cellAddress]) continue;
+        worksheet[cellAddress].s = headerStyle;
+      }
+    }
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Invoices");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "invoices.xlsx");
+  };
+
   return (
     <div className="invoice-management">
       <h1>Quản lý Hóa đơn</h1>
       <Button type="primary" className="create-btn" onClick={() => setShowModal(true)}>
         Tạo hóa đơn mới
+      </Button>
+      <Button type="default" className="export-btn" onClick={exportToExcel} style={{ marginLeft: 8 }}>
+        Xuất Excel
       </Button>
       <Search
         placeholder="Nhập mã hóa đơn hoặc tên sinh viên"

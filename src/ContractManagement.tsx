@@ -1,92 +1,258 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './ContractManagement.css';
 
+// Định nghĩa interface cho dữ liệu hợp đồng
 interface Contract {
-  id: string;
-  studentName: string;
-  studentId: string;
+  id: number;
+  employeeName: string;
+  employeeCode: string;
+  department: string;
+  contractType: string;
   startDate: string;
   endDate: string;
-  status: 'Pending' | 'Signed';
+  salary: number;
+  status: string;
 }
 
+// Dữ liệu mẫu (giả lập)
+const initialContracts: Contract[] = [
+  {
+    id: 1,
+    employeeName: 'Lê Xuân Hải 31',
+    employeeCode: 'N/A',
+    department: 'KI TƯC XÁ BÌNH TÂN MY TRINH',
+    contractType: 'Đã thuê',
+    startDate: '25/04/2024',
+    endDate: '25/04/2025',
+    salary: 99999,
+    status: 'Đã thuê',
+  },
+  {
+    id: 2,
+    employeeName: 'khach 111',
+    employeeCode: 'Nguyen VA',
+    department: 'N/A',
+    contractType: 'Đã thuê',
+    startDate: '25/04/2024',
+    endDate: '25/04/2025',
+    salary: 99999,
+    status: 'Đã thuê',
+  },
+  // Thêm dữ liệu mẫu khác nếu cần
+];
+
 const ContractManagement: React.FC = () => {
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [newContract, setNewContract] = useState<Contract>({
-    id: '',
-    studentName: '',
-    studentId: '',
+  const [contracts, setContracts] = useState<Contract[]>(initialContracts);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [currentContract, setCurrentContract] = useState<Contract | null>(null);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
+
+  // State cho form chỉnh sửa và tạo mới
+  const [formData, setFormData] = useState<Contract>({
+    id: 0,
+    employeeName: '',
+    employeeCode: '',
+    department: '',
+    contractType: '',
     startDate: '',
     endDate: '',
-    status: 'Pending',
+    salary: 0,
+    status: '',
   });
 
-  useEffect(() => {
-    // Fetch danh sách hợp đồng (giả lập)
-    setContracts([
-      { id: '001', studentName: 'Nguyen Van A', studentId: 'SV001', startDate: '2025-01-01', endDate: '2025-12-31', status: 'Signed' },
-      { id: '002', studentName: 'Le Thi B', studentId: 'SV002', startDate: '2025-02-01', endDate: '2025-11-30', status: 'Pending' }
-    ]);
-  }, []);
-
-  const handleCreateContract = () => {
-    if (!newContract.studentName || !newContract.studentId || !newContract.startDate || !newContract.endDate) return;
-    setContracts([...contracts, { ...newContract, id: (contracts.length + 1).toString() }]);
-    setNewContract({ id: '', studentName: '', studentId: '', startDate: '', endDate: '', status: 'Pending' });
+  // Hàm xóa hợp đồng
+  const handleDelete = (id: number) => {
+    const updatedContracts = contracts.filter((contract) => contract.id !== id);
+    setContracts(updatedContracts);
   };
 
-  const handleSignContract = (id: string) => {
-    setContracts(contracts.map(contract => contract.id === id ? { ...contract, status: 'Signed' } : contract));
+  // Hàm mở form chỉnh sửa
+  const handleEdit = (contract: Contract) => {
+    setCurrentContract(contract);
+    setFormData(contract);
+    setIsEditing(true);
+    setIsCreating(false);
   };
 
-  const filteredContracts = contracts.filter(contract =>
-    contract.id.includes(searchTerm) ||
-    contract.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contract.studentId.includes(searchTerm)
-  );
+  // Hàm mở form tạo mới
+  const handleCreate = () => {
+    setFormData({
+      id: contracts.length + 1,
+      employeeName: '',
+      employeeCode: '',
+      department: '',
+      contractType: '',
+      startDate: '',
+      endDate: '',
+      salary: 0,
+      status: '',
+    });
+    setIsCreating(true);
+    setIsEditing(false);
+  };
+
+  // Hàm xử lý thay đổi dữ liệu trong form
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Hàm lưu chỉnh sửa
+  const handleSave = () => {
+    if (isEditing && currentContract) {
+      const updatedContracts = contracts.map((contract) =>
+        contract.id === currentContract.id ? formData : contract
+      );
+      setContracts(updatedContracts);
+      setIsEditing(false);
+      setCurrentContract(null);
+    } else if (isCreating) {
+      setContracts([...contracts, formData]);
+      setIsCreating(false);
+    }
+  };
+
+  // Hàm đóng form
+  const handleCancel = () => {
+    setIsEditing(false);
+    setIsCreating(false);
+    setCurrentContract(null);
+  };
 
   return (
-    <div className="contract-container">
-      <h2>Quản lý Hợp đồng</h2>
-      <input className="search-input" type="text" placeholder="Tìm kiếm hợp đồng..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-      <h3>Tạo hợp đồng mới</h3>
-      <div className="contract-form">
-        <input type="text" placeholder="Tên sinh viên" value={newContract.studentName} onChange={(e) => setNewContract({ ...newContract, studentName: e.target.value })} />
-        <input type="text" placeholder="Mã sinh viên" value={newContract.studentId} onChange={(e) => setNewContract({ ...newContract, studentId: e.target.value })} />
-        <input type="date" value={newContract.startDate} onChange={(e) => setNewContract({ ...newContract, startDate: e.target.value })} />
-        <input type="date" value={newContract.endDate} onChange={(e) => setNewContract({ ...newContract, endDate: e.target.value })} />
-        <button onClick={handleCreateContract}>Tạo hợp đồng</button>
+    <div className="contract-management">
+      <h2>Quản lý hợp đồng</h2>
+      <div className="filters">
+        <select defaultValue="10">
+          <option value="10">Hiển thị 10</option>
+          <option value="20">Hiển thị 20</option>
+          <option value="50">Hiển thị 50</option>
+        </select>
+        <select>
+          <option>Chọn trạng thái</option>
+          <option>Đã thuê</option>
+          <option>Chưa thuê</option>
+        </select>
+        <input type="text" placeholder="Tìm kiếm..." />
       </div>
-      <h3>Danh sách hợp đồng</h3>
-      <table className="contract-table">
+
+      <button className="create-btn" onClick={handleCreate}>
+        Tạo hợp đồng mới
+      </button>
+
+      {/* Bảng danh sách hợp đồng */}
+      <table>
         <thead>
           <tr>
-            <th>Mã HĐ</th>
-            <th>Tên Sinh Viên</th>
-            <th>Mã SV</th>
-            <th>Ngày BĐ</th>
-            <th>Ngày KT</th>
+            <th>STT</th>
+            <th>Tên KH</th>
+            <th>Tên NV</th>
+            <th>Tên phòng</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Tiền cọc</th>
             <th>Trạng thái</th>
-            <th>Hành động</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
-          {filteredContracts.map(contract => (
-            <tr key={contract.id} className={contract.status === 'Signed' ? 'signed' : 'pending'}>
-              <td>{contract.id}</td>
-              <td>{contract.studentName}</td>
-              <td>{contract.studentId}</td>
+          {contracts.map((contract, index) => (
+            <tr key={contract.id}>
+              <td>{index + 1}</td>
+              <td>{contract.employeeName}</td>
+              <td>{contract.employeeCode}</td>
+              <td>{contract.department}</td>
               <td>{contract.startDate}</td>
               <td>{contract.endDate}</td>
+              <td>{contract.salary}</td>
               <td>{contract.status}</td>
               <td>
-                {contract.status === 'Pending' && <button onClick={() => handleSignContract(contract.id)}>Ký hợp đồng</button>}
+                <button className="edit-btn" onClick={() => handleEdit(contract)}>
+                  Sửa
+                </button>
+                <button className="delete-btn" onClick={() => handleDelete(contract.id)}>
+                  Xóa
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Form chỉnh sửa hoặc tạo mới */}
+      {(isEditing || isCreating) && (
+        <div className="edit-form">
+          <h3>{isEditing ? 'Chỉnh sửa hợp đồng' : 'Tạo hợp đồng mới'}</h3>
+          <div className="form-group">
+            <label>Tên KH:</label>
+            <input
+              type="text"
+              name="employeeName"
+              value={formData.employeeName}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Tên NV:</label>
+            <input
+              type="text"
+              name="employeeCode"
+              value={formData.employeeCode}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Tên phòng:</label>
+            <input
+              type="text"
+              name="department"
+              value={formData.department}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Ngày bắt đầu:</label>
+            <input
+              type="text"
+              name="startDate"
+              value={formData.startDate}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Ngày kết thúc:</label>
+            <input
+              type="text"
+              name="endDate"
+              value={formData.endDate}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Tiền cọc:</label>
+            <input
+              type="number"
+              name="salary"
+              value={formData.salary}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Trạng thái:</label>
+            <select name="status" value={formData.status} onChange={handleInputChange}>
+              <option value="Đã thuê">Đã thuê</option>
+              <option value="Chưa thuê">Chưa thuê</option>
+            </select>
+          </div>
+          <div className="form-actions">
+            <button onClick={handleSave}>Lưu</button>
+            <button onClick={handleCancel}>Hủy</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

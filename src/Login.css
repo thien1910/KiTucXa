@@ -1,5 +1,5 @@
 /* General Styles */
-body {
+.login-body {
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #6a85b6, #bac8e0);
   display: flex;

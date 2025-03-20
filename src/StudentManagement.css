@@ -110,3 +110,69 @@ button:hover {
     transform: translateY(0);
   }
 }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .student-management {
+    width: 90%;
+  }
+}
+
+@media (max-width: 992px) {
+  .student-management {
+    width: 95%;
+  }
+
+  table, th, td {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .student-management button {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-management {
+    width: 100%;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+  }
+
+  table, th, td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .student-management button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .student-management {
+    width: 100%;
+    margin: 0;
+  }
+
+  input {
+    width: 100%;
+    padding: 6px;
+  }
+
+  table, th, td {
+    font-size: 10px;
+    padding: 6px;
+  }
+
+  .student-management button {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}
