@@ -7,6 +7,7 @@ import AccountManagement from "./AccountManagement";
 import UserProfile from "./UserProfile";
 import StudentManagement from "./StudentManagement";
 import ContractManagement from "./ContractManagement";
+import GuestDashboard from "./Guest_route/GuestDashboard";
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/student-mangement" element={<StudentManagement />} />
         <Route path="/contract-management" element={<ContractManagement />} />
+        <Route path="/guestdashboard" element={<GuestDashboard/>} />
       </Routes>
     </Router>
   );

@@ -18,7 +18,7 @@ const LoginForm: React.FC = () => {
     setError("");
   
     try {
-      const response = await axios.post("http://localhost:8080/api/v1/user/login", {
+      const response = await axios.post("http://localhost:8080/api/v1/auth/token", {
         userName: email,
         passWord: password,
       });
@@ -66,7 +66,7 @@ const LoginForm: React.FC = () => {
 
           {error && <p className="error-message">{error}</p>}
 
-          <button className="guest-login" onClick={() => navigate("/dashboard")}>
+          <button className="guest-login" onClick={() => navigate("/guestdashboard")}>
             Tiếp tục với tư cách khách
           </button>
 
@@ -78,9 +78,7 @@ const LoginForm: React.FC = () => {
           )}
 
           <div className="bottom-text w3_bottom_text">
-            <h4>
-              <a href="#">Quên mật khẩu?</a>
-            </h4>
+            
           </div>
         </div>
       </div>
