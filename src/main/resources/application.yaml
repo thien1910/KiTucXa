@@ -15,5 +15,4 @@ api:
   prefix: api/v1
 
 jwt:
-  expiration: 2592000 #30 days = 30*24*60*60
-  secretKey: KaGTrWxigGRmBCJcN0zc7fs4DRR5iWoEieDtrun7CDs=
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"

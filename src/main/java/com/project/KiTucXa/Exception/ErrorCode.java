@@ -3,6 +3,7 @@ package com.project.KiTucXa.Exception;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+
 @Getter
 
 public enum ErrorCode {
@@ -29,7 +30,9 @@ public enum ErrorCode {
     USERNAME_NOT_FOUND(1020,"Cannot find user with UserName",HttpStatus.NOT_FOUND),
     INVALID_USERNAME_PASSWORD(1021, "Invalid UserName/Password",HttpStatus.BAD_REQUEST),
     ROLE_NOT_FOUND(1022, "Role not found", HttpStatus.NOT_FOUND),
-    CAN_NOT_CREATE_JWT_TOKEN(1023,"Cannot create jwt token", HttpStatus.BAD_REQUEST)
+    CAN_NOT_CREATE_JWT_TOKEN(1023,"Cannot create jwt token", HttpStatus.BAD_REQUEST),
+    MANAGER_NOT_FOUND(1024, "manager not found",HttpStatus.NOT_FOUND),
+    STUDENT_NOT_FOUND(1025,"Student not found", HttpStatus.NOT_FOUND)
 
     ;
 

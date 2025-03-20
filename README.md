@@ -1,4 +1,4 @@
-# Hệ Thống Quản Lý Ký Túc Xá (Backend)
+# Hệ thống quản lý ký túc xá (Backend)
 
 ## Giới Thiệu
 Dự án này là một hệ thống quản lý ký túc xá trên nền tảng web, được xây dựng bằng Spring Boot (Java). Hệ thống giúp quản lý sinh viên, hợp đồng, hóa đơn, dịch vụ tiện ích và các phòng ở trong ký túc xá một cách hiệu quả.
