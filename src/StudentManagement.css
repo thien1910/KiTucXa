@@ -4,15 +4,19 @@
   margin: auto;
   text-align: center;
   font-family: Arial, sans-serif;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
+/* Hiệu ứng nhập liệu mượt mà */
 input {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  transition: all 0.3s ease-in-out;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 input:focus {
@@ -21,6 +25,7 @@ input:focus {
   outline: none;
 }
 
+/* Hiệu ứng hiển thị bảng */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -29,18 +34,25 @@ table {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out 0.2s forwards;
 }
 
 table, th, td {
   border: 1px solid #ddd;
   padding: 12px;
-  transition: background 0.3s;
+  transition: background 0.3s ease-in-out;
 }
 
 .student-management th {
   background-color: #007bff;
   color: white;
   text-transform: uppercase;
+}
+
+/* Hiệu ứng hàng bảng */
+tr {
+  transition: background 0.3s ease-in-out;
 }
 
 tr:nth-child(even) {
@@ -51,7 +63,8 @@ tr:hover {
   background-color: rgba(0, 123, 255, 0.1);
 }
 
-button {
+/* Hiệu ứng cho nút bấm */
+.student-management button {
   padding: 8px 15px;
   margin: 5px;
   border: none;
@@ -59,15 +72,16 @@ button {
   background-color: #007bff;
   color: white;
   border-radius: 5px;
-  transition: all 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
   font-size: 14px;
 }
 
 button:hover {
   background-color: #0056b3;
-  transform: scale(1.05);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
+/* Hiệu ứng khu vực phân công phòng */
 .assign-room {
   margin-top: 20px;
   padding: 15px;
@@ -75,9 +89,24 @@ button:hover {
   border-radius: 5px;
   background: #f8f9fa;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeIn 0.5s ease-out 0.3s forwards;
 }
 
 .assign-room:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation xuất hiện mượt */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
