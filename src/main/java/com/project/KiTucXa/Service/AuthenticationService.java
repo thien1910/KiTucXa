@@ -58,13 +58,12 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request){
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepository.findByuserName(request.getUserName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITED));
 
-        boolean authenticated = passwordEncoder.matches(request.getPassWord(),
-                user.getPassWord());
+        boolean authenticated = passwordEncoder.matches(request.getPassWord(), user.getPassWord());
 
         if (!authenticated)
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -74,8 +73,12 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
+                .roles(user.getRoles()) // Thêm role của user vào response
+                .fullName(user.getFullName()) // Thêm fullName vào response
                 .build();
     }
+
+
 
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);

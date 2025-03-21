@@ -1,2 +1,4 @@
-package com.project.KiTucXa.service;public class QRCodeGeneratorTest {
+package com.project.KiTucXa.service;
+
+public class QRCodeGeneratorTest {
 }

@@ -1,2 +1,4 @@
-package com.project.KiTucXa.service;public class PaymentServiceTest {
+package com.project.KiTucXa.service;
+
+public class PaymentServiceTest {
 }

@@ -3,6 +3,8 @@ package com.project.KiTucXa.Dto.Response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -11,4 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticationResponse {
     String token;
     boolean authenticated;
+    private Set<String> roles; // Thêm role
+    private String fullName;
+
 }
