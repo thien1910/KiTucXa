@@ -1,30 +1,43 @@
 package com.project.KiTucXa.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import com.project.KiTucXa.dto.request.BillDto;
-import com.project.KiTucXa.dto.response.BillResponse;
-import com.project.KiTucXa.dto.update.BillUpdateDto;
-import com.project.KiTucXa.entity.Bill;
-import com.project.KiTucXa.entity.Contract;
-import com.project.KiTucXa.mapper.BillMapper;
-import com.project.KiTucXa.repository.BillRepository;
+import com.google.zxing.WriterException;
+import com.project.KiTucXa.Dto.Request.BillDto;
+import com.project.KiTucXa.Dto.Response.BillResponse;
+import com.project.KiTucXa.Dto.Update.BillUpdateDto;
+import com.project.KiTucXa.Entity.Bill;
+import com.project.KiTucXa.Entity.Contract;
+import com.project.KiTucXa.Enum.BillStatus;
+import com.project.KiTucXa.Enum.PaymentMethod;
+import com.project.KiTucXa.Exception.AppException;
+import com.project.KiTucXa.Exception.ErrorCode;
+import com.project.KiTucXa.Mapper.BillMapper;
+import com.project.KiTucXa.Repository.BillRepository;
+import com.project.KiTucXa.Repository.ContractRepository;
+import com.project.KiTucXa.Service.BillService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BillServiceTest {
+public class BillServiceTest {
 
     @Mock
     private BillRepository billRepository;
+
+    @Mock
+    private ContractRepository contractRepository;
 
     @Mock
     private BillMapper billMapper;
@@ -32,98 +45,114 @@ class BillServiceTest {
     @InjectMocks
     private BillService billService;
 
+    private Contract contract;
     private Bill bill;
     private BillDto billDto;
     private BillResponse billResponse;
-    private BillUpdateDto billUpdateDto;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        Contract contract = Contract.builder().contractId("contract123").build();
+        contract = new Contract();
+        contract.setContractId("contract-123");
 
         bill = new Bill();
-        bill.setBillId("1");
-        bill.setContract(contract);  // Đặt đối tượng Contract thay vì String
-        bill.setSumPrice(BigDecimal.valueOf(500));
+        bill.setBillId("bill-789");
+        bill.setContract(contract);
+        bill.setSumPrice(new BigDecimal("1500000"));
+        bill.setPaymentDate(Date.valueOf("2025-03-15"));
+        bill.setPaymentMethod(PaymentMethod.BANK_TRANSFER);
+        bill.setBillStatus(BillStatus.PAID);
+        bill.setNote("Thanh toán tiền phòng tháng 3");
 
-        billDto = new BillDto();
-        billDto.setContract_id("contract123");
-        billDto.setSumPrice(BigDecimal.valueOf(500));
+        billDto = new BillDto("contract-123", new BigDecimal("1500000"),
+                Date.valueOf("2025-03-15"), PaymentMethod.BANK_TRANSFER, BillStatus.PAID, "Thanh toán tiền phòng tháng 3");
 
         billResponse = new BillResponse();
-        billResponse.setBillId("1");
-        billResponse.setContractId("contract123");
-        billResponse.setSumPrice(BigDecimal.valueOf(500));
+
+        when(contractRepository.findById("contract-123")).thenReturn(Optional.of(contract));
+        when(billMapper.toBill(billDto)).thenReturn(bill);
+        when(billRepository.save(bill)).thenReturn(bill);
+        when(billMapper.toBillResponse(bill)).thenReturn(billResponse);
     }
 
+    @Test
+    void testCreateBill_Success() {
+        BillResponse result = billService.createBill(billDto);
+
+        assertNotNull(result, "BillResponse không được null");
+        verify(billRepository).save(bill);
+        verify(billMapper).toBillResponse(bill);
+    }
 
     @Test
-    void getAllBills_ShouldReturnList() {
+    void testCreateBill_ContractNotFound() {
+        when(contractRepository.findById("contract-123")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> billService.createBill(billDto));
+
+        assertEquals(ErrorCode.CONTRACT_NOT_FOUND, exception.getErrorCode());
+        verify(billRepository, never()).save(any());
+    }
+
+    @Test
+    void testGetAllBills_Success() {
         when(billRepository.findAll()).thenReturn(List.of(bill));
         when(billMapper.toBillResponse(bill)).thenReturn(billResponse);
 
-        List<BillResponse> bills = billService.getAllBill();
-        assertEquals(1, bills.size());
-        verify(billRepository, times(1)).findAll();
+        List<BillResponse> result = billService.getAllBills();
+
+        assertEquals(1, result.size());
+        verify(billRepository).findAll();
     }
 
     @Test
-    void getBillById_ShouldReturnBillResponse() {
-        when(billRepository.findById("1")).thenReturn(Optional.of(bill));
-        when(billMapper.toBillResponse(bill)).thenReturn(billResponse);
+    void testGetBillById_Success() {
+        when(billRepository.findById("bill-789")).thenReturn(Optional.of(bill));
 
-        BillResponse response = billService.getBill("1");
-        assertEquals("1", response.getBillId());
-        verify(billRepository, times(1)).findById("1");
+        BillResponse result = billService.getBillById("bill-789");
+
+        assertNotNull(result);
+        verify(billRepository).findById("bill-789");
     }
 
     @Test
-    void getBillById_ShouldThrowException_WhenNotFound() {
-        when(billRepository.findById("999")).thenReturn(Optional.empty());
+    void testGetBillById_NotFound() {
+        when(billRepository.findById("invalid-id")).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> billService.getBill("999"));
+        AppException exception = assertThrows(AppException.class, () -> billService.getBillById("invalid-id"));
+
+        assertEquals(ErrorCode.BILL_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
-    void createBill_ShouldReturnCreatedBill() {
-        when(billMapper.toBill(billDto)).thenReturn(bill);
-        when(billRepository.save(bill)).thenReturn(bill);
+    void testUpdateBill_Success() {
+        BillUpdateDto updateDto = new BillUpdateDto("bill-789", "contract-123",
+                new BigDecimal("2000000"), Date.valueOf("2025-04-15"),
+                PaymentMethod.CASH, BillStatus.UNPAID, "Cập nhật hóa đơn");
 
-        Bill created = billService.createBill(billDto);
-        assertEquals(bill, created);
-        verify(billRepository, times(1)).save(bill);
+        when(billRepository.findById("bill-789")).thenReturn(Optional.of(bill));
+
+        BillResponse result = billService.updateBill("bill-789", updateDto);
+
+        assertNotNull(result);
+        verify(billRepository).save(bill);
     }
 
     @Test
-    void updateBill_ShouldReturnUpdatedBill() {
-        BillUpdateDto updateDto = new BillUpdateDto();
-        updateDto.setSumPrice(BigDecimal.valueOf(600));
+    void testDeleteBill_Success() {
+        when(billRepository.existsById("bill-789")).thenReturn(true);
 
-        when(billRepository.findById("1")).thenReturn(Optional.of(bill));
-        doNothing().when(billMapper).updateBill(bill, updateDto);
-        when(billRepository.save(bill)).thenReturn(bill);
-        when(billMapper.toBillResponse(bill)).thenReturn(billResponse);
+        assertDoesNotThrow(() -> billService.deleteBill("bill-789"));
 
-        BillResponse updatedResponse = billService.updateBill("1", updateDto);
-        assertEquals("1", updatedResponse.getBillId());
-        verify(billRepository, times(1)).save(bill);
+        verify(billRepository).deleteById("bill-789");
     }
 
     @Test
-    void deleteBill_ShouldCallDelete() {
-        when(billRepository.existsById("1")).thenReturn(true);
-        doNothing().when(billRepository).deleteById("1");
+    void testDeleteBill_NotFound() {
+        when(billRepository.existsById("invalid-id")).thenReturn(false);
 
-        billService.deleteBill("1");
-        verify(billRepository, times(1)).deleteById("1");
-    }
+        AppException exception = assertThrows(AppException.class, () -> billService.deleteBill("invalid-id"));
 
-    @Test
-    void deleteBill_ShouldThrowException_WhenNotFound() {
-        when(billRepository.existsById("999")).thenReturn(false);
-
-        assertThrows(RuntimeException.class, () -> billService.deleteBill("999"));
+        assertEquals(ErrorCode.BILL_NOT_FOUND, exception.getErrorCode());
     }
 }
