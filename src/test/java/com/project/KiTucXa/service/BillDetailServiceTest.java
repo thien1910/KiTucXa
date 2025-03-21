@@ -1,11 +1,18 @@
 package com.project.KiTucXa.service;
 
-import com.project.KiTucXa.dto.request.BillDetailDto;
-import com.project.KiTucXa.dto.response.BillDetailResponse;
-import com.project.KiTucXa.dto.update.BillDetailUpdateDto;
-import com.project.KiTucXa.entity.BillDetail;
-import com.project.KiTucXa.mapper.BillDetailMapper;
-import com.project.KiTucXa.repository.BillDetailRepository;
+import com.project.KiTucXa.Dto.Request.BillDetailDto;
+import com.project.KiTucXa.Dto.Response.BillDetailResponse;
+import com.project.KiTucXa.Dto.Update.BillDetailUpdateDto;
+import com.project.KiTucXa.Entity.Bill;
+import com.project.KiTucXa.Entity.BillDetail;
+import com.project.KiTucXa.Entity.UtilityService;
+import com.project.KiTucXa.Exception.AppException;
+import com.project.KiTucXa.Exception.ErrorCode;
+import com.project.KiTucXa.Mapper.BillDetailMapper;
+import com.project.KiTucXa.Repository.BillDetailRepository;
+import com.project.KiTucXa.Repository.BillRepository;
+import com.project.KiTucXa.Repository.UtilityServiceRepository;
+import com.project.KiTucXa.Service.BillDetailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,9 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,10 +28,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BillDetailServiceTest {
+public class BillDetailServiceTest {
 
     @Mock
     private BillDetailRepository billDetailRepository;
+
+    @Mock
+    private BillRepository billRepository;
+
+    @Mock
+    private UtilityServiceRepository utilityServiceRepository;
 
     @Mock
     private BillDetailMapper billDetailMapper;
@@ -35,102 +45,125 @@ class BillDetailServiceTest {
     @InjectMocks
     private BillDetailService billDetailService;
 
+    private Bill bill;
+    private UtilityService utilityService;
     private BillDetail billDetail;
     private BillDetailDto billDetailDto;
     private BillDetailResponse billDetailResponse;
-    private BillDetailUpdateDto billDetailUpdateDto;
 
-//    @BeforeEach
-//    void setUp() {
-//        billDetail = BillDetail.builder()
-//                .billDetailId(1)
-//                .quantity(2)
-//                .totalPrice(new BigDecimal("100.00"))
-//                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-//                .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
-//                .build();
-//
-//        billDetailDto = new BillDetailDto(2, new BigDecimal("100.00"));
-//        billDetailResponse = new BillDetailResponse(1, 2, new BigDecimal("100.00"));
-//        billDetailUpdateDto = new BillDetailUpdateDto(3, new BigDecimal("150.00"));
-//    }
-//
-//    @Test
-//    void getAllBillDetail_ShouldReturnList() {
-//        when(billDetailRepository.findAll()).thenReturn(Collections.singletonList(billDetail));
-//        when(billDetailMapper.toBillDetailResponse(billDetail)).thenReturn(billDetailResponse);
-//
-//        List<BillDetailResponse> result = billDetailService.getAllBillDetail();
-//
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(billDetailResponse, result.get(0));
-//    }
-//
-//    @Test
-//    void getBillDetail_ShouldReturnBillDetailResponse_WhenFound() {
-//        when(billDetailRepository.findById(1)).thenReturn(Optional.of(billDetail));
-//        when(billDetailMapper.toBillDetailResponse(billDetail)).thenReturn(billDetailResponse);
-//
-//        BillDetailResponse result = billDetailService.getBillDetail(1);
-//
-//        assertNotNull(result);
-//        assertEquals(billDetailResponse, result);
-//    }
-//
-//    @Test
-//    void getBillDetail_ShouldThrowException_WhenNotFound() {
-//        when(billDetailRepository.findById(1)).thenReturn(Optional.empty());
-//
-//        RuntimeException exception = assertThrows(RuntimeException.class, () -> billDetailService.getBillDetail(1));
-//        assertEquals("BillDetail not found", exception.getMessage());
-//    }
-//
-//    @Test
-//    void createBillDetail_ShouldReturnCreatedBillDetail() {
-//        when(billDetailMapper.toBillDetail(billDetailDto)).thenReturn(billDetail);
-//        when(billDetailRepository.save(billDetail)).thenReturn(billDetail);
-//
-//        BillDetail result = billDetailService.createBillDetail(billDetailDto);
-//
-//        assertNotNull(result);
-//        assertEquals(billDetail, result);
-//    }
-//
-//    @Test
-//    void updateBillDetail_ShouldReturnUpdatedBillDetailResponse_WhenFound() {
-//        when(billDetailRepository.findById(1)).thenReturn(Optional.of(billDetail));
-//        doNothing().when(billDetailMapper).updateBillDetail(billDetail, billDetailUpdateDto);
-//        when(billDetailRepository.save(billDetail)).thenReturn(billDetail);
-//        when(billDetailMapper.toBillDetailResponse(billDetail)).thenReturn(billDetailResponse);
-//
-//        BillDetailResponse result = billDetailService.updateBillDetail(1, billDetailUpdateDto);
-//
-//        assertNotNull(result);
-//        assertEquals(billDetailResponse, result);
-//    }
-//
-//    @Test
-//    void updateBillDetail_ShouldThrowException_WhenNotFound() {
-//        when(billDetailRepository.findById(1)).thenReturn(Optional.empty());
-//
-//        RuntimeException exception = assertThrows(RuntimeException.class, () -> billDetailService.updateBillDetail(1, billDetailUpdateDto));
-//        assertEquals("BillDetail not found", exception.getMessage());
-//    }
-//
-//    @Test
-//    void deleteBillDetail_ShouldDeleteSuccessfully_WhenFound() {
-//        when(billDetailRepository.existsById(1)).thenReturn(true);
-//        doNothing().when(billDetailRepository).deleteById(1);
-//
-//        assertDoesNotThrow(() -> billDetailService.deleteBillDetail(1));
-//    }
-//
-//    @Test
-//    void deleteBillDetail_ShouldThrowException_WhenNotFound() {
-//        when(billDetailRepository.existsById(1)).thenReturn(false);
-//
-//        RuntimeException exception = assertThrows(RuntimeException.class, () -> billDetailService.deleteBillDetail(1));
-//        assertEquals("BillDetail not found", exception.getMessage());
-//    }
+    @BeforeEach
+    void setUp() {
+        bill = new Bill();
+        bill.setBillId("bill-001");
+
+        utilityService = new UtilityService();
+        utilityService.setUtilityServiceId("service-001");
+        utilityService.setPricePerUnit(new BigDecimal("5000"));
+
+        billDetail = new BillDetail();
+        billDetail.setBillDetailId("billDetail-001");
+        billDetail.setBill(bill);
+        billDetail.setUtilityService(utilityService);
+        billDetail.setQuantity(10);
+        billDetail.setTotalPrice(new BigDecimal("50000"));
+
+        billDetailDto = new BillDetailDto("bill-001", "service-001", 10, new BigDecimal("50000"));
+        billDetailResponse = new BillDetailResponse();
+
+        when(billRepository.findById("bill-001")).thenReturn(Optional.of(bill));
+        when(utilityServiceRepository.findById("service-001")).thenReturn(Optional.of(utilityService));
+        when(billDetailMapper.toBillDetail(billDetailDto)).thenReturn(billDetail);
+        when(billDetailRepository.save(billDetail)).thenReturn(billDetail);
+        when(billDetailMapper.toBillDetailResponse(billDetail)).thenReturn(billDetailResponse);
+    }
+
+    @Test
+    void testCreateBillDetail_Success() {
+        BillDetailResponse result = billDetailService.createBillDetail(billDetailDto);
+
+        assertNotNull(result, "BillDetailResponse không được null");
+        verify(billDetailRepository).save(billDetail);
+        verify(billDetailMapper).toBillDetailResponse(billDetail);
+    }
+
+    @Test
+    void testCreateBillDetail_BillNotFound() {
+        when(billRepository.findById("bill-001")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> billDetailService.createBillDetail(billDetailDto));
+
+        assertEquals(ErrorCode.BILL_NOT_FOUND, exception.getErrorCode());
+        verify(billDetailRepository, never()).save(any());
+    }
+
+    @Test
+    void testCreateBillDetail_UtilityServiceNotFound() {
+        when(utilityServiceRepository.findById("service-001")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> billDetailService.createBillDetail(billDetailDto));
+
+        assertEquals(ErrorCode.UTILITY_SERVICE_NOT_FOUND, exception.getErrorCode());
+        verify(billDetailRepository, never()).save(any());
+    }
+
+    @Test
+    void testGetAllBillDetails_Success() {
+        when(billDetailRepository.findAll()).thenReturn(List.of(billDetail));
+        when(billDetailMapper.toBillDetailResponse(billDetail)).thenReturn(billDetailResponse);
+
+        List<BillDetailResponse> result = billDetailService.getAllBillDetails();
+
+        assertEquals(1, result.size());
+        verify(billDetailRepository).findAll();
+    }
+
+    @Test
+    void testGetBillDetailById_Success() {
+        when(billDetailRepository.findById("billDetail-001")).thenReturn(Optional.of(billDetail));
+
+        BillDetailResponse result = billDetailService.getBillDetailById("billDetail-001");
+
+        assertNotNull(result);
+        verify(billDetailRepository).findById("billDetail-001");
+    }
+
+    @Test
+    void testGetBillDetailById_NotFound() {
+        when(billDetailRepository.findById("invalid-id")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> billDetailService.getBillDetailById("invalid-id"));
+
+        assertEquals(ErrorCode.BILL_DETAIL_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    void testUpdateBillDetail_Success() {
+        BillDetailUpdateDto updateDto = new BillDetailUpdateDto("billDetail-001", "bill-001",
+                "service-001", 15, new BigDecimal("75000"));
+
+        when(billDetailRepository.findById("billDetail-001")).thenReturn(Optional.of(billDetail));
+
+        BillDetailResponse result = billDetailService.updateBillDetail("billDetail-001", updateDto);
+
+        assertNotNull(result);
+        verify(billDetailRepository).save(billDetail);
+    }
+
+    @Test
+    void testDeleteBillDetail_Success() {
+        when(billDetailRepository.existsById("billDetail-001")).thenReturn(true);
+
+        assertDoesNotThrow(() -> billDetailService.deleteBillDetail("billDetail-001"));
+
+        verify(billDetailRepository).deleteById("billDetail-001");
+    }
+
+    @Test
+    void testDeleteBillDetail_NotFound() {
+        when(billDetailRepository.existsById("invalid-id")).thenReturn(false);
+
+        AppException exception = assertThrows(AppException.class, () -> billDetailService.deleteBillDetail("invalid-id"));
+
+        assertEquals(ErrorCode.BILL_DETAIL_NOT_FOUND, exception.getErrorCode());
+    }
 }

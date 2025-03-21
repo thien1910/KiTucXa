@@ -19,7 +19,6 @@ public class UtilityServiceUpdateDto {
     String description;
     BigDecimal pricePerUnit;
     String calculationUnit;
-
     @Enumerated(EnumType.STRING)
     ContractStatus status;
 }

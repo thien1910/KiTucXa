@@ -1,29 +1,46 @@
 package com.project.KiTucXa.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import com.project.KiTucXa.dto.request.ContractDto;
-import com.project.KiTucXa.dto.response.ContractResponse;
-import com.project.KiTucXa.dto.update.ContractUpdateDto;
-import com.project.KiTucXa.entity.Contract;
-import com.project.KiTucXa.mapper.ContractMapper;
-import com.project.KiTucXa.repository.ContractRepository;
+import com.project.KiTucXa.Dto.Request.ContractDto;
+import com.project.KiTucXa.Dto.Response.ContractResponse;
+import com.project.KiTucXa.Dto.Update.ContractUpdateDto;
+import com.project.KiTucXa.Entity.Contract;
+import com.project.KiTucXa.Entity.Room;
+import com.project.KiTucXa.Entity.User;
+import com.project.KiTucXa.Enum.ContractStatus;
+import com.project.KiTucXa.Enum.DepositStatus;
+import com.project.KiTucXa.Exception.AppException;
+import com.project.KiTucXa.Exception.ErrorCode;
+import com.project.KiTucXa.Mapper.ContractMapper;
+import com.project.KiTucXa.Repository.ContractRepository;
+import com.project.KiTucXa.Repository.RoomRepository;
+import com.project.KiTucXa.Repository.UserRepository;
+import com.project.KiTucXa.Service.ContractService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ContractServiceTest {
+public class ContractServiceTest {
 
     @Mock
     private ContractRepository contractRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private RoomRepository roomRepository;
 
     @Mock
     private ContractMapper contractMapper;
@@ -32,96 +49,129 @@ class ContractServiceTest {
     private ContractService contractService;
 
     private Contract contract;
+    private User user;
+    private Room room;
     private ContractDto contractDto;
-    private ContractUpdateDto contractUpdateDto;
     private ContractResponse contractResponse;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        user = new User();
+        user.setUserId("user-123");
+
+        room = new Room();
+        room.setRoomId("room-456");
+
         contract = new Contract();
-//        contract.setContractId("1");
-//        contract.setStudent("stu123");
-//        contract.("room456");
-        contract.setPrice(BigDecimal.valueOf(1000));
+        contract.setContractId("contract-789");
+        contract.setUser(user);
+        contract.setRoom(room);
+        contract.setStartDate(new Date());
+        contract.setEndDate(new Date());
+        contract.setPrice(new BigDecimal("5000000"));
+        contract.setDepositStatus(DepositStatus.COMPLETED);
+        contract.setContractStatus(ContractStatus.Active);
+        contract.setNote("Hợp đồng ký 6 tháng");
 
-        contractDto = new ContractDto();
-        contractDto.setStudent_id("stu123");
-        contractDto.setRoom_id("room456");
-        contractDto.setPrice(BigDecimal.valueOf(1000));
-
-        contractUpdateDto = new ContractUpdateDto();
-        contractUpdateDto.setPrice(BigDecimal.valueOf(1200));
+        contractDto = new ContractDto("user-123", "room-456", new Date(), new Date(),
+                new BigDecimal("5000000"), DepositStatus.COMPLETED, ContractStatus.Active, "Hợp đồng ký 6 tháng");
 
         contractResponse = new ContractResponse();
-        contractResponse.setContractId("1");
-        contractResponse.setStudentId("stu123");
-        contractResponse.setRoomId("room456");
-        contractResponse.setPrice(BigDecimal.valueOf(1000));
+
+        when(userRepository.findById("user-123")).thenReturn(Optional.of(user));
+        when(roomRepository.findById("room-456")).thenReturn(Optional.of(room));
+        when(contractMapper.toContract(contractDto)).thenReturn(contract);
+        when(contractRepository.save(contract)).thenReturn(contract);
+        when(contractMapper.toContractResponse(contract)).thenReturn(contractResponse);
     }
 
     @Test
-    void getAllContracts_ShouldReturnList() {
+    void testCreateContract_Success() {
+        ContractResponse result = contractService.createContract(contractDto);
+
+        assertNotNull(result, "ContractResponse không được null");
+        verify(contractRepository).save(contract);
+        verify(contractMapper).toContractResponse(contract);
+    }
+
+    @Test
+    void testCreateContract_UserNotFound() {
+        when(userRepository.findById("user-123")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> contractService.createContract(contractDto));
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+        verify(contractRepository, never()).save(any());
+    }
+
+    @Test
+    void testCreateContract_RoomNotFound() {
+        when(roomRepository.findById("room-456")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> contractService.createContract(contractDto));
+
+        assertEquals(ErrorCode.ROOM_NOT_FOUND, exception.getErrorCode());
+        verify(contractRepository, never()).save(any());
+    }
+
+    @Test
+    void testGetAllContracts_Success() {
         when(contractRepository.findAll()).thenReturn(List.of(contract));
         when(contractMapper.toContractResponse(contract)).thenReturn(contractResponse);
 
-        List<ContractResponse> contracts = contractService.getAllContract();
-        assertEquals(1, contracts.size());
-        verify(contractRepository, times(1)).findAll();
+        List<ContractResponse> result = contractService.getAllContracts();
+
+        assertEquals(1, result.size());
+        verify(contractRepository).findAll();
     }
 
     @Test
-    void getContractById_ShouldReturnContractResponse() {
-        when(contractRepository.findById("1")).thenReturn(Optional.of(contract));
-        when(contractMapper.toContractResponse(contract)).thenReturn(contractResponse);
+    void testGetContract_Success() {
+        when(contractRepository.findById("contract-789")).thenReturn(Optional.of(contract));
 
-        ContractResponse response = contractService.getContract("1");
-        assertEquals("1", response.getContractId());
-        verify(contractRepository, times(1)).findById("1");
+        ContractResponse result = contractService.getContractById("contract-789");
+
+        assertNotNull(result);
+        verify(contractRepository).findById("contract-789");
     }
 
     @Test
-    void getContractById_ShouldThrowException_WhenNotFound() {
-        when(contractRepository.findById("999")).thenReturn(Optional.empty());
+    void testGetContract_NotFound() {
+        when(contractRepository.findById("invalid-id")).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> contractService.getContract("999"));
+        Exception exception = assertThrows(RuntimeException.class, () -> contractService.getContractById("invalid-id"));
+
+        assertEquals("Contract not found", exception.getMessage());
     }
 
     @Test
-    void createContract_ShouldReturnCreatedContract() {
-        when(contractMapper.toContract(contractDto)).thenReturn(contract);
-        when(contractRepository.save(contract)).thenReturn(contract);
+    void testUpdateContract_Success() {
+        ContractUpdateDto updateDto = new ContractUpdateDto("contract-789", "user-123", "room-456", new Date(), new Date(),
+                new BigDecimal("5500000"), DepositStatus.UNPAID, ContractStatus.Inactive, "Gia hạn thêm 3 tháng");
 
-        Contract created = contractService.createContract(contractDto);
-        assertEquals(contract, created);
-        verify(contractRepository, times(1)).save(contract);
+        when(contractRepository.findById("contract-789")).thenReturn(Optional.of(contract));
+
+        ContractResponse result = contractService.updateContract("contract-789", updateDto);
+
+        assertNotNull(result);
+        verify(contractRepository).save(contract);
     }
 
     @Test
-    void updateContract_ShouldReturnUpdatedContract() {
-        when(contractRepository.findById("1")).thenReturn(Optional.of(contract));
-        doNothing().when(contractMapper).updateContract(contract, contractUpdateDto);
-        when(contractRepository.save(contract)).thenReturn(contract);
-        when(contractMapper.toContractResponse(contract)).thenReturn(contractResponse);
+    void testDeleteContract_Success() {
+        when(contractRepository.existsById("contract-789")).thenReturn(true);
 
-        ContractResponse updatedResponse = contractService.updateContract("1", contractUpdateDto);
-        assertEquals("1", updatedResponse.getContractId());
-        verify(contractRepository, times(1)).save(contract);
+        assertDoesNotThrow(() -> contractService.deleteContract("contract-789"));
+
+        verify(contractRepository).deleteById("contract-789");
     }
 
     @Test
-    void deleteContract_ShouldCallDelete() {
-        when(contractRepository.existsById("1")).thenReturn(true);
-        doNothing().when(contractRepository).deleteById("1");
+    void testDeleteContract_NotFound() {
+        when(contractRepository.existsById("invalid-id")).thenReturn(false);
 
-        contractService.deleteContract("1");
-        verify(contractRepository, times(1)).deleteById("1");
-    }
+        Exception exception = assertThrows(RuntimeException.class, () -> contractService.deleteContract("invalid-id"));
 
-    @Test
-    void deleteContract_ShouldThrowException_WhenNotFound() {
-        when(contractRepository.existsById("999")).thenReturn(false);
-
-        assertThrows(RuntimeException.class, () -> contractService.deleteContract("999"));
+        assertEquals("Contract not found", exception.getMessage());
     }
 }
