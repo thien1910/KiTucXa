@@ -13,7 +13,7 @@ import java.util.Set;
 public class AuthenticationResponse {
     String token;
     boolean authenticated;
-    private Set<String> roles; // Thêm role
-    private String fullName;
+//    private Set<String> roles; // Thêm role
+//    private String fullName;
 
 }

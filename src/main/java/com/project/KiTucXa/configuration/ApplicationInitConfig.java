@@ -38,19 +38,19 @@ public class ApplicationInitConfig {
                 userRepository.save(user);
                 log.warn("Manager user has been created with default password: Manager, please change it");
             }
-            if (userRepository.findByuserName("GUEST").isEmpty()){
-                var guestRoles = new HashSet<String>();
-                guestRoles.add(Role.GUEST.name());
-
-                User guest = User.builder()
-                        .userName("GUEST")
-                        .passWord(passwordEncoder.encode("GUEST"))
-                        .roles(guestRoles)
-                        .build();
-
-                userRepository.save(guest);
-                log.warn("Guest user has been created with default password: GUEST, please change it");
-            }
+//            if (userRepository.findByuserName("GUEST").isEmpty()){
+//                var guestRoles = new HashSet<String>();
+//                guestRoles.add(Role.GUEST.name());
+//
+//                User guest = User.builder()
+//                        .userName("GUEST")
+//                        .passWord(passwordEncoder.encode("GUEST"))
+//                        .roles(guestRoles)
+//                        .build();
+//
+//                userRepository.save(guest);
+//                log.warn("Guest user has been created with default password: GUEST, please change it");
+//            }
         };
     }
 }

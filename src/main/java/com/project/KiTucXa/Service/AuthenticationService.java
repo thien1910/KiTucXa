@@ -73,8 +73,8 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
-                .roles(user.getRoles()) // Thêm role của user vào response
-                .fullName(user.getFullName()) // Thêm fullName vào response
+//                .roles(user.getRoles()) // Thêm role của user vào response
+//                .fullName(user.getFullName()) // Thêm fullName vào response
                 .build();
     }
 
