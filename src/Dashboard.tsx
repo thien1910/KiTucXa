@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
-import AccountManagement from "./AccountManagement";
+import AccountManagement from "./Admin_route/AccountManagement";
 import UserProfile from "./UserProfile";
 import StudentManagement from "./StudentManagement";
 import ContractManagement from "./ContractManagement";
 import InvoiceManagement from "./InvoiceManagement";
 import RoomManagement from "./RoomManagement";
+import PaymentPage from "./PaymentPage";
+import ServiceManagement from "./ServiceManagement"; // Import ServiceManagement
 
 const Dashboard = () => {
   const [view, setView] = useState<string>("dashboard");
   const [userFullName, setUserFullName] = useState<string>("");
 
   useEffect(() => {
-    // Lấy thông tin người dùng từ localStorage hoặc API
     const userData = localStorage.getItem("user");
     if (userData) {
       try {
@@ -23,6 +24,7 @@ const Dashboard = () => {
       }
     }
   }, []);
+  
 
   return (
     <div className="dashboard-container">
@@ -31,8 +33,9 @@ const Dashboard = () => {
           <div className="logo">
             <span style={{ fontSize: "40px" }}>🏠</span>
           </div>
-          <h2>Hệ thống quản lý</h2>
-          <p>{userFullName}</p>
+          <h2>Quản lý ký túc xá</h2>
+          <h1>Chào, {userFullName}!</h1>
+
         </div>
         <nav>
           <ul>
@@ -42,11 +45,10 @@ const Dashboard = () => {
             <li onClick={() => setView("studentManagement")}>Quản lý sinh viên</li>
             <li onClick={() => setView("contractManagement")}>Quản lý hợp đồng</li>
             <li onClick={() => setView("invoiceManagement")}>Quản lý hóa đơn</li>
-            <li onClick={() => setView("serviceManagement")}>Dịch vụ</li>
-            <li onClick={() => setView("settings")}>Cài đặt</li>
+            <li onClick={() => setView("serviceManagement")}>Quản lý dịch vụ</li> {/* Update this line */}
             <li onClick={() => setView("roomManagement")}>Quản lý phòng</li>
-            <li>Thanh toán</li>
-            <li onClick={() => setView("statistics")}>Xem thống kê</li>
+            <li onClick={() => setView("payment")}>Thanh toán</li>
+            <li>Xem thống kê</li>
           </ul>
         </nav>
       </aside>
@@ -61,8 +63,12 @@ const Dashboard = () => {
           <ContractManagement />
         ) : view === "invoiceManagement" ? (
           <InvoiceManagement />
+        ) : view === "serviceManagement" ? ( // Add this condition
+          <ServiceManagement />
         ) : view === "roomManagement" ? (
           <RoomManagement />
+        ) : view === "payment" ? (
+          <PaymentPage />
         ) : (
           <>
             <header className="dashboard-header">

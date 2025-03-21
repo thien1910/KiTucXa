@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
@@ -23,10 +23,25 @@ const LoginForm: React.FC = () => {
         passWord: password,
       });
   
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user)); // Lưu thông tin người dùng
+      const { token, authenticated, roles } = response.data.result;
+  
+      if (!authenticated) {
+        setError("Xác thực thất bại!");
+        return;
+      }
+  
+      localStorage.setItem("token", token);
+      localStorage.setItem("roles", JSON.stringify(roles)); // Lưu danh sách role
+  
       console.log("Đăng nhập thành công:", response.data);
-      navigate("/dashboard");
+  
+      if (roles.includes("ADMIN")) {
+        navigate("/admin/dashboard");
+      } else if (roles.includes("MANAGER")) {
+        navigate("/manager/dashboard");
+      } else if (roles.includes("STUDENT")) {
+        navigate("/student/dashboard");
+      }
     } catch (error: any) {
       console.error("Lỗi đăng nhập:", error.response?.data || error.message);
       setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
@@ -34,6 +49,7 @@ const LoginForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  
   
 
   return (

@@ -1,0 +1,124 @@
+.account-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.search-input {
+  margin-bottom: 10px;
+  width: 100%;
+  transition: all 0.3s ease-in-out;
+}
+
+.search-input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 5px rgba(24, 144, 255, 0.5);
+}
+
+.add-button {
+  margin-bottom: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.add-button:hover {
+  transform: scale(1.05);
+}
+
+.account-table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.account-table:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.edit-button,
+.disable-button {
+  transition: all 0.3s ease-in-out;
+}
+
+.edit-button:hover {
+  transform: scale(1.1);
+}
+
+.disable-button {
+  color: white;
+  background-color: red;
+  border: none;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.disable-button:hover {
+  background-color: darkred;
+  transform: scale(1.05);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .account-container {
+      padding: 10px;
+      max-width: 100%;
+  }
+
+  .search-input {
+      margin-bottom: 5px;
+  }
+
+  .add-button {
+      margin-bottom: 5px;
+  }
+
+  .account-table {
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .account-table:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .edit-button:hover,
+  .disable-button:hover {
+      transform: scale(1.05);
+  }
+}
+
+@media (max-width: 480px) {
+  .account-container {
+      padding: 5px;
+  }
+
+  .search-input {
+      margin-bottom: 3px;
+  }
+
+  .add-button {
+      margin-bottom: 3px;
+  }
+
+  .account-table {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .account-table:hover {
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .edit-button:hover,
+  .disable-button:hover {
+      transform: scale(1.03);
+  }
+}

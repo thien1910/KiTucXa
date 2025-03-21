@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
-// import AccountManagement from "./AccountManagement";
 // import UserProfile from "./UserProfile";
-// import StudentManagement from "./StudentManagement";
 // import ContractManagement from "./ContractManagement";
 // import InvoiceManagement from "./InvoiceManagement";
 // import RoomManagement from "./RoomManagement";
+// import PaymentPage from "./PaymentPage";
 
-const GuestDashboard = () => {
-  const [view, setView] = useState<string>("guestguestdashboard");
+const StudentDashboard = () => {
+  const [view, setView] = useState<string>("dashboard");
+  const [userFullName, setUserFullName] = useState<string>("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUserFullName(parsedUser.fullName || "Người dùng");
+      } catch (error) {
+        console.error("Lỗi khi parse dữ liệu người dùng:", error);
+      }
+    }
+  }, []);
   
-
 
   return (
     <div className="dashboard-container">
@@ -19,18 +30,39 @@ const GuestDashboard = () => {
           <div className="logo">
             <span style={{ fontSize: "40px" }}>🏠</span>
           </div>
-          <h2>Hệ thống quản lý</h2>
-            <p>Khách</p>
+          <h2>Quản lý ký túc xá</h2>
+          <h1>Chào, {userFullName}!</h1>
+
         </div>
         <nav>
           <ul>
             <li onClick={() => setView("dashboard")}>Dashboard</li>
-           
+            <li onClick={() => setView("userProfile")}>Quản lý thông tin cá nhân</li>
+            <li onClick={() => setView("contractManagement")}>Quản lý hợp đồng</li>
+            <li onClick={() => setView("invoiceManagement")}>Quản lý hóa đơn</li>
+            <li onClick={() => setView("payment")}>Thanh toán</li>
+            <li>Xem thống kê</li>
           </ul>
         </nav>
       </aside>
       <main className="main-content">
-        
+        {/* {view === "accountManagement" ? (
+          <AccountManagement />
+        ) : view === "userProfile" ? (
+          <UserProfile />
+        ) : view === "studentManagement" ? (
+          <StudentManagement />
+        ) : view === "contractManagement" ? (
+          <ContractManagement />
+        ) : view === "invoiceManagement" ? (
+          <InvoiceManagement />
+        ) : view === "serviceManagement" ? ( // Add this condition
+          <ServiceManagement />
+        ) : view === "roomManagement" ? (
+          <RoomManagement />
+        ) : view === "payment" ? (
+          <PaymentPage />
+        ) : ( */}
           <>
             <header className="dashboard-header">
               <h1>Chào mừng đến với hệ thống quản lý ký túc xá</h1>
@@ -86,10 +118,10 @@ const GuestDashboard = () => {
 </section>
 
           </>
-        {/* )} */}
+        
       </main>
     </div>
   );
 };
 
-export default GuestDashboard;
+export default StudentDashboard;

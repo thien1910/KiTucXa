@@ -1,113 +1,157 @@
-.contract-container {
-  max-width: 800px;
-  margin: 20px auto;
+.contract-management {
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  opacity: 0;
-  transform: translateY(-10px);
-  animation: fadeIn 0.5s ease-out forwards;
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8; /* Thêm màu nền nhẹ */
+  border-radius: 8px; /* Bo góc cho container */
 }
 
-/* Hiệu ứng nhập liệu mượt mà */
-.search-input, .contract-form input {
-  width: 100%;
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center; /* Căn giữa tiêu đề */
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+}
+
+.filters select,
+.filters input {
   padding: 8px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.search-input:focus, .contract-form input:focus {
+.filters select:focus,
+.filters input:focus {
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none;
 }
 
-/* Hiệu ứng cho nút bấm */
-.contract-form button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
+.filters select {
+  width: 150px;
+}
+
+.filters input {
+  flex-grow: 1;
+}
+
+.filters button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
   background-color: #28a745;
   color: white;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
+  font-size: 14px;
 }
 
-.contract-form button:hover {
+.filters button:hover {
   background-color: #218838;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Hiệu ứng hiển thị bảng */
-.contract-table {
+table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
-  opacity: 0;
-  animation: fadeIn 0.5s ease-out 0.2s forwards;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.contract-table th, .contract-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
+th,
+td {
+  padding: 12px;
   text-align: center;
-  transition: background 0.3s ease-in-out;
+  border-bottom: 1px solid #ddd;
 }
 
-.contract-table th {
+th {
   background-color: #f4f4f4;
+  font-weight: bold;
 }
 
-.contract-table tr {
-  transition: background 0.3s ease-in-out;
+td {
+  font-size: 14px;
 }
 
-.contract-table tr:hover {
-  background-color: rgba(0, 123, 255, 0.1);
-}
-
-/* Hiệu ứng trạng thái hợp đồng */
-.contract-table .signed {
-  background-color: #d4edda;
-  transition: background-color 0.3s ease-in-out;
-}
-
-.contract-table .pending {
-  background-color: #f8d7da;
-  transition: background-color 0.3s ease-in-out;
-}
-
-/* Hiệu ứng cho nút bấm trong bảng */
-.contract-table button {
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: white;
+.edit-btn,
+.delete-btn {
+  padding: 6px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
+  margin-right: 5px;
 }
 
-.contract-table button:hover {
-  background-color: #0056b3;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+.edit-btn {
+  background-color: #007bff;
+  color: white;
 }
 
-/* Animation xuất hiện mượt */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.edit-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  z-index: 1000;
+  width: 400px;
+}
+
+.edit-form h3 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.form-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-actions button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+.form-actions button:last-child {
+  background-color: #dc3545;
+  color: white;
 }
