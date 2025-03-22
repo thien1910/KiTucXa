@@ -30,4 +30,5 @@ public class BillResponse {
     String qrCode;
     Timestamp createdAt;
     Timestamp updatedAt;
+    String fullName;
 }

@@ -15,8 +15,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BillUpdateDto {
-    String billId;
-    String contractId;
+//    String billId;
+//    String contractId;
     BigDecimal sumPrice;
     java.sql.Date paymentDate;
     @Enumerated(EnumType.STRING)

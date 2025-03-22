@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 
+import static org.apache.coyote.http11.Constants.a;
+
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -38,6 +40,7 @@ public class ApplicationInitConfig {
                 userRepository.save(user);
                 log.warn("Manager user has been created with default password: Manager, please change it");
             }
+
 //            if (userRepository.findByuserName("GUEST").isEmpty()){
 //                var guestRoles = new HashSet<String>();
 //                guestRoles.add(Role.GUEST.name());
