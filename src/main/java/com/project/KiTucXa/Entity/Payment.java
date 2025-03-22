@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
@@ -19,7 +21,7 @@ public class Payment extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "bill_id")
     Bill bill;
-    private int installmentCount; // số lần đóng (tối đa ba lần)
+    private BigDecimal installmentCount; // số lần đóng (tối đa ba lần)
 
     @Column(name = "note")
     String note;

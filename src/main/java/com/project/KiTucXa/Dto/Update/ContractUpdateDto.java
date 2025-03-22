@@ -17,18 +17,12 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class ContractUpdateDto {
-    String contractId;
-    String userId;
-    String roomId;
     Date startDate;
     Date endDate;
     BigDecimal price;
     @Enumerated(EnumType.STRING)
     DepositStatus depositStatus;
-
     @Enumerated(EnumType.STRING)
     ContractStatus contractStatus;
-
     String note;
-
 }

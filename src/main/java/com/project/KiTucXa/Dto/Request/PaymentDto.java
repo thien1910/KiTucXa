@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @NoArgsConstructor // khoi tao ko tham so
@@ -12,5 +14,5 @@ import lombok.experimental.FieldDefaults;
 public class PaymentDto {
     @NotNull(message = "billId is required")
     String billId;
-    int installmentCount; // số lần đóng (tối đa ba lần)
+    BigDecimal installmentCount; // số lần đóng (tối đa ba lần)
 }

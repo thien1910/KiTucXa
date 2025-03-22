@@ -10,7 +10,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class ManagerUpdateDto {
-    String managerId;
-    String userId;
     String department;
 }

@@ -38,7 +38,7 @@ public class UtilityServiceController {
 
     @PutMapping("/update/{utilityServiceId}")
     public UtilityServiceResponse updateUtilityService(
-            @PathVariable("roomId") String utilityServiceId,
+            @PathVariable("utilityServiceId") String utilityServiceId,
             @RequestBody UtilityServiceUpdateDto utilityServiceDto) {
         return utilityServiceService.updateUtilityService(utilityServiceId, utilityServiceDto);
     }
