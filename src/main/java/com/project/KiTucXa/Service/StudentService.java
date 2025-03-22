@@ -11,6 +11,7 @@ import com.project.KiTucXa.Mapper.StudentMapper;
 import com.project.KiTucXa.Repository.StudentRepository;
 import com.project.KiTucXa.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,5 +77,17 @@ public class StudentService {
             throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
         }
         studentRepository.deleteById(studentId);
+    }
+    public StudentResponse getMyInfoStudent() {
+        var context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+
+        User user = userRepository.findByuserName(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITED));
+
+        Student student = studentRepository.findByUser(user)
+                .orElseThrow(() -> new AppException(ErrorCode.STUDENT_NOT_FOUND));
+
+        return studentMapper.toStudentResponse(student, user);
     }
 }

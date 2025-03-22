@@ -49,4 +49,8 @@ public class StudentController {
         studentService.deleteStudent(studentId);
         return "Student has been detele";
     }
+    @GetMapping("/my-infoStudent")
+    public StudentResponse getMyInfoStudent() {
+        return studentService.getMyInfoStudent();
+    }
 }
