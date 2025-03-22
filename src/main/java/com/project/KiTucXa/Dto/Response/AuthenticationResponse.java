@@ -15,5 +15,6 @@ public class AuthenticationResponse {
     boolean authenticated;
     private Set<String> roles; // Thêm role
     private String fullName;
+    String userId;
 
 }
