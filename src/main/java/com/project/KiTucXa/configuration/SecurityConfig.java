@@ -31,7 +31,8 @@ public class SecurityConfig {
             "/api/v1/user/guest-login",
             "/api/v1/auth/token",
             "/api/v1/auth/introspect",
-            "/api/v1/rooms/list"
+            "/api/v1/rooms/list",
+
     };
     private final String[] MANAGER_ENDPOINTS = {
             "/api/v1/user/{userId}","/api/v1/user/list","/api/v1/user/update/{userId}",
@@ -45,8 +46,8 @@ public class SecurityConfig {
     };
     // quyền của student
     private final String[] STUDENT_ENDPOINTS = {
-            "/api/v1/user/{userId}",
-            "/api/v1/user/update/{userId}",
+           "/api/v1/student/update/{studentId}","/api/v1/user/myInfo",
+            "/api/v1/student/{studentId}",
             "/api/v1/bills/{billId}",
             "/api/v1/bill-details/{billDetailId}",
             "/api/v1/Payment/{paymentId}",
