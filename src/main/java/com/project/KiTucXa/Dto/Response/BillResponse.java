@@ -15,7 +15,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Getter
+@Setter
 public class BillResponse {
     String billId;
     String contractId;
@@ -29,4 +30,5 @@ public class BillResponse {
     String qrCode;
     Timestamp createdAt;
     Timestamp updatedAt;
+    String fullName;
 }

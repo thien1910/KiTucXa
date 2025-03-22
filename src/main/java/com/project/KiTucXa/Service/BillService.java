@@ -36,7 +36,7 @@ public class BillService {
 
         billRepository.save(bill);
         BillResponse response = billMapper.toBillResponse(bill);
-
+        response.setFullName(contract.getUser().getFullName());
         // Nếu phương thức thanh toán là BANK_TRANSFER, tạo mã QR
         if (bill.getPaymentMethod() == PaymentMethod.BANK_TRANSFER) {
             String paymentInfo = "Chuyển khoản: " + bill.getSumPrice() + " VND";
@@ -52,26 +52,46 @@ public class BillService {
 
     public List<BillResponse> getAllBills() {
         return billRepository.findAll().stream()
-                .map(billMapper::toBillResponse)
+                .map(bill -> {
+                    BillResponse response = billMapper.toBillResponse(bill);
+                    response.setFullName(bill.getContract().getUser().getFullName()); // Gán fullName từ User
+                    return response;
+                })
                 .collect(Collectors.toList());
     }
+
 
     public BillResponse getBillById(String billId) {
         Bill bill = billRepository.findById(billId)
                 .orElseThrow(() -> new AppException(ErrorCode.BILL_NOT_FOUND));
 
-        return billMapper.toBillResponse(bill);
+        BillResponse response = billMapper.toBillResponse(bill);
+
+        // Gán fullName từ User trong Contract
+        response.setFullName(bill.getContract().getUser().getFullName());
+
+        return response;
     }
+
     public BillResponse updateBill(String billId, BillUpdateDto billDto) {
-
         Bill bill = billRepository.findById(billId)
-                .orElseThrow(()-> new RuntimeException("Bill not found"));
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
 
+        // Cập nhật thông tin Bill từ DTO
         billMapper.updateBill(bill, billDto);
 
-        return billMapper.toBillResponse(billRepository.save(bill));
+        // Lưu lại bản ghi đã cập nhật
+        bill = billRepository.save(bill);
 
+        // Chuyển đổi sang DTO để trả về
+        BillResponse response = billMapper.toBillResponse(bill);
+
+        // Gán fullName từ User trong Contract
+        response.setFullName(bill.getContract().getUser().getFullName());
+
+        return response;
     }
+
 
     public void deleteBill(String billId) {
         if (!billRepository.existsById(billId)) {
