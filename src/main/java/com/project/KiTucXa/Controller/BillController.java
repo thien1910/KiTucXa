@@ -76,5 +76,9 @@ public class BillController {
     public List<BillResponse> getBillsByUserId(@PathVariable String userId) {
         return billService.getBillsByUserId(userId);
     }
+    @GetMapping("/user/admin/{userId}")
+    public List<BillResponse> getBillsByUserIdbyAdmin(@PathVariable String userId) {
+        return billService.getBillsByUserId(userId);
+    }
 
 }

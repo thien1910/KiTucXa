@@ -43,6 +43,8 @@ public class SecurityConfig {
             "/api/v1/room-services/add", "/api/v1/room-services/{roomServiceId}", "/api/v1/room-services/list", "/api/v1/room-services/update/{roomServiceId}", "/api/v1/room-services/delete/{roomServiceId}",
             "/api/v1/contracts/{contractId}","/api/v1/contracts/add","/api/v1/contracts/list","/api/v1/contracts/update/{contractId}","/api/v1/contracts/delete/{contractId}",
             "/api/v1/utility-services/add","/api/v1/utility-services/{utilityServiceId}","/api/v1/utility-services/list","/api/v1/utility-services/update/{utilityServiceId}","/api/v1/utility-services/delete/{utilityServiceId}",
+
+            "/api/v1/bill/user/{userId}"
     };
     // quyền của student
     private final String[] STUDENT_ENDPOINTS = {
@@ -54,7 +56,8 @@ public class SecurityConfig {
             "/api/v1/rooms/list","/api/rooms/{roomId}",
             "/api/v1/room-services/{roomServiceId}",
             "/api/v1/contracts/{contractId}",
-            "/api/v1/user/my-info"
+            "/api/v1/user/my-info",
+            "/api/v1/bill/user/{userId}"
     };
 
     @Value("${jwt.signerKey}")
