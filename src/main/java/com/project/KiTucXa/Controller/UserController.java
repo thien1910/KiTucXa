@@ -1,6 +1,7 @@
 package com.project.KiTucXa.Controller;
 
 
+import com.project.KiTucXa.Dto.Response.StudentResponse;
 import jakarta.validation.Valid;
 import com.project.KiTucXa.Dto.Request.ApiResponse;
 import com.project.KiTucXa.Dto.Request.UserCreationRequest;
@@ -59,15 +60,9 @@ public class UserController {
                 .result(userService.getUser(userId))
                 .build();
     }
-    @GetMapping("/myInfo")
-    ApiResponse<UserResponse> getMyInfo(){
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        // thêm SCOPE và userName đăng nhập (Vd: SCOPE_MANAGER)
-        log.info("Username: {}", authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
-        return ApiResponse.<UserResponse>builder()
-                .result(userService.getMyInfo())
-                .build();
+    @GetMapping("/my-info")
+    public UserResponse getMyInfo() {
+        return userService.getMyInfo();
     }
     @PutMapping("/{userId}")
     ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){

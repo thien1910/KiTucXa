@@ -76,12 +76,9 @@ public class UserService {
     }
     // chỉ cần chuyển vào token sẽ lấy đc thông tin của chính mk
     public UserResponse getMyInfo(){
-        var context = SecurityContextHolder.getContext();
-        String name = context.getAuthentication().getName();
-
-        User user = userRepository.findByuserName(name).orElseThrow(
-                () -> new AppException(ErrorCode.USER_NOT_EXITED));
-
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByuserName(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITED));
         return userMapper.toUserResponse(user);
     }
 
