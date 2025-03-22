@@ -18,6 +18,7 @@ import java.util.Set;
 public class UserResponse {
     String userId;
     String userName;
+    String passWord;
     String fullName;
     @Enumerated(EnumType.STRING)
     Gender gender;

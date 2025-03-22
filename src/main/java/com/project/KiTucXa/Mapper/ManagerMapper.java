@@ -30,6 +30,7 @@ public interface ManagerMapper {
         return UserResponse.builder()
                 .userId(user.getUserId())
                 .userName(user.getUserName())
+                .passWord(user.getPassWord())
                 .fullName(user.getFullName())
                 .gender(user.getGender())
                 .roomNameStudent(user.getRoomNameStudent())
