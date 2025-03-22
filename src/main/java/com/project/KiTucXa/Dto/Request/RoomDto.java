@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class RoomDto {
-    @NotNull(message = "UserId is required")
     String userId;
     @NotNull(message = "Room name is required")
     String roomName;

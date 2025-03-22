@@ -69,6 +69,16 @@ public class UserController {
                 .result(userService.getMyInfo())
                 .build();
     }
+    @GetMapping("/student/myInfo")
+    ApiResponse<UserResponse> getMyStudentInfo(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        // thêm SCOPE và userName đăng nhập (Vd: SCOPE_MANAGER)
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build();
+    }
     @PutMapping("/{userId}")
     ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
         var authentication = SecurityContextHolder.getContext().getAuthentication();

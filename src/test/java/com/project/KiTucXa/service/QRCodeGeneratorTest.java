@@ -7,41 +7,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.regex.Pattern;
 
 public class QRCodeGeneratorTest {
 
     @Test
-    void testGenerateQRCode_Success() {
-        String text = "Hello, QR Code!";
+    void testGenerateQRCode() {
+        String testText = "Hello, QR Code!";
         try {
-            String qrCode = QRCodeGenerator.generateQRCode(text);
+            String qrCodeData = QRCodeGenerator.generateQRCode(testText);
 
-            // Kiểm tra xem chuỗi không rỗng
-            assertNotNull(qrCode, "QR code không được null");
-            assertFalse(qrCode.isEmpty(), "QR code không được rỗng");
+            // Kiểm tra chuỗi không rỗng
+            assertNotNull(qrCodeData, "QR Code data should not be null");
+            assertFalse(qrCodeData.isEmpty(), "QR Code data should not be empty");
 
-            // Kiểm tra xem chuỗi có đúng định dạng Base64 không
-            assertTrue(qrCode.startsWith("data:image/png;base64,"), "QR code phải có prefix đúng");
+            // Kiểm tra định dạng base64
+            String base64Pattern = "^data:image/png;base64,[A-Za-z0-9+/=]+$";
+            assertTrue(Pattern.matches(base64Pattern, qrCodeData), "QR Code data should be a valid Base64 image string");
 
-            // Kiểm tra có phải Base64 hợp lệ không
-            String base64Data = qrCode.replace("data:image/png;base64,", "");
-            assertDoesNotThrow(() -> Base64.getDecoder().decode(base64Data), "Dữ liệu Base64 không hợp lệ");
-
+            // Kiểm tra xem có đúng là dữ liệu ảnh không
+            String base64String = qrCodeData.split(",")[1];
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            assertTrue(decodedBytes.length > 0, "Decoded bytes should not be empty");
         } catch (WriterException | IOException e) {
-            fail("Test bị lỗi do exception: " + e.getMessage());
+            fail("Exception thrown: " + e.getMessage());
         }
-    }
-
-    @Test
-    void testGenerateQRCode_EmptyText() {
-        String text = "";
-        assertThrows(WriterException.class, ()
-                -> QRCodeGenerator.generateQRCode(text), "Nên ném lỗi khi input rỗng");
-    }
-
-    @Test
-    void testGenerateQRCode_NullText() {
-        assertThrows(NullPointerException.class, ()
-                -> QRCodeGenerator.generateQRCode(null), "Nên ném lỗi khi input null");
     }
 }

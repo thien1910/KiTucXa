@@ -31,7 +31,10 @@ public class SecurityConfig {
             "/api/v1/user/guest-login",
             "/api/v1/auth/token",
             "/api/v1/auth/introspect",
-            "/api/v1/rooms/list"
+            "/api/v1/rooms/list",
+            "/api/v1/contracts/{contractId}",
+
+
     };
     private final String[] MANAGER_ENDPOINTS = {
             "/api/v1/user/{userId}","/api/v1/user/list","/api/v1/user/update/{userId}",
@@ -52,7 +55,9 @@ public class SecurityConfig {
             "/api/v1/Payment/{paymentId}",
             "/api/v1/rooms/list","/api/rooms/{roomId}",
             "/api/v1/room-services/{roomServiceId}",
-            "/api/v1/contracts/{contractId}"
+            "/api/v1/contracts/{contractId}",
+            "/api/v1/user/student/myInfo",
+
     };
 
     @Value("${jwt.signerKey}")
