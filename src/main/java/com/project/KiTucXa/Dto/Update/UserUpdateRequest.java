@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class UserUpdateRequest {
+     String maSV;
      String passWord;
      String fullName;
      @Enumerated(EnumType.STRING)
