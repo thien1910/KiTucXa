@@ -1,0 +1,166 @@
+/* General Styles */
+.login-body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #6a85b6, #bac8e0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Fade-in effect */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.login-form {
+  width: 400px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: slideUp 0.6s ease-in-out;
+}
+
+/* Slide-up animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-title h1 {
+  font-size: 26px;
+  color: #333;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.login-header {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #444;
+  font-weight: 600;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-container input {
+  width: 90%;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: 0.3s;
+  text-align: center;
+  background: #f9f9f9;
+}
+
+/* Input Focus Effect */
+.login-container input:focus {
+  border-color: #5c67f2;
+  outline: none;
+  box-shadow: 0 0 8px rgba(92, 103, 242, 0.5);
+  background: #fff;
+}
+
+/* Submit Button */
+.login-container input[type="submit"] {
+  background: #5c67f2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  width: 60%; /* Giảm chiều rộng nút */
+  max-width: 200px; /* Giới hạn tối đa */
+}
+
+.login-container input[type="submit"]:hover {
+  background: #4a54e1;
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 10px rgba(92, 103, 242, 0.4);
+}
+
+/* Guest Login Button */
+.guest-login {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background-color: white;
+  color: #4a54e1;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.guest-login:hover {
+  background-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 10px rgba(92, 103, 242, 0.4);
+}
+
+/* Forgot Password */
+.bottom-text p, .bottom-text h4 {
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.bottom-text a {
+  color: #5c67f2;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s ease-in-out;
+}
+
+.bottom-text a:hover {
+  text-decoration: underline;
+  color: #4a54e1;
+}
+
+/* Footer */
+.footer-w3l {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #777;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .login-form {
+    width: 90%;
+    padding: 20px;
+  }
+  .guest-login {
+    width: 100%;
+  }
+  input[type="email"], input[type="password"] {
+    max-width: none;
+  }
+}
+
+

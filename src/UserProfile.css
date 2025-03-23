@@ -1,0 +1,127 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #2196F3;
+    --warning-color: #ff9800;
+    --background-light: #f9f9f9;
+    --text-dark: #333;
+    --border-color: #ddd;
+    --shadow-light: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-profile-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+/* Bảng thông tin */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-table th, .user-table td {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-table th {
+    background-color: var(--background-light);
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.user-table tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background 0.3s ease-in-out;
+}
+
+/* Nút bấm */
+button {
+    padding: 10px 14px;
+    margin: 6px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.edit-button {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.password-button {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.save-button {
+    background: var(--warning-color);
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.password-button:hover {
+    background-color: #1e87dc;
+    transform: scale(1.05);
+}
+
+.save-button:hover {
+    background: #e68900;
+    transform: scale(1.05);
+}
+
+/* Form */
+.form-container {
+    margin-top: 20px;
+    padding: 18px;
+    background: var(--background-light);
+    border-radius: 6px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Animation */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

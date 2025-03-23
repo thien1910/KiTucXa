@@ -1,0 +1,106 @@
+.profile-container {
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card {
+    display: flex;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+
+.profile-left {
+    flex: 1;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #007bff;
+}
+
+.profile-right {
+    flex: 2;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.profile-right p {
+    margin: 8px 0;
+}
+
+.profile-actions {
+    margin-top: 15px;
+}
+
+.edit-button, .password-button {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: 0.3s;
+}
+
+.password-button {
+    background: #dc3545;
+}
+
+.edit-button:hover {
+    background: #0056b3;
+}
+
+.password-button:hover {
+    background: #c82333;
+}
+
+.form-container {
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.save-button {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.save-button:hover {
+    background: #218838;
+}

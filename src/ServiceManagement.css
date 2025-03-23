@@ -1,0 +1,119 @@
+/* Tổng thể container */
+.service-container {
+  padding: 30px;
+  max-width: 1100px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Nút thêm dịch vụ */
+.add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* Tạo khoảng cách giữa icon và text */
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 91, 255, 0.4);
+}
+
+/* Căn chỉnh icon */
+.add-button i {
+  font-size: 18px;
+}
+/* Bảng dịch vụ */
+.service-table {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-collapse: collapse;
+}
+
+.service-table th {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-size: 17px;
+}
+
+.service-table td {
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 15px;
+  color: #333;
+}
+
+/* Hiệu ứng hover từng dòng */
+.service-table tr {
+  transition: background 0.3s ease-in-out;
+}
+
+.service-table tr:hover {
+  background: rgba(0, 123, 255, 0.1);
+}
+
+/* Nút sửa & xóa */
+.edit-button,
+.delete-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-button {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+}
+
+.edit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.delete-button {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+}
+
+.delete-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+/* Hiệu ứng fade in khi load trang */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

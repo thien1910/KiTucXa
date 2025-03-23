@@ -1,0 +1,178 @@
+/* StudentManagement.css */
+.student-management {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Hiệu ứng nhập liệu mượt mà */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Hiệu ứng hiển thị bảng */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out 0.2s forwards;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  transition: background 0.3s ease-in-out;
+}
+
+.student-management th {
+  background-color: #007bff;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Hiệu ứng hàng bảng */
+tr {
+  transition: background 0.3s ease-in-out;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Hiệu ứng cho nút bấm */
+.student-management button {
+  padding: 8px 15px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hiệu ứng khu vực phân công phòng */
+.assign-room {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f8f9fa;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeIn 0.5s ease-out 0.3s forwards;
+}
+
+.assign-room:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation xuất hiện mượt */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .student-management {
+    width: 90%;
+  }
+}
+
+@media (max-width: 992px) {
+  .student-management {
+    width: 95%;
+  }
+
+  table, th, td {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .student-management button {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-management {
+    width: 100%;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+  }
+
+  table, th, td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .student-management button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .student-management {
+    width: 100%;
+    margin: 0;
+  }
+
+  input {
+    width: 100%;
+    padding: 6px;
+  }
+
+  table, th, td {
+    font-size: 10px;
+    padding: 6px;
+  }
+
+  .student-management button {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}
