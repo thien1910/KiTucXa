@@ -72,4 +72,13 @@ public class BillController {
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
         return "Bill has been deleted";
     }
+    @GetMapping("/user/{userId}")
+    public List<BillResponse> getBillsByUserId(@PathVariable String userId) {
+        return billService.getBillsByUserId(userId);
+    }
+    @GetMapping("/user/admin/{userId}")
+    public List<BillResponse> getBillsByUserIdbyAdmin(@PathVariable String userId) {
+        return billService.getBillsByUserId(userId);
+    }
+
 }

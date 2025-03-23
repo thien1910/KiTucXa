@@ -75,6 +75,7 @@ public class AuthenticationService {
                 .authenticated(true)
                 .roles(user.getRoles()) // Thêm role của user vào response
                 .fullName(user.getFullName()) // Thêm fullName vào response
+                .userId(user.getUserId())
                 .build();
     }
 

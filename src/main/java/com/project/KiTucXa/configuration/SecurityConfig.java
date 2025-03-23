@@ -54,7 +54,8 @@ public class SecurityConfig {
             "/api/v1/rooms/list","/api/rooms/{roomId}",
             "/api/v1/room-services/{roomServiceId}",
             "/api/v1/contracts/{contractId}",
-            "/api/v1/user/my-info"
+            "/api/v1/user/my-info",
+
     };
 
     @Value("${jwt.signerKey}")

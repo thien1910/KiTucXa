@@ -99,4 +99,16 @@ public class BillService {
         }
         billRepository.deleteById(billId);
     }
+    public List<BillResponse> getBillsByUserId(String userId) {
+        List<Bill> bills = billRepository.findByUserId(userId);
+
+        return bills.stream()
+                .map(bill -> {
+                    BillResponse response = billMapper.toBillResponse(bill);
+                    response.setFullName(bill.getContract().getUser().getFullName()); // Gán tên user
+                    return response;
+                })
+                .collect(Collectors.toList());
+    }
+
 }
