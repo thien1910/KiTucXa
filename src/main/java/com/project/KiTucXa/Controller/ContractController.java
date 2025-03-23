@@ -53,4 +53,8 @@ public class ContractController {
     public List<Contract> getContractsByUserId(@PathVariable String userId) {
         return contractService.getContractsByUserId(userId);
     }
+    @GetMapping("/manager/{userId}")
+    public List<Contract> getContractsByUserIdWithManagerAuthority(@PathVariable String userId) {
+        return contractService.getContractsByUserId(userId);
+    }
 }
