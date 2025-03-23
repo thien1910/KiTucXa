@@ -39,8 +39,8 @@ const StudentDashboard = () => {
           <div className="logo">
             <span style={{ fontSize: "40px" }}>🏠</span>
           </div>
-          <h2>Quản lý ký túc xá</h2>
-          <h1>Chào, {fullName}!</h1>
+          <h2>Ký túc xá KTX</h2>
+          <h1>Xin chào <br/> {fullName}!</h1>
         </div>
         <nav>
           <ul>
@@ -55,7 +55,7 @@ const StudentDashboard = () => {
               Quản lý hóa đơn
             </li>
             <li onClick={() => setView("payment")}>Thanh toán</li>
-            <li>Xem thống kê</li>
+            
             <li onClick={handleLogout} className="logout-button">🚪 Đăng xuất</li>
 
           </ul>

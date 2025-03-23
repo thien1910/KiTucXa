@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
-import AccountManagement from "./Admin_route/AccountManagement";
-import UserProfile from "./UserProfile";
+import AccountManagement from "./AccountManagement";
+import UserProfile from "../Student_route/UserProfile";
 import StudentManagement from "./StudentManagement";
 import ContractManagement from "./ContractManagement";
 import InvoiceManagement from "./InvoiceManagement";
 import RoomManagement from "./RoomManagement";
-import PaymentPage from "./PaymentPage";
+import PaymentPage from "../Student_route/PaymentPage";
 import ServiceManagement from "./ServiceManagement"; // Import ServiceManagement
 import { useNavigate } from "react-router-dom";
 
@@ -41,8 +41,8 @@ const Dashboard = () => {
           <div className="logo">
             <span style={{ fontSize: "40px" }}>🏠</span>
           </div>
-          <h2>Quản lý ký túc xá</h2>
-          <h1>Chào, {fullName}!</h1>
+          <h2>Quản lý ký túc xá KTX</h2>
+          <h1>Xin chào<br/>{fullName}!</h1>
 
         </div>
         <nav>
@@ -55,7 +55,6 @@ const Dashboard = () => {
             <li onClick={() => setView("invoiceManagement")}>Quản lý hóa đơn</li>
             <li onClick={() => setView("serviceManagement")}>Quản lý dịch vụ</li> {/* Update this line */}
             <li onClick={() => setView("roomManagement")}>Quản lý phòng</li>
-            <li onClick={() => setView("payment")}>Thanh toán</li>
             <li>Xem thống kê</li>
             <li onClick={handleLogout} className="logout-button">🚪 Đăng xuất</li>
 

@@ -1,16 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./LoginForm";
-import Dashboard from "./Dashboard";
+import Dashboard from "./Admin_route/Dashboard";
 import "./Login.css";
 import AccountManagement from "./Admin_route/AccountManagement";
-import UserProfile from "./UserProfile";
-import StudentManagement from "./StudentManagement";
-import ContractManagement from "./ContractManagement";
-import InvoiceManagement from "./InvoiceManagement";
-import RoomManagement from "./RoomManagement";
-import PaymentPage from "./PaymentPage";
-import ServiceManagement from "./ServiceManagement"; // Import ServiceManagement
+import UserProfile from "./Student_route/UserProfile";
+import StudentManagement from "./Admin_route/StudentManagement";
+import ContractManagement from "./Admin_route/ContractManagement";
+import InvoiceManagement from "./Admin_route/InvoiceManagement";
+import RoomManagement from "./Admin_route/RoomManagement";
+import PaymentPage from "./Student_route/PaymentPage";
+import ServiceManagement from "./Admin_route/ServiceManagement"; // Import ServiceManagement
 import GuestDashboard from "./Guest_route/GuestDashboard";
 import StudentDashboard from "./Student_route/StudentDashboard";
 
