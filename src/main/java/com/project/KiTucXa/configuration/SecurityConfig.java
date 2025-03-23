@@ -55,6 +55,8 @@ public class SecurityConfig {
             "/api/v1/room-services/{roomServiceId}",
             "/api/v1/contracts/{contractId}",
             "/api/v1/user/my-info",
+            "/api/v1/Payment/add",
+            "/api/v1/Payment/{paymentId}",
 
     };
 
