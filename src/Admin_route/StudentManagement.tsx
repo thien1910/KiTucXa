@@ -39,7 +39,7 @@ const StudentManagement: React.FC = () => {
       alert("Vui lòng đăng nhập trước khi truy cập trang này.");
       return;
     }
-
+  
     const fetchStudents = async () => {
       try {
         const response = await fetch("http://localhost:8080/api/v1/user/list", {
@@ -49,17 +49,21 @@ const StudentManagement: React.FC = () => {
             "Content-Type": "application/json",
           },
         });
-
+  
         if (!response.ok) {
           throw new Error("Lỗi khi lấy dữ liệu!");
         }
-
+  
         const data = await response.json();
         console.log("Dữ liệu nhận được:", data); // Kiểm tra dữ liệu API
-
+  
         // Đảm bảo dữ liệu là một mảng trước khi cập nhật state
         if (data.result && Array.isArray(data.result)) {
-          setStudents(data.result);
+          // Lọc danh sách chỉ những user có role là "student"
+          const filteredStudents = data.result.filter((student: Student) =>
+            student.roles.includes("STUDENT")
+          );
+          setStudents(filteredStudents);
         } else {
           console.error("Dữ liệu API không hợp lệ:", data);
         }
@@ -67,9 +71,10 @@ const StudentManagement: React.FC = () => {
         console.error("Lỗi:", error);
       }
     };
-
+  
     fetchStudents();
   }, []);
+  
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

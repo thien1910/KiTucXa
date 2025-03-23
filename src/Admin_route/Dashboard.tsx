@@ -49,7 +49,7 @@ const Dashboard = () => {
           <ul>
             <li onClick={() => setView("dashboard")}>Dashboard</li>
             <li onClick={() => setView("accountManagement")}>Quản lý tài khoản</li>
-            <li onClick={() => setView("userProfile")}>Quản lý thông tin cá nhân</li>
+            {/* <li onClick={() => setView("userProfile")}>Quản lý thông tin cá nhân</li> */}
             <li onClick={() => setView("studentManagement")}>Quản lý sinh viên</li>
             <li onClick={() => setView("contractManagement")}>Quản lý hợp đồng</li>
             <li onClick={() => setView("invoiceManagement")}>Quản lý hóa đơn</li>
@@ -85,14 +85,14 @@ const Dashboard = () => {
               <p>Quản lý sinh viên, hợp đồng, thanh toán và nhiều hơn nữa.</p>
             </header>
 
-            <section className="quick-access">
+            {/* <section className="quick-access">
               <h2>🔗 Truy cập nhanh</h2>
               <div className="quick-links">
                 <button onClick={() => setView("studentManagement")}>Quản lý sinh viên</button>
                 <button onClick={() => setView("contractManagement")}>Quản lý hợp đồng</button>
                 <button onClick={() => setView("accountManagement")}>Quản lý tài khoản</button>
               </div>
-            </section>
+            </section> */}
 
             <section className="dashboard-sections">
   {/* Hướng dẫn sử dụng */}

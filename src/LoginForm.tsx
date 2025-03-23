@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
@@ -6,8 +6,7 @@ import "./Login.css";
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // State để hiển thị lỗi
-  const [userInfo, setUserInfo] = useState<any>(null); // State lưu thông tin người dùng
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -16,27 +15,27 @@ const LoginForm: React.FC = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     setError("");
-  
+
     try {
       const response = await axios.post("http://localhost:8080/api/v1/auth/token", {
         userName: email,
         passWord: password,
       });
-  
-      const { token, authenticated, roles ,userId ,fullName } = response.data.result;
-  
+
+      const { token, authenticated, roles, userId, fullName } = response.data.result;
+
       if (!authenticated) {
         setError("Xác thực thất bại!");
         return;
       }
-  
+
+      // Lưu thông tin vào localStorage
       localStorage.setItem("token", token);
-      localStorage.setItem("userId",userId);
-      localStorage.setItem("fullName",fullName);
-      localStorage.setItem("roles", JSON.stringify(roles)); // Lưu danh sách role
-  
-      console.log("Đăng nhập thành công:", response.data);
-  
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("fullName", fullName);
+      localStorage.setItem("roles", JSON.stringify(roles));
+
+      // Chuyển hướng theo role
       if (roles.includes("ADMIN")) {
         navigate("/admin/dashboard");
       } else if (roles.includes("MANAGER")) {
@@ -51,59 +50,71 @@ const LoginForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
-  
 
   return (
-    <div className="login-form w3_form">
-      <div className="login-title w3_title">
-        <h1>Trang đăng nhập</h1>
+    <div className="login-page">
+      {/* Cột trái - Ảnh */}
+      <div className="left-section">
+        {/* Thay link ảnh theo ý bạn, ví dụ link Unsplash */}
+        <img
+          src="https://picsum.photos/1200"
+          alt="Left Banner"
+          className="left-image"
+        />
       </div>
-      <div className="login w3_login">
-        <h2 className="login-header w3_header">Tài khoản</h2>
-        <div className="w3l_grid">
-          <form className="login-container" onSubmit={handleSubmit}>
+
+      {/* Cột phải - Form đăng nhập */}
+      <div className="right-section">
+        <div className="login-content">
+          <h1>Đăng nhập</h1>
+          <p className="subtitle">
+            Đăng nhập vào hệ thống ký túc xá của chúng tôi
+          </p>
+
+          {/* Bạn có thể thêm tab nếu muốn, ví dụ: Login / Create Profile */}
+          {/* <div className="tab-switch">
+            <button className="active">Login</button>
+            <button>Create Profile</button>
+          </div> */}
+
+          <form onSubmit={handleSubmit} className="login-form">
             <input
               type="text"
-              placeholder="Email"
-              name="Email"
+              placeholder="Enter Username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <input
               type="password"
-              placeholder="Mật khẩu"
-              name="password"
+              placeholder="Enter Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <input type="submit" value="Đăng nhập" />
+
+            {error && <p className="error-message">{error}</p>}
+
+            {/* <div className="remember-forgot">
+              <label className="remember-me">
+                <input type="checkbox" />
+                Remember Me
+              </label>
+              <a href="#forgot">Forgot Password?</a>
+            </div> */}
+
+            <button type="submit" className="login-btn" disabled={isSubmitting}>
+              {isSubmitting ? "Đang đăng nhập..." : "Login"}
+            </button>
           </form>
 
-          {error && <p className="error-message">{error}</p>}
+          {/* <button className="facebook-btn">Continue with Facebook</button> */}
 
-          <button className="guest-login" onClick={() => navigate("/guestdashboard")}>
-            Tiếp tục với tư cách khách
+          {/* Nút đăng nhập khách */}
+          <button className="facebook-btn" onClick={() => navigate("/guestdashboard")}>
+            Continue as Guest
           </button>
-
-          {userInfo && (
-            <div className="user-info">
-              <h3>Xin chào, {userInfo.fullName}!</h3>
-              <p>Email: {userInfo.email}</p>
-            </div>
-          )}
-
-          <div className="bottom-text w3_bottom_text">
-            
-          </div>
         </div>
-      </div>
-      <div className="footer-w3l">
-        <p className="agile">
-          &copy; 2025 Biểu mẫu đăng nhập. Bảo lưu mọi quyền | Thiết kế bởi 22ITSE-1.2
-        </p>
       </div>
     </div>
   );
