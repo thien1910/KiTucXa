@@ -22,7 +22,6 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "bill_id")
     Bill bill;
     private BigDecimal installmentCount; // số lần đóng (tối đa ba lần)
-
     @Column(name = "note")
     String note;
 }

@@ -35,7 +35,11 @@ public class PaymentService {
     public PaymentResponse createPayment(PaymentDto paymentDto) {
         Bill bill = billRepository.findById(paymentDto.getBillId())
                 .orElseThrow(() -> new AppException(ErrorCode.BILL_NOT_FOUND));
-
+// Kiểm tra số lần thanh toán đã tồn tại cho billId
+        long paymentCount = paymentRepository.countByBill_BillId(paymentDto.getBillId());
+        if (paymentCount >= 3) {
+            throw new AppException(ErrorCode.PAYMENT_LIMIT_EXCEEDED);
+        }
         Payment payment = paymentMapper.toPayment(paymentDto, bill);
         paymentRepository.save(payment);
 

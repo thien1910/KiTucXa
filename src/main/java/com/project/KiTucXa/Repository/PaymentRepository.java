@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, String> {
         List<Payment> findByBill_BillId(String billId);
+        long countByBill_BillId(String billId);
 }

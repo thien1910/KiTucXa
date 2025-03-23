@@ -32,7 +32,8 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(1022, "Role not found", HttpStatus.NOT_FOUND),
     CAN_NOT_CREATE_JWT_TOKEN(1023,"Cannot create jwt token", HttpStatus.BAD_REQUEST),
     MANAGER_NOT_FOUND(1024, "manager not found",HttpStatus.NOT_FOUND),
-    STUDENT_NOT_FOUND(1025,"Student not found", HttpStatus.NOT_FOUND)
+    STUDENT_NOT_FOUND(1025,"Student not found", HttpStatus.NOT_FOUND),
+    PAYMENT_LIMIT_EXCEEDED (1026, "payment limit exceeded", HttpStatus.BAD_REQUEST)
 
     ;
 
