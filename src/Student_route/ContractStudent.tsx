@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ContractStudent.css";
 
-// Định nghĩa interface cho dữ liệu hợp đồng
 interface Contract {
   contractId: string;
   userId: string;
@@ -20,21 +19,18 @@ let initialContracts: Contract[] = [];
 
 const ContractManagement: React.FC = () => {
   const [contracts, setContracts] = useState<Contract[]>(initialContracts);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [currentContract, setCurrentContract] = useState<Contract | null>(null);
-  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchContracts = async () => {
       try {
-        const token = localStorage.getItem("token"); // 🔐 Lấy token từ localStorage
-        const userId = localStorage.getItem("userId"); // 🔐 Lấy userId từ localStorage
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
         if (!token || !userId) {
           console.error("Token hoặc userId không tồn tại trong localStorage.");
           return;
         }
         const response = await fetch(
-          `http://localhost:8080/api/v1/contracts/user/${userId}`, // Thay userId bằng ID thực tế
+          `http://localhost:8080/api/v1/contracts/user/${userId}`,
           {
             method: "GET",
             headers: {
@@ -50,30 +46,27 @@ const ContractManagement: React.FC = () => {
 
         const data = await response.json();
 
-        // 🔹 Chuyển đổi dữ liệu từ API
         const initialContracts = data.map((item: any) => ({
           contractId: item.contractId,
           userId: item.userId,
           roomId: item.roomId,
-          employeeName: "N/A", // API không có dữ liệu này
-          contractType: "Hợp đồng thuê",
           startDate: item.startDate
             ? new Date(item.startDate).toISOString()
-            : null,
-          endDate: item.endDate ? new Date(item.endDate).toISOString() : null,
+            : "",
+          endDate: item.endDate ? new Date(item.endDate).toISOString() : "",
           price: item.price || 0,
           depositStatus: item.depositStatus || "PENDING",
           contractStatus: item.contractStatus || "Unknown",
           note: item.note || "",
           createdAt: item.createdAt
             ? new Date(item.createdAt).toISOString()
-            : null,
+            : "",
           updatedAt: item.updatedAt
             ? new Date(item.updatedAt).toISOString()
-            : null,
+            : "",
         }));
 
-        setContracts(initialContracts); // ✅ Cập nhật state với dữ liệu API
+        setContracts(initialContracts);
       } catch (error) {
         console.error("Lỗi khi gọi API:", error);
       }
@@ -82,22 +75,8 @@ const ContractManagement: React.FC = () => {
     fetchContracts();
   }, []);
 
-  // State cho form chỉnh sửa và tạo mới
-  const [formData, setFormData] = useState<Contract>({
-    contractId: "",
-    userId: "",
-    roomId: "",
-    startDate: "",
-    endDate: "",
-    price: 0,
-    depositStatus: "",
-    contractStatus: "",
-    note: "",
-    createdAt: "",
-    updatedAt: "",
-  });
-
   const formatDate = (dateString: string) => {
+    if (!dateString) return "";
     return new Date(dateString).toLocaleDateString("vi-VN", {
       day: "2-digit",
       month: "2-digit",
@@ -129,6 +108,85 @@ const ContractManagement: React.FC = () => {
     }
   };
 
+  // Hàm xử lý in hợp đồng
+  const handlePrintContract = (contract: Contract) => {
+    // Tạo 1 cửa sổ mới
+    const newWindow = window.open("", "_blank", "width=800,height=600");
+    if (!newWindow) return;
+
+    // Tạo nội dung HTML cho hợp đồng
+    const contractHtml = `
+      <html>
+        <head>
+          <title>Hợp đồng - ${contract.contractId}</title>
+          <style>
+            /* Thêm CSS cho trang in nếu muốn */
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+            }
+            h1, h2, h3 {
+              text-align: center;
+            }
+            .contract-info {
+              margin: 20px 0;
+            }
+            .label {
+              font-weight: bold;
+            }
+            .field {
+              margin-bottom: 10px;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>HỢP ĐỒNG THUÊ PHÒNG</h1>
+          <h3>Mã hợp đồng: ${contract.contractId}</h3>
+          <div class="contract-info">
+            <div class="field">
+              <span class="label">Mã phòng:</span> ${contract.roomId}
+            </div>
+            <div class="field">
+              <span class="label">Ngày bắt đầu:</span> ${formatDate(contract.startDate)}
+            </div>
+            <div class="field">
+              <span class="label">Ngày kết thúc:</span> ${formatDate(contract.endDate)}
+            </div>
+            <div class="field">
+              <span class="label">Giá thuê:</span> ${contract.price.toLocaleString()} VNĐ
+            </div>
+            <div class="field">
+              <span class="label">Trạng thái cọc:</span> ${getDepositStatusLabel(contract.depositStatus)}
+            </div>
+            <div class="field">
+              <span class="label">Trạng thái hợp đồng:</span> ${getContractStatusLabel(contract.contractStatus)}
+            </div>
+            <div class="field">
+              <span class="label">Ghi chú:</span> ${contract.note}
+            </div>
+            <div class="field">
+              <span class="label">Cập nhật lần cuối:</span> ${formatDate(contract.updatedAt)}
+            </div>
+          </div>
+
+          <p>Người thuê cam kết tuân thủ mọi quy định...</p>
+          <p>Chữ ký bên A (Chủ trọ)..............</p>
+          <p>Chữ ký bên B (Người thuê)...........</p>
+
+          <script>
+            // In trang
+            window.print();
+          </script>
+        </body>
+      </html>
+    `;
+
+    // Ghi nội dung vào cửa sổ
+    newWindow.document.open();
+    newWindow.document.write(contractHtml);
+    newWindow.document.close();
+  };
+
   return (
     <div className="contract-management">
       <h2>Quản lý hợp đồng</h2>
@@ -152,15 +210,14 @@ const ContractManagement: React.FC = () => {
           <tr>
             <th>STT</th>
             <th>Mã HĐ</th>
-            <th>Mã KH</th>
             <th>Mã phòng</th>
             <th>Ngày bắt đầu</th>
             <th>Ngày kết thúc</th>
             <th>Giá thuê</th>
             <th>Thanh toán</th>
             <th>Trạng thái</th>
-            <th>Cập nhật</th>
             <th>Ghi chú</th>
+            <th>Cập nhật</th>
             <th>Thao tác</th>
           </tr>
         </thead>
@@ -169,7 +226,6 @@ const ContractManagement: React.FC = () => {
             <tr key={contract.contractId}>
               <td>{index + 1}</td>
               <td>{contract.contractId}</td>
-              <td>{contract.userId}</td>
               <td>{contract.roomId}</td>
               <td>{formatDate(contract.startDate)}</td>
               <td>{formatDate(contract.endDate)}</td>
@@ -178,6 +234,14 @@ const ContractManagement: React.FC = () => {
               <td>{getContractStatusLabel(contract.contractStatus)}</td>
               <td>{contract.note}</td>
               <td>{formatDate(contract.updatedAt)}</td>
+              <td>
+                <button
+                  onClick={() => handlePrintContract(contract)}
+                  className="print-button"
+                >
+                  In hợp đồng
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

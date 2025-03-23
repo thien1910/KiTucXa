@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // <--- Import useLocation
 import QRCode from "react-qr-code";
-import "./PaymentPage.css";
+import "./PaymentPageStudent.css";
 
 interface Bill {
   bill_id: string;
@@ -13,56 +14,36 @@ interface Bill {
 }
 
 const PaymentPage: React.FC = () => {
+  // Lấy dữ liệu invoice từ location.state (nếu có)
+  const location = useLocation();
+  const invoiceFromState = location.state?.invoice;
+
   const [bills, setBills] = useState<Bill[]>([]);
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [qrValue, setQrValue] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // Hàm lấy danh sách hóa đơn từ API
-  const fetchBills = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("Token không tồn tại! Người dùng cần đăng nhập.");
-        return;
-      }
-
-      const response = await fetch("http://localhost:8080/api/v1/bills/list", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Lỗi ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Danh sách hóa đơn:", data);
-
-      // Format lại dữ liệu
-      const formattedData: Bill[] = data.map((bill: any) => ({
-        bill_id: bill.billId || "N/A",
-        contract_id: bill.contractId || "N/A",
-        sum_price: bill.sumPrice || 0,
-        payment_date: bill.paymentDate || "Chưa xác định",
-        payment_method: bill.paymentMethod || "Chưa xác định",
-        status: bill.billStatus || "Chưa xác định",
-        notes: bill.note || "",
-      }));
-
-      setBills(formattedData);
-    } catch (error) {
-      console.error("Lỗi tải danh sách hóa đơn:", error);
-    }
-  };
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchBills();
   }, []);
+
+  useEffect(() => {
+    // Nếu invoice được truyền sang, đặt nó thành selectedBill
+    if (invoiceFromState) {
+      const bill: Bill = {
+        bill_id: invoiceFromState.id,
+        contract_id: invoiceFromState.contractId,
+        sum_price: invoiceFromState.totalAmount,
+        payment_date: invoiceFromState.paymentDate || "",
+        payment_method: invoiceFromState.paymentMethod || "",
+        status: invoiceFromState.status === "paid" ? "Đã thanh toán" : "Chưa thanh toán",
+        notes: "",
+      };
+      setSelectedBill(bill);
+    }
+  }, [invoiceFromState]);
 
   useEffect(() => {
     if (selectedBill && paymentMethod) {
@@ -72,12 +53,57 @@ const PaymentPage: React.FC = () => {
     }
   }, [selectedBill, paymentMethod]);
 
-  // Hàm chọn hóa đơn để thanh toán
+  // Lấy danh sách hóa đơn từ API
+  const fetchBills = async () => {
+    setErrorMessage("");
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      if (!token || !userId) {
+        throw new Error("Bạn chưa đăng nhập. Vui lòng đăng nhập lại!");
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/api/v1/bills/user/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Lỗi ${response.status}: Không thể tải danh sách hóa đơn.`
+        );
+      }
+
+      const data = await response.json();
+      const formattedData: Bill[] = data.map((bill: any) => ({
+        bill_id: bill.billId || "N/A",
+        contract_id: bill.contractId || "N/A",
+        sum_price: bill.sumPrice || 0,
+        payment_date: bill.paymentDate || "Chưa xác định",
+        payment_method: bill.paymentMethod || "Chưa xác định",
+        status: bill.billStatus || "Chưa xác định",
+        notes: bill.note || "",
+      }));
+      setBills(formattedData);
+    } catch (error: any) {
+      console.error("Lỗi tải danh sách hóa đơn:", error);
+      setErrorMessage(error.message);
+    }
+  };
+
+  // Hàm chọn hóa đơn để thanh toán (nếu người dùng click từ danh sách PaymentPage)
   const handlePayment = (bill: Bill) => {
     setSelectedBill(bill);
   };
 
-  // Hàm xử lý thanh toán
+  // Xử lý thanh toán
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!selectedBill || !paymentMethod) {
@@ -95,7 +121,7 @@ const PaymentPage: React.FC = () => {
     };
 
     try {
-      // 1️⃣ Gửi yêu cầu thanh toán
+      // Gửi yêu cầu thanh toán
       const response = await fetch("http://localhost:8080/api/v1/Payment/add", {
         method: "POST",
         headers: {
@@ -111,29 +137,29 @@ const PaymentPage: React.FC = () => {
         return;
       }
 
-      // 2️⃣ Cập nhật trạng thái hóa đơn
-      const updateBillData = {
-        billStatus: "Đã thanh toán",
-      };
-
-      const updateResponse = await fetch(`http://localhost:8080/api/v1/bills/update/${selectedBill.bill_id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(updateBillData),
-      });
+      // Cập nhật trạng thái hóa đơn
+      const updateBillData = { billStatus: "Đã thanh toán" };
+      const updateResponse = await fetch(
+        `http://localhost:8080/api/v1/bills/update/${selectedBill.bill_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(updateBillData),
+        }
+      );
 
       if (updateResponse.ok) {
         alert("Thanh toán thành công! Hóa đơn đã được cập nhật.");
         setSelectedBill(null);
         setPaymentMethod("");
-
-        // Reload danh sách hóa đơn sau khi cập nhật trạng thái
-        fetchBills();
+        fetchBills(); // Tải lại danh sách
       } else {
-        alert("Thanh toán thành công nhưng không thể cập nhật trạng thái hóa đơn.");
+        alert(
+          "Thanh toán thành công nhưng không thể cập nhật trạng thái hóa đơn."
+        );
       }
     } catch (error) {
       console.error("Lỗi khi thanh toán:", error);
@@ -146,20 +172,41 @@ const PaymentPage: React.FC = () => {
   return (
     <div className="payment-page">
       <h1>Danh Sách Hóa Đơn</h1>
+
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+      {/* Danh sách hóa đơn ở PaymentPage (nếu muốn hiển thị) */}
       <div className="bill-list">
         {bills.length > 0 ? (
           bills.map((bill) => (
             <div key={bill.bill_id} className="bill-item">
               <div className="bill-details">
-                <p><strong>Mã hóa đơn:</strong> {bill.bill_id}</p>
-                <p><strong>Tổng tiền:</strong> {bill.sum_price.toLocaleString()} VND</p>
-                <p><strong>Ngày thanh toán:</strong> {bill.payment_date}</p>
-                <p><strong>Phương thức thanh toán:</strong> {bill.payment_method}</p>
-                <p><strong>Trạng thái:</strong> {bill.status}</p>
-                <p><strong>Ghi chú:</strong> {bill.notes}</p>
+                <p>
+                  <strong>Mã hóa đơn:</strong> {bill.bill_id}
+                </p>
+                <p>
+                  <strong>Tổng tiền:</strong>{" "}
+                  {bill.sum_price.toLocaleString()} VND
+                </p>
+                <p>
+                  <strong>Ngày thanh toán:</strong> {bill.payment_date}
+                </p>
+                <p>
+                  <strong>Phương thức thanh toán:</strong>{" "}
+                  {bill.payment_method}
+                </p>
+                <p>
+                  <strong>Trạng thái:</strong> {bill.status}
+                </p>
+                <p>
+                  <strong>Ghi chú:</strong> {bill.notes}
+                </p>
               </div>
               {bill.status !== "Đã thanh toán" && (
-                <button className="pay-button" onClick={() => handlePayment(bill)}>
+                <button
+                  className="pay-button"
+                  onClick={() => handlePayment(bill)}
+                >
                   Thanh toán
                 </button>
               )}
@@ -170,6 +217,7 @@ const PaymentPage: React.FC = () => {
         )}
       </div>
 
+      {/* Form thanh toán cho hóa đơn đã chọn (có thể từ invoiceState hoặc do user chọn) */}
       {selectedBill && (
         <form className="payment-form" onSubmit={handleSubmit}>
           <h2>Thanh toán hóa đơn</h2>
@@ -198,10 +246,14 @@ const PaymentPage: React.FC = () => {
             </select>
           </div>
 
-          {["bank_transfer", "credit_card", "momo", "zalo_pay"].includes(paymentMethod) && (
+          {["bank_transfer", "credit_card", "momo", "zalo_pay"].includes(
+            paymentMethod
+          ) && (
             <div className="form-group">
               <label>Mã QR:</label>
-              <QRCode value={qrValue} />
+              <QRCode
+                value={`bill_id:${selectedBill.bill_id},sum_price:${selectedBill.sum_price},payment_method:${paymentMethod}`}
+              />
             </div>
           )}
 
