@@ -70,4 +70,7 @@ public class ContractService {
         }
         contractRepository.deleteById(contractId);
     }
+    public List<Contract> getContractsByUserId(String userId) {
+        return contractRepository.findByUser_UserId(userId);
+    }
 }
