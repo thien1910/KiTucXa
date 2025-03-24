@@ -48,6 +48,19 @@ public class UserController {
                 .result(userService.getUsers())
                 .build();
     }
+    @GetMapping("/manager/list")
+    ApiResponse<List<UserResponse>> getUsersByManager(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // thêm SCOPE và userName đăng nhập (Vd: SCOPE_MANAGER)
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build();
+    }
+
 
 
     @GetMapping("/{userId}")
