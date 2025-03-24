@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
-import AccountManagement from "./AccountManagement";
+import AccountManagement from "../Admin_route/AccountManagement";
 import UserProfile from "../Student_route/UserProfile";
 import StudentManagement from "./StudentManagement";
 import ContractManagement from "./ContractManagement";
@@ -48,7 +48,7 @@ const Dashboard = () => {
         <nav>
           <ul>
             <li onClick={() => setView("dashboard")}>Dashboard</li>
-            <li onClick={() => setView("accountManagement")}>Quản lý tài khoản</li>
+            {/* <li onClick={() => setView("accountManagement")}>Quản lý tài khoản</li> */}
             {/* <li onClick={() => setView("userProfile")}>Quản lý thông tin cá nhân</li> */}
             <li onClick={() => setView("studentManagement")}>Quản lý sinh viên</li>
             <li onClick={() => setView("contractManagement")}>Quản lý hợp đồng</li>

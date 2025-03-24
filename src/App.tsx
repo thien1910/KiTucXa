@@ -1,18 +1,19 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./LoginForm";
-import Dashboard from "./Admin_route/Dashboard";
+import Dashboard from "./Manager_route/Dashboard";
 import "./Login.css";
 import AccountManagement from "./Admin_route/AccountManagement";
 import UserProfile from "./Student_route/UserProfile";
-import StudentManagement from "./Admin_route/StudentManagement";
-import ContractManagement from "./Admin_route/ContractManagement";
-import InvoiceManagement from "./Admin_route/InvoiceManagement";
-import RoomManagement from "./Admin_route/RoomManagement";
+import StudentManagement from "./Manager_route/StudentManagement";
+import ContractManagement from "./Manager_route/ContractManagement";
+import InvoiceManagement from "./Manager_route/InvoiceManagement";
+import RoomManagement from "./Manager_route/RoomManagement";
 import PaymentPage from "./Student_route/PaymentPage";
-import ServiceManagement from "./Admin_route/ServiceManagement"; // Import ServiceManagement
+import ServiceManagement from "./Manager_route/ServiceManagement"; // Import ServiceManagement
 import GuestDashboard from "./Guest_route/GuestDashboard";
 import StudentDashboard from "./Student_route/StudentDashboard";
+import AdminDashboard from "./Admin_route/AdminDashboard";
 
 const App: React.FC = () => {
   return (
@@ -32,7 +33,7 @@ const App: React.FC = () => {
         <Route path="/service-management" element={<ServiceManagement />} /> {/* Add this line */}
         <Route path="/guestdashboard" element={<GuestDashboard/>} />
         <Route path="/student/dashboard" element={<StudentDashboard/>} />
-
+        <Route path="/admin/dashboard" element={<AdminDashboard/>} />
       </Routes>
     </Router>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Table, Input, Button, Modal } from "antd";
+import QRCode from "react-qr-code";
 import "./InvoiceStudent.css";
 
 const { Search } = Input;
@@ -23,9 +23,12 @@ const InvoiceStudent: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
+  // State để quản lý modal thanh toán
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [qrValue, setQrValue] = useState("");
 
-  // Gọi API lấy danh sách hóa đơn
   useEffect(() => {
     const fetchInvoices = async () => {
       setLoading(true);
@@ -38,8 +41,6 @@ const InvoiceStudent: React.FC = () => {
         });
         if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu");
         const data = await response.json();
-
-        // Chuyển đổi dữ liệu từ API sang định dạng phù hợp với UI
         const mappedInvoices: Invoice[] = data.map((item: any) => ({
           id: item.billId,
           contractId: item.contractId,
@@ -49,7 +50,6 @@ const InvoiceStudent: React.FC = () => {
           status: item.billStatus === "PAID" ? "paid" : "unpaid",
           createdAt: item.createdAt.split("T")[0],
         }));
-
         setInvoices(mappedInvoices);
       } catch (error) {
         console.error("Lỗi:", error);
@@ -57,53 +57,47 @@ const InvoiceStudent: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchInvoices();
   }, []);
 
-  // Hàm tìm kiếm
   const handleSearch = (value: string) => {
     setSearchQuery(value.toLowerCase());
   };
 
-  // Lọc theo searchQuery
   const filteredInvoices = invoices.filter(
     (invoice) =>
       invoice.id.toLowerCase().includes(searchQuery) ||
       invoice.contractId.toLowerCase().includes(searchQuery)
   );
 
-  // Khi bấm nút "Thanh toán", chuyển sang trang PaymentPage
-  const goToPaymentPage = (invoice: Invoice) => {
-    navigate("/student/payment", { state: { invoice } });
+  const openPaymentModal = (invoice: Invoice) => {
+    setSelectedInvoice(invoice);
+    setPaymentMethod("");
+    setQrValue("");
+    setShowPaymentModal(true);
   };
 
-  // Hàm in hóa đơn với giao diện tương tự in hợp đồng
+  useEffect(() => {
+    if (selectedInvoice && paymentMethod) {
+      setQrValue(
+        `bill_id:${selectedInvoice.id},sum_price:${selectedInvoice.totalAmount},payment_method:${paymentMethod}`
+      );
+    }
+  }, [selectedInvoice, paymentMethod]);
+
   const handlePrintInvoice = (invoice: Invoice) => {
     const newWindow = window.open("", "_blank", "width=800,height=600");
     if (!newWindow) return;
-
     const invoiceHtml = `
       <html>
         <head>
           <title>Hóa đơn - ${invoice.id}</title>
           <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 20px;
-            }
-            h1, h2, h3 {
-              text-align: center;
-            }
-            .invoice-info {
-              margin: 20px 0;
-            }
-            .label {
-              font-weight: bold;
-            }
-            .field {
-              margin-bottom: 10px;
-            }
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1, h2, h3 { text-align: center; }
+            .invoice-info { margin: 20px 0; }
+            .label { font-weight: bold; }
+            .field { margin-bottom: 10px; }
           </style>
         </head>
         <body>
@@ -136,21 +130,78 @@ const InvoiceStudent: React.FC = () => {
         </body>
       </html>
     `;
-
     newWindow.document.open();
     newWindow.document.write(invoiceHtml);
     newWindow.document.close();
   };
 
+  const handlePaymentSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!selectedInvoice || !paymentMethod) {
+      alert("Vui lòng chọn hóa đơn và phương thức thanh toán.");
+      return;
+    }
+  
+    const billUpdateData = {
+      billStatus: "PAID",
+      paymentMethod: paymentMethod.toUpperCase(),
+      paymentDate: new Date().toISOString().split("T")[0],
+    };
+  
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/v1/bills/update/${selectedInvoice.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(billUpdateData),
+        }
+      );
+  
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          errorData = { message: "Lỗi không xác định" };
+        }
+        alert(`Lỗi cập nhật hóa đơn: ${errorData.message}`);
+        return;
+      }
+  
+      try {
+        await response.json();
+      } catch (e) {
+        // Nếu không có body JSON thì bỏ qua
+      }
+  
+      setInvoices((prevInvoices) =>
+        prevInvoices.map((inv) =>
+          inv.id === selectedInvoice.id
+            ? {
+                ...inv,
+                status: "paid",
+                paymentMethod: paymentMethod.toUpperCase(),
+                paymentDate: new Date().toISOString().split("T")[0],
+              }
+            : inv
+        )
+      );
+  
+      setShowPaymentModal(false);
+      alert("Thanh toán thành công! Hóa đơn đã được cập nhật trên server.");
+    } catch (error) {
+      console.error("Lỗi khi cập nhật hóa đơn:", error);
+      alert("Có lỗi xảy ra khi cập nhật hóa đơn.");
+    }
+  };
+  
   return (
     <div className="invoice-student">
-      <h1>Quản lý Hóa đơn</h1>
-      <Search
-        placeholder="Nhập mã hóa đơn hoặc mã hợp đồng"
-        onSearch={handleSearch}
-        enterButton="Tìm kiếm"
-        style={{ marginBottom: 16 }}
-      />
+      <h1>Danh sách hóa đơn</h1>
       <Table
         dataSource={filteredInvoices}
         rowKey="id"
@@ -158,16 +209,8 @@ const InvoiceStudent: React.FC = () => {
         columns={[
           { title: "Mã hóa đơn", dataIndex: "id", key: "id" },
           { title: "Mã hợp đồng", dataIndex: "contractId", key: "contractId" },
-          {
-            title: "Ngày thanh toán",
-            dataIndex: "paymentDate",
-            key: "paymentDate",
-          },
-          {
-            title: "Phương thức thanh toán",
-            dataIndex: "paymentMethod",
-            key: "paymentMethod",
-          },
+          { title: "Ngày tạo", dataIndex: "paymentDate", key: "paymentDate" },
+          { title: "Phương thức thanh toán", dataIndex: "paymentMethod", key: "paymentMethod" },
           {
             title: "Tổng tiền",
             dataIndex: "totalAmount",
@@ -191,34 +234,71 @@ const InvoiceStudent: React.FC = () => {
               <>
                 {record.status === "unpaid" ? (
                   <>
-                    <Button type="primary" onClick={() => goToPaymentPage(record)}>
+                    <Button type="primary" onClick={() => openPaymentModal(record)}>
                       Thanh toán
                     </Button>
-                    <Button
-                      style={{ marginLeft: 8 }}
-                      onClick={() => handlePrintInvoice(record)}
-                    >
+                    <Button style={{ marginLeft: 8 }} onClick={() => handlePrintInvoice(record)}>
                       In hóa đơn
                     </Button>
                   </>
                 ) : (
-                  <>
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      Đã thanh toán
-                    </span>
-                    <Button
-                      style={{ marginLeft: 8 }}
-                      onClick={() => handlePrintInvoice(record)}
-                    >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ color: "green", fontWeight: "bold" }}>Đã thanh toán</span>
+                    <Button style={{ marginLeft: 8 }} onClick={() => handlePrintInvoice(record)}>
                       In hóa đơn
                     </Button>
-                  </>
+                  </div>
                 )}
               </>
             ),
           },
         ]}
       />
+  
+      <Modal
+        visible={showPaymentModal}
+        title="Thanh toán hóa đơn"
+        onCancel={() => setShowPaymentModal(false)}
+        footer={null}
+        className="modal-payment"
+        width="60vw"
+  bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+      >
+        {selectedInvoice && (
+          <form onSubmit={handlePaymentSubmit}>
+            <div className="form-group">
+              <label>Mã hóa đơn:</label>
+              <p>{selectedInvoice.id}</p>
+            </div>
+            <div className="form-group">
+              <label>Tổng tiền:</label>
+              <p>{selectedInvoice.totalAmount.toLocaleString()} VND</p>
+            </div>
+            <div className="form-group">
+              <label htmlFor="paymentMethod">Phương thức thanh toán:</label>
+              <select
+                id="paymentMethod"
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                required
+              >
+                <option value="">Chọn phương thức</option>
+                <option value="bank_transfer">Chuyển khoản ngân hàng</option>
+                <option value="cash">Tiền mặt</option>
+              </select>
+            </div>
+            {paymentMethod === "bank_transfer" && (
+              <div className="form-group">
+                <label>Mã QR:</label>
+                <QRCode value={qrValue} size={128} />
+              </div>
+            )}
+            {/* <Button type="primary" htmlType="submit">
+              Thanh toán
+            </Button> */}
+          </form>
+        )}
+      </Modal>
     </div>
   );
 };

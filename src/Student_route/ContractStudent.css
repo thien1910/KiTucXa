@@ -3,12 +3,13 @@
   font-family: Arial, sans-serif;
   background-color: #f0f4f8; /* Thêm màu nền nhẹ */
   border-radius: 8px; /* Bo góc cho container */
+  text-align: left;
 }
 
 h2 {
   margin-bottom: 20px;
   color: #333;
-  text-align: center; /* Căn giữa tiêu đề */
+  text-align: left; /* Căn giữa tiêu đề */
 }
 
 .filters {

@@ -46,15 +46,15 @@ const StudentDashboard = () => {
           <ul>
             <li onClick={() => setView("dashboard")}>Dashboard</li>
             <li onClick={() => setView("userProfileStudent")}>
-              Quản lý thông tin cá nhân
+              Thông tin cá nhân
             </li>
             <li onClick={() => setView("contractStudent")}>
-              Quản lý hợp đồng
+              Hợp đồng
             </li>
             <li onClick={() => setView("invoiceStudent")}>
-              Quản lý hóa đơn
+              Hóa đơn
             </li>
-            <li onClick={() => setView("payment")}>Thanh toán</li>
+            {/* <li onClick={() => setView("payment")}>Thanh toán</li> */}
             
             <li onClick={handleLogout} className="logout-button">🚪 Đăng xuất</li>
 
@@ -73,8 +73,7 @@ const StudentDashboard = () => {
         ) : (
           <>
             <header className="dashboard-header">
-              <h1>Chào mừng đến với hệ thống quản lý ký túc xá</h1>
-              <p>Quản lý sinh viên, hợp đồng, thanh toán và nhiều hơn nữa.</p>
+              <h1>Chào mừng đến với hệ thống ký túc xá KTX</h1>
             </header>
 
             <section className="dashboard-sections">

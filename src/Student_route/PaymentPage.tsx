@@ -189,7 +189,7 @@ const PaymentPage: React.FC = () => {
                   {bill.sum_price.toLocaleString()} VND
                 </p>
                 <p>
-                  <strong>Ngày thanh toán:</strong> {bill.payment_date}
+                  <strong>Ngày tạo:</strong> {bill.payment_date}
                 </p>
                 <p>
                   <strong>Phương thức thanh toán:</strong>{" "}

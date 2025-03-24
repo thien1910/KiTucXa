@@ -42,7 +42,7 @@ const StudentManagement: React.FC = () => {
   
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/v1/user/list", {
+        const response = await fetch("http://localhost:8080/api/v1/user/manager/list", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`, // Đính kèm token

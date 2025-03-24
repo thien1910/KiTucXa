@@ -42,6 +42,8 @@ const LoginForm: React.FC = () => {
         navigate("/manager/dashboard");
       } else if (roles.includes("STUDENT")) {
         navigate("/student/dashboard");
+      }else if (roles.includes("ADMIN")) {
+        navigate("/admin/dashboard");
       }
     } catch (error: any) {
       console.error("Lỗi đăng nhập:", error.response?.data || error.message);
