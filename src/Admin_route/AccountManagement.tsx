@@ -17,7 +17,8 @@ interface Account {
   roomNameStudent: string | null;
   cccd: string | null;
   phoneNumber: string | null;
-  status: "Staying" | "Left" | "Disciplined" | null;
+  // Đã cập nhật để bao gồm trạng thái Disabled
+  status: "Staying" | "Left" | "Disciplined" | "Disabled" | null;
   country: string | null;
   roles: string[];
   createdAt: string;
@@ -183,11 +184,28 @@ const AccountManagement: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      const data = await response.json();
+  
+      // Log response trước khi parse JSON
+      const text = await response.text();
+      console.log("Response từ server:", text);
+  
+      // Nếu server trả về HTML, không parse JSON
+      if (!response.ok) {
+        throw new Error(`Lỗi API: ${response.status} - ${response.statusText}`);
+      }
+  
+      // Nếu phản hồi không phải JSON hợp lệ
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (error) {
+        throw new Error("Lỗi parse JSON: Server không trả về JSON hợp lệ.");
+      }
+  
+      // Xử lý dữ liệu JSON
       if (data.code === 1000) {
         message.success("Xóa tài khoản thành công");
-        await fetchAccounts(); // Refresh the list
+        await fetchAccounts(); // Refresh danh sách
       } else {
         message.error("Xóa tài khoản thất bại");
       }
@@ -196,6 +214,45 @@ const AccountManagement: React.FC = () => {
       message.error("Đã xảy ra lỗi khi xóa tài khoản");
     }
   };
+
+  // Handle change status từ dropdown
+  const handleChangeStatus = async (record: Account, newStatus: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const payload = { status: newStatus };
+      const response = await fetch(`http://localhost:8080/api/v1/user/${record.userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (data.code === 1000) {
+        message.success("Cập nhật trạng thái thành công");
+        await fetchAccounts();
+      } else {
+        message.error("Cập nhật trạng thái thất bại");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      message.error("Đã xảy ra lỗi khi cập nhật trạng thái");
+    }
+  };
+
+  // Handle disable account (vô hiệu hóa tài khoản)
+  // Hàm toggle cập nhật trạng thái dựa trên trạng thái "Disciplined"
+  const handleToggleActivation = async (record: Account) => {
+    if (record.status === "Disciplined") {
+      // Nếu tài khoản đang bị kỷ luật, kích hoạt lại (chuyển về "Staying")
+      await handleChangeStatus(record, "Staying");
+    } else {
+      // Ngược lại, chuyển sang "Disciplined" để vô hiệu hóa tài khoản
+      await handleChangeStatus(record, "Disciplined");
+    }
+  };
+
 
   // Render status tag with color
   const getStatusTag = (status: string | null) => {
@@ -209,6 +266,9 @@ const AccountManagement: React.FC = () => {
         break;
       case "Disciplined":
         color = "#f5222d"; // red
+        break;
+      case "Disabled":
+        color = "#d9d9d9"; // gray
         break;
       default:
         color = "#d9d9d9"; // gray
@@ -234,11 +294,12 @@ const AccountManagement: React.FC = () => {
         dataSource={filteredAccounts}
         rowKey="userId"
         columns={[
+          { title: "ID", dataIndex: "userId", key: "userId" },
           { title: "Mã sinh viên", dataIndex: "maSV", key: "maSV" },
           { title: "Tên đăng nhập", dataIndex: "userName", key: "userName" },
           { title: "Họ và tên", dataIndex: "fullName", key: "fullName" },
           { title: "Giới tính", dataIndex: "gender", key: "gender" },
-          { title: "Phòng", dataIndex: "roomNameStudent", key: "roomNameStudent" },
+          // { title: "Phòng", dataIndex: "roomNameStudent", key: "roomNameStudent" },
           { title: "CCCD", dataIndex: "cccd", key: "cccd" },
           { title: "Số điện thoại", dataIndex: "phoneNumber", key: "phoneNumber" },
           { title: "Quốc gia", dataIndex: "country", key: "country" },
@@ -273,6 +334,16 @@ const AccountManagement: React.FC = () => {
                 >
                   <Button danger icon={<DeleteOutlined />} />
                 </Popconfirm>
+                
+                <Button
+  onClick={() => handleToggleActivation(record)}
+  style={{ marginLeft: 8 }}
+  type={record.status === "Disciplined" ? "primary" : "default"}
+  danger={record.status !== "Disciplined"}
+>
+  {record.status === "Disciplined" ? "Kích hoạt" : "Vô hiệu hóa"}
+</Button>
+
               </>
             ),
           },
@@ -339,7 +410,6 @@ const AccountManagement: React.FC = () => {
             <Select mode="multiple">
               <Select.Option value="STUDENT">Sinh viên</Select.Option>
               <Select.Option value="MANAGER">Quản lý</Select.Option>
-              <Select.Option value="GUEST">Khách</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item>

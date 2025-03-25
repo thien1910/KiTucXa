@@ -22,7 +22,7 @@ body, html {
 
 /* Cột trái - ảnh */
 .left-section {
-  flex: 1;
+  flex: 2;
   overflow: hidden; /* Ẩn phần ảnh thừa nếu có */
 }
 

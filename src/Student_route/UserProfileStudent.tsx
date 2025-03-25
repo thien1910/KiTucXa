@@ -124,20 +124,21 @@ const UserProfileStudent: React.FC = () => {
   // Đổi mật khẩu
   const handleChangePassword = async () => {
     if (!user) return;
-
+  
     if (newPassword !== confirmPassword) {
       alert("Mật khẩu mới và xác nhận mật khẩu không khớp.");
       return;
     }
-
+  
     const passwordData = {
-      userId: user.userId,
       oldPassword,
       newPassword,
     };
-
+  
+    console.log("Sending request to change password with token:", token);
+  
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/user/${user.userId}/change-password`, {
+      const response = await fetch("http://localhost:8080/api/v1/user/change-password", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -145,22 +146,27 @@ const UserProfileStudent: React.FC = () => {
         },
         body: JSON.stringify(passwordData),
       });
-
+  
+      console.log("Response status:", response.status);
       const result = await response.json();
+      console.log("Response body:", result);
+  
       if (!response.ok) {
         throw new Error(result.message || "Lỗi khi đổi mật khẩu.");
       }
-
+  
       setIsEditingPassword(false);
-      // Reset input
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
       alert("Đổi mật khẩu thành công!");
     } catch (error) {
       console.error("Lỗi khi đổi mật khẩu:", error);
+      alert("Đổi mật khẩu thất bại!");
     }
   };
+  
+  
 
   return (
     <div className="profile-page">

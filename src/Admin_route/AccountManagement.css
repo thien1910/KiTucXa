@@ -1,12 +1,19 @@
 .account-container {
   padding: 20px;
-  /* max-width: 900px; */
-  max-width: 1200px; 
-  margin: auto;
+  width: 110w;
+  height: 100vh;
+  margin: 0;
   opacity: 0;
   transform: translateY(-10px);
   animation: fadeIn 0.5s ease-in-out forwards;
+  overflow: auto; /* Để tránh tràn nội dung */
 }
+
+.account-table {
+  width: 100%; /* Để bảng chiếm toàn bộ chiều rộng */
+  max-width: none; /* Không giới hạn chiều rộng */
+}
+
 
 @keyframes fadeIn {
   to {

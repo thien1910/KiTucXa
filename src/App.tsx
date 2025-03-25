@@ -14,6 +14,7 @@ import ServiceManagement from "./Manager_route/ServiceManagement"; // Import Ser
 import GuestDashboard from "./Guest_route/GuestDashboard";
 import StudentDashboard from "./Student_route/StudentDashboard";
 import AdminDashboard from "./Admin_route/AdminDashboard";
+import RoomDetail from "./Manager_route/RoomDetail";
 
 const App: React.FC = () => {
   return (
@@ -34,6 +35,8 @@ const App: React.FC = () => {
         <Route path="/guestdashboard" element={<GuestDashboard/>} />
         <Route path="/student/dashboard" element={<StudentDashboard/>} />
         <Route path="/admin/dashboard" element={<AdminDashboard/>} />
+        <Route path="/room-management/room-detail/{roomId}" element={<RoomDetail/>} />
+
       </Routes>
     </Router>
   );
