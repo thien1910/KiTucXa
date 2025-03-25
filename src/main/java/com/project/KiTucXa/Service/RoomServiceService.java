@@ -35,7 +35,8 @@ public class RoomServiceService {
         UtilityService utilityService = utilityServiceRepository.findById(roomServiceDto.getUtilityServiceId())
                 .orElseThrow(() -> new AppException(ErrorCode.UTILITY_SERVICE_NOT_FOUND));
 
-        com.project.KiTucXa.Entity.RoomService roomService = roomServiceMapper.toRoomService(roomServiceDto, room, utilityService);
+        com.project.KiTucXa.Entity.RoomService roomService = roomServiceMapper.toRoomService
+                (roomServiceDto, room, utilityService);
         roomServiceRepository.save(roomService);
 
         return roomServiceMapper.toRoomServiceResponse(roomService);
