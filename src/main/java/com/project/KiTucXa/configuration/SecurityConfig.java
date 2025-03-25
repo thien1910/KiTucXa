@@ -58,11 +58,13 @@ public class SecurityConfig {
             "/api/v1/Payment/add",
             "/api/v1/Payment/{paymentId}"
 
+
     };
     private final String[] ADMIN_ENDPOINTS = {
             "/api/v1/user/add",
             "/api/v1/user/list",
             "/api/v1/user/update/{userId}",
+            "/api/v1/user/{userId}",
 
     };
 

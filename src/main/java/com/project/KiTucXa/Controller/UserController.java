@@ -2,6 +2,7 @@ package com.project.KiTucXa.Controller;
 
 
 import com.project.KiTucXa.Dto.Response.StudentResponse;
+import com.project.KiTucXa.Dto.Update.PasswordUpdateDto;
 import jakarta.validation.Valid;
 import com.project.KiTucXa.Dto.Request.ApiResponse;
 import com.project.KiTucXa.Dto.Request.UserCreationRequest;
@@ -109,6 +110,16 @@ public class UserController {
                 .result("User has been deleted")
                 .build();
     }
+
+    @PutMapping("/change-password")
+    ApiResponse<String> changePassword(@RequestBody @Valid PasswordUpdateDto request) {
+        userService.changePassword(request);
+        return ApiResponse.<String>builder()
+                .result("Password has been changed successfully")
+                .build();
+    }
+
+
    /* @PostMapping("/guest-login")
     public ApiResponse<AuthenticationResponse> guestLogin() {
         String guestToken = authenticationService.generateGuestToken();

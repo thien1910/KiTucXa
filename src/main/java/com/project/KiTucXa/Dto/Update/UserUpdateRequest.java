@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 
 public class UserUpdateRequest {
      String maSV;
-     String passWord;
+//     String passWord;
      String fullName;
      @Enumerated(EnumType.STRING)
      Gender gender;

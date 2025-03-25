@@ -1,5 +1,6 @@
 package com.project.KiTucXa.Dto.Response;
 
+import com.project.KiTucXa.Enum.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,5 +17,7 @@ public class AuthenticationResponse {
     private Set<String> roles; // Thêm role
     private String fullName;
     String userId;
+    Status status;
+
 
 }
