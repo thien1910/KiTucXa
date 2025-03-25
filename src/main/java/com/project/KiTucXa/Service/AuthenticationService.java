@@ -10,6 +10,7 @@ import com.project.KiTucXa.Dto.Request.IntrospectRequest;
 import com.project.KiTucXa.Dto.Response.AuthenticationResponse;
 import com.project.KiTucXa.Dto.Response.IntrospectResponse;
 import com.project.KiTucXa.Entity.User;
+import com.project.KiTucXa.Enum.Status;
 import com.project.KiTucXa.Exception.AppException;
 import com.project.KiTucXa.Exception.ErrorCode;
 import com.project.KiTucXa.Repository.UserRepository;
@@ -63,6 +64,11 @@ public class AuthenticationService {
         var user = userRepository.findByuserName(request.getUserName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITED));
 
+        // Kiểm tra nếu user có trạng thái DISCIPLINED thì không cho đăng nhập
+        if (user.getStatus() == Status.Disciplined) {
+            throw new AppException(ErrorCode.USER_FORBIDDENED);
+        }
+
         boolean authenticated = passwordEncoder.matches(request.getPassWord(), user.getPassWord());
 
         if (!authenticated)
@@ -76,8 +82,10 @@ public class AuthenticationService {
                 .roles(user.getRoles()) // Thêm role của user vào response
                 .fullName(user.getFullName()) // Thêm fullName vào response
                 .userId(user.getUserId())
+                .status(user.getStatus()) // Trả về status của user
                 .build();
     }
+
 
 
 

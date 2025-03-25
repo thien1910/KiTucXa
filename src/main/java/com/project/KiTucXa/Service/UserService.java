@@ -2,6 +2,7 @@ package com.project.KiTucXa.Service;
 
 import com.project.KiTucXa.Dto.Request.UserCreationRequest;
 import com.project.KiTucXa.Dto.Response.UserResponse;
+import com.project.KiTucXa.Dto.Update.PasswordUpdateDto;
 import com.project.KiTucXa.Dto.Update.UserUpdateRequest;
 import com.project.KiTucXa.Entity.User;
 import com.project.KiTucXa.Enum.Role;
@@ -81,5 +82,22 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITED));
         return userMapper.toUserResponse(user);
     }
+
+    public void changePassword(PasswordUpdateDto request) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByuserName(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITED));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassWord())) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        user.setPassWord(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+
+
+
 
 }

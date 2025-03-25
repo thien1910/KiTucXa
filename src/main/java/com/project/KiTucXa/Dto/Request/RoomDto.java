@@ -21,7 +21,6 @@ public class RoomDto {
     String department;
     @NotNull(message = "Maximum occupancy is required")
     int maximumOccupancy;
-    int currentOccupancy;
     @NotNull(message = "Room type is required")
     String roomType;
     @NotNull(message = "Room price is required")

@@ -1,6 +1,7 @@
 package com.project.KiTucXa.Controller;
 
 
+import com.project.KiTucXa.Entity.Contract;
 import jakarta.validation.Valid;
 import com.project.KiTucXa.Dto.Request.ApiResponse;
 import com.project.KiTucXa.Dto.Request.ContractDto;
@@ -47,5 +48,13 @@ public class ContractController {
     public String deleteContract(@PathVariable("contractId") String contractId) {
         contractService.deleteContract(contractId);
         return "Contract has been deleted";
+    }
+    @GetMapping("/user/{userId}")
+    public List<Contract> getContractsByUserId(@PathVariable String userId) {
+        return contractService.getContractsByUserId(userId);
+    }
+    @GetMapping("/manager/{userId}")
+    public List<Contract> getContractsByUserIdWithManagerAuthority(@PathVariable String userId) {
+        return contractService.getContractsByUserId(userId);
     }
 }

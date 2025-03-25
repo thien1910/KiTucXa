@@ -27,7 +27,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/v1/user/add",
             "/api/v1/user/guest-login",
             "/api/v1/auth/token",
             "/api/v1/auth/introspect",
@@ -35,8 +34,9 @@ public class SecurityConfig {
             "/api/v1/user/{userId}",
     };
     private final String[] MANAGER_ENDPOINTS = {
-            "/api/v1/user/list","/api/v1/user/update/{userId}",
             "/api/v1/bills/{billId}","/api/v1/bills/list","/api/v1/bills/add","/api/v1/bills/update/{billId}","/api/v1/bills/delete/{billId}",
+            "/api/v1/user/manager/list",
+
             "/api/v1/bill-details/{billDetailId}","/api/v1/bill-details/list","/api/v1/bill-details/add","/api/v1/bill-details/update/{billDetailId}",
             "/api/v1/Payment/add","/api/v1/Payment/list","/api/v1/Payment/{paymentId}","/api/v1/Payment/update/{paymentId}",
             "/api/v1/rooms/list","/api/v1/rooms/{roomId}","/api/v1/rooms/add","/api/v1/rooms/update/{roomId}","/api/v1/rooms/delete/{roomId}",
@@ -55,6 +55,16 @@ public class SecurityConfig {
             "/api/v1/room-services/{roomServiceId}",
             "/api/v1/contracts/{contractId}",
             "/api/v1/user/my-info",
+            "/api/v1/Payment/add",
+            "/api/v1/Payment/{paymentId}"
+
+
+    };
+    private final String[] ADMIN_ENDPOINTS = {
+            "/api/v1/user/add",
+            "/api/v1/user/list",
+            "/api/v1/user/update/{userId}",
+            "/api/v1/user/{userId}",
 
     };
 
@@ -71,21 +81,26 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, MANAGER_ENDPOINTS)
                         .hasRole(Role.MANAGER.name())
-
                         .requestMatchers(HttpMethod.GET, MANAGER_ENDPOINTS)
                         .hasRole(Role.MANAGER.name())
-
                         .requestMatchers(HttpMethod.PUT, MANAGER_ENDPOINTS)
                         .hasRole(Role.MANAGER.name())
-
                         .requestMatchers(HttpMethod.DELETE, MANAGER_ENDPOINTS)
                         .hasRole(Role.MANAGER.name())
 
                         .requestMatchers(HttpMethod.PUT, STUDENT_ENDPOINTS)
                         .hasRole(Role.STUDENT.name())
-
                         .requestMatchers(HttpMethod.GET, STUDENT_ENDPOINTS)
                         .hasRole(Role.STUDENT.name())
+
+                        .requestMatchers(HttpMethod.POST, ADMIN_ENDPOINTS)
+                        .hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, ADMIN_ENDPOINTS)
+                        .hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, ADMIN_ENDPOINTS)
+                        .hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, ADMIN_ENDPOINTS)
+                        .hasRole(Role.ADMIN.name())
 
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
