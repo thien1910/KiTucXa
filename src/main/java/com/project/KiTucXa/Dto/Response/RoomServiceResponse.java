@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class RoomServiceResponse {
     String roomServiceId;
     String roomId;
-    Integer utilityServiceId;
+    String utilityServiceId;
     BigDecimal price;
     Timestamp createdAt;
     Timestamp updatedAt;
