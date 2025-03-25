@@ -6,6 +6,7 @@ import com.project.KiTucXa.Dto.Update.ContractUpdateDto;
 import com.project.KiTucXa.Entity.Contract;
 import com.project.KiTucXa.Entity.Room;
 import com.project.KiTucXa.Entity.User;
+import com.project.KiTucXa.Enum.ContractStatus;
 import com.project.KiTucXa.Exception.AppException;
 import com.project.KiTucXa.Exception.ErrorCode;
 import com.project.KiTucXa.Mapper.ContractMapper;
@@ -15,6 +16,7 @@ import com.project.KiTucXa.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,27 @@ public class ContractService {
 
         Room room = roomRepository.findById(contractDto.getRoomId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+
+        // Kiểm tra xem user đã có hợp đồng hiệu lực chưa
+        List<Contract> activeContracts = contractRepository.findByUser_UserId(user.getUserId())
+                .stream()
+                .filter(c -> {
+                    boolean isActive = c.getContractStatus() == ContractStatus.Active;
+                    boolean isNotExpired = c.getEndDate() != null && c.getEndDate().after(new Date());
+                    System.out.println("Contract ID: " + c.getContractId() +
+                            ", Status: " + c.getContractStatus() +
+                            ", EndDate: " + c.getEndDate() +
+                            ", isActive: " + isActive +
+                            ", isNotExpired: " + isNotExpired);
+                    return isActive && isNotExpired;
+                })
+                .collect(Collectors.toList());
+
+
+        if (!activeContracts.isEmpty()) {
+            // Giả sử bạn đã định nghĩa ErrorCode.USER_HAS_ACTIVE_CONTRACT trong ErrorCode
+            throw new AppException(ErrorCode.USER_HAS_ACTIVE_CONTRACT);
+        }
 
         Contract contract = contractMapper.toContract(contractDto);
         contract.setUser(user);

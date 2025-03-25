@@ -17,6 +17,5 @@ public class RoomServiceDto {
      String roomId;
      @NotNull(message = "Utility Service ID is required")
      String utilityServiceId;
-     @NotNull(message = "Price is required")
      BigDecimal price;
 }

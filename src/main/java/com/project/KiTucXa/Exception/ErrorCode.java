@@ -34,8 +34,8 @@ public enum ErrorCode {
     MANAGER_NOT_FOUND(1024, "manager not found",HttpStatus.NOT_FOUND),
     STUDENT_NOT_FOUND(1025,"Student not found", HttpStatus.NOT_FOUND),
     PAYMENT_LIMIT_EXCEEDED (1026, "payment limit exceeded", HttpStatus.BAD_REQUEST),
-    USER_FORBIDDENED(1027,"user account is unaccessible",HttpStatus.BAD_REQUEST)
-
+    USER_FORBIDDENED(1027,"user account is unaccessible",HttpStatus.BAD_REQUEST),
+    USER_HAS_ACTIVE_CONTRACT(1028,"User still has an active contract",HttpStatus.BAD_REQUEST)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode){

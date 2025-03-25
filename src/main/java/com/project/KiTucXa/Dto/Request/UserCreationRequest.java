@@ -23,7 +23,6 @@ public class UserCreationRequest {
     String fullName;
     @Enumerated(EnumType.STRING)
     Gender gender;
-    String roomNameStudent;
     String cccd;
     String phoneNumber;
     @Enumerated(EnumType.STRING)
