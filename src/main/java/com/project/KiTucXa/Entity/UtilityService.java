@@ -19,7 +19,6 @@ public class UtilityService extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String utilityServiceId;
-
     String serviceName;
     String description;
     BigDecimal pricePerUnit;
