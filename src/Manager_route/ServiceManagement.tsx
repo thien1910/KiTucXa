@@ -129,11 +129,19 @@ const ServiceManagement: React.FC = () => {
   return (
     <div className="service-container">
       <h2>Quản lý dịch vụ</h2>
-      <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} className="add-button">
-        Thêm dịch vụ
-      </Button>
+  
+  <Button 
+    type="primary" 
+    icon={<PlusOutlined />} 
+    onClick={handleAdd}
+    className="add-button"
+  >
+    Thêm dịch vụ
+  </Button>
       <Table
         dataSource={services}
+        className="service-table"
+
         columns={[
           { title: "Tên dịch vụ", dataIndex: "serviceName", key: "serviceName" },
           { title: "Mô tả", dataIndex: "description", key: "description" },
@@ -151,7 +159,6 @@ const ServiceManagement: React.FC = () => {
             ),
           },
         ]}
-        className="service-table"
       />
       <Modal
         title={editingService ? "Chỉnh sửa dịch vụ" : "Thêm dịch vụ"}
@@ -180,7 +187,7 @@ const ServiceManagement: React.FC = () => {
           >
             <Select>
               <Select.Option value="Active">Active</Select.Option>
-              <Select.Option value="Disable">Disable</Select.Option>
+              <Select.Option value="Inactive">Disable</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item>

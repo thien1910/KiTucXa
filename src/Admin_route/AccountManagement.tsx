@@ -281,7 +281,7 @@ const AccountManagement: React.FC = () => {
     <div className="account-container">
       <h2>Quản lý tài khoản</h2>
       <Input
-        placeholder="Tìm kiếm tài khoản"
+        placeholder="Tìm kiếm tài khoản bằng tên đăng nhập"
         value={searchTerm}
         onChange={handleSearch}
         className="search-input"
@@ -387,9 +387,9 @@ const AccountManagement: React.FC = () => {
               <Select.Option value="FEMALE">Nữ</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="roomNameStudent" label="Phòng">
+          {/* <Form.Item name="roomNameStudent" label="Phòng">
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item name="cccd" label="CCCD">
             <Input />
           </Form.Item>

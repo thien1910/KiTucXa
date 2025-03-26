@@ -70,7 +70,7 @@ const LoginForm: React.FC = () => {
         <div className="login-content">
           <h1>Đăng nhập</h1>
           <p className="subtitle">
-            Đăng nhập vào hệ thống ký túc xá của chúng tôi
+              Hãy đăng nhập vào hệ thống ký túc xá KTX của chúng tôi 
           </p>
 
           {/* Bạn có thể thêm tab nếu muốn, ví dụ: Login / Create Profile */}

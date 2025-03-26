@@ -1,157 +1,219 @@
 .contract-management {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #f0f4f8; /* Thêm màu nền nhẹ */
-  border-radius: 8px; /* Bo góc cho container */
+  padding: 24px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
 }
 
 h2 {
-  margin-bottom: 20px;
-  color: #333;
-  text-align: center; /* Căn giữa tiêu đề */
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .filters {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
 }
 
-.filters select,
-.filters input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+/* Search input */
+.ant-input-search {
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.filters select:focus,
-.filters input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+/* Buttons */
+.ant-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-.filters select {
-  width: 150px;
-}
-
-.filters input {
-  flex-grow: 1;
-}
-
-.filters button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: #28a745;
+.create-btn {
+  background-color: #10b981;
   color: white;
-  cursor: pointer;
-  font-size: 14px;
+  border: none;
+  margin-bottom: 24px;
 }
 
-.filters button:hover {
-  background-color: #218838;
+.create-btn:hover {
+  background-color: #059669 !important;
+  transform: translateY(-1px);
 }
 
+/* Table styling */
 table {
   width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-th,
-td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+  background-color: #3b82f6;
+  color: rgb(0, 0, 0) !important;
+  font-weight: 600;
+  padding: 16px !important;
+  position: relative;
+}
+
+th:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 1px;
+  background-color: rgba(255,255,255,0.2);
 }
 
 td {
-  font-size: 14px;
+  padding: 14px !important;
+  border-bottom: 1px solid #ffffff;
+  color: #64748b;
 }
 
-.edit-btn,
-.delete-btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 5px;
+tr:hover td {
+  background-color: #f8fafc;
 }
 
-.edit-btn {
-  background-color: #007bff;
-  color: white;
+/* Action buttons */
+.ant-btn-danger {
+  background-color: #ef4444;
+  border-color: #ef4444;
 }
 
-.delete-btn {
-  background-color: #dc3545;
-  color: white;
+.ant-btn-primary:not(.create-btn) {
+  background-color: #3b82f6;
 }
 
+/* Edit Form */
 .edit-form {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  width: 500px;
   z-index: 1000;
-  width: 400px;
 }
 
 .edit-form h3 {
-  margin-bottom: 20px;
-  color: #333;
+  color: #1e293b;
+  font-size: 20px;
+  margin-bottom: 24px;
+  text-align: center;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 8px;
+  color: #475569;
+  font-weight: 500;
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 10px 14px;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  transition: border-color 0.3s;
 }
 
-.form-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.form-actions button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+/* Modal styling */
+.ant-modal-content {
+  border-radius: 12px !important;
+  padding: 24px !important;
 }
 
-.form-actions button:first-child {
-  background-color: #28a745;
-  color: white;
+.ant-modal-header {
+  border-radius: 12px 12px 0 0 !important;
 }
 
-.form-actions button:last-child {
-  background-color: #dc3545;
-  color: white;
+.ant-form-item-label label {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+/* Print button */
+.ant-btn-default:has(.anticon-printer) {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+.ant-btn-default:has(.anticon-printer):hover {
+  background-color: #cbd5e1 !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+  
+  .ant-input-search {
+    width: 100%;
+  }
+  
+  .edit-form {
+    width: 90%;
+    padding: 24px;
+  }
+  
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.edit-form {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Hover effects */
+tr {
+  transition: background-color 0.2s ease;
+}
+
+.ant-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ant-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }

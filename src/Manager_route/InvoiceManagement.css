@@ -1,143 +1,154 @@
 /* InvoiceManagement.css */
 .invoice-management {
-    padding: 20px;
-    max-width: 1161px;
-    margin: auto;
-    font-family: Arial, sans-serif;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.invoice-form {
-    background: #f1f1f1;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  /* Trong InvoiceManagement.css */
+.invoice-management h1 {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 32px;
+    text-align: left; /* Thay đổi từ center sang left */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-left: 8px; /* Thêm padding để căn lề đẹp hơn */
+    /* border-left: 4px solid #3b82f6; Thêm thanh accent màu xanh */
+  }
+  /* Search và Filter */
+  .invoice-management .search-filter {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.invoice-form input, .invoice-form select {
-    flex: 1;
-    min-width: 45%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    transition: border 0.3s;
-}
-
-.invoice-form input:focus, .invoice-form select:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-.save-btn {
-    background-color: #28a745;
-    color: white;
-    padding: 12px 18px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s;
-    width: 100%;
-}
-
-.save-btn:hover {
-    background-color: #218838;
-}
-
-.search-bar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.search-bar input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.search-btn, .create-btn {
-    padding: 12px 18px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.create-btn {
-    background-color: #28a745;
-}
-
-.create-btn:hover {
-    background-color: #218838;
-}
-
-.search-btn:hover {
-    background-color: #0056b3;
-}
-
-.invoice-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.invoice-table th, .invoice-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-}
-
-.invoice-table th {
-    background-color: #f8f8f8;
-    font-weight: bold;
-}
-
-.paid {
-    color: green;
-    font-weight: bold;
-}
-
-.unpaid {
-    color: red;
-    font-weight: bold;
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
     align-items: center;
-}
-
-.modal-content {
-    background: #ffffff;
-    padding: 20px;
+  }
+  
+  .invoice-management .ant-input-search {
+    max-width: 400px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 450px;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-}
-
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Nút chính */
+  .invoice-management .ant-btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  
+  .invoice-management .ant-btn-primary:hover {
+    background-color: #2563eb !important;
+    transform: translateY(-1px);
+  }
+  
+  /* Bảng */
+  .invoice-management .ant-table {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .invoice-management .ant-table-thead > tr > th {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    font-weight: 600;
+    padding: 16px !important;
+  }
+  
+  .invoice-management .ant-table-tbody > tr > td {
+    color: #64748b;
+    transition: background-color 0.2s ease;
+  }
+  
+  .invoice-management .ant-table-tbody > tr:hover > td {
+    background-color: #f8fafc !important;
+  }
+  
+  /* Trạng thái */
+  .paid {
+    color: #10b981;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #dcfce7;
+  }
+  
+  .unpaid {
+    color: #ef4444;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #fee2e2;
+  }
+  
+  /* Nút hành động */
+  .invoice-management .edit-button {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: white !important;
+  }
+  
+  .invoice-management .ant-btn-danger {
+    background-color: #ef4444;
+    border-color: #ef4444;
+  }
+  
+  /* Modal */
+  .invoice-management .ant-modal-content {
+    border-radius: 12px !important;
+    padding: 24px !important;
+  }
+  
+  .invoice-management .ant-modal-header {
+    border-radius: 12px 12px 0 0 !important;
+    background-color: #f8fafc;
+  }
+  
+  /* Form */
+  .invoice-management .ant-form-item-label > label {
+    color: #475569 !important;
+    font-weight: 500 !important;
+  }
+  
+  .invoice-management .ant-input,
+  .invoice-management .ant-select-selector,
+  .invoice-management .ant-picker {
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .invoice-management .search-filter {
+      flex-direction: column;
+    }
+    
+    .invoice-management .ant-input-search {
+      width: 100%;
+    }
+    
+    .invoice-management .ant-table {
+      overflow-x: auto;
+      display: block;
+    }
+  }
+  
+  /* Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .invoice-management .ant-modal-content {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  /* Hiệu ứng hover */
+  .invoice-management .ant-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }

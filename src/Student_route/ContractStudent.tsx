@@ -5,6 +5,8 @@ interface Contract {
   contractId: string;
   userId: string;
   roomName: string;
+  userName: string; // Thêm thuộc tính này
+
   startDate: string;
   endDate: string;
   price: number;
@@ -50,8 +52,9 @@ const ContractManagement: React.FC = () => {
   
         const initialContracts = data.map((item: any) => ({
           contractId: item.contractId,
-          userId: item.user ? item.user.userId : "Không có dữ liệu", // tùy chỉnh nếu cần
-          roomName: item.room ? item.room.roomName : "Không có dữ liệu", // lấy roomName từ item.room
+          userId: item.user ? item.user.userId : "Không có dữ liệu",
+          userName: item.user ? item.user.fullName || "Không có dữ liệu" : "Không có dữ liệu", // Lấy tên khách hàng
+          roomName: item.room ? item.room.roomName : "Không có dữ liệu",
           startDate: item.startDate ? new Date(item.startDate).toISOString() : "",
           endDate: item.endDate ? new Date(item.endDate).toISOString() : "",
           price: item.price || 0,
@@ -61,6 +64,7 @@ const ContractManagement: React.FC = () => {
           createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : "",
           updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
         }));
+        
         
   
         setContracts(initialContracts);
@@ -114,70 +118,60 @@ const ContractManagement: React.FC = () => {
 
     // Tạo nội dung HTML cho hợp đồng
     const contractHtml = `
-      <html>
-        <head>
-          <title>Hợp đồng - ${contract.contractId}</title>
-          <style>
-            /* Thêm CSS cho trang in nếu muốn */
-            body {
-              font-family: Arial, sans-serif;
-              margin: 20px;
-            }
-            h1, h2, h3 {
-              text-align: center;
-            }
-            .contract-info {
-              margin: 20px 0;
-            }
-            .label {
-              font-weight: bold;
-            }
-            .field {
-              margin-bottom: 10px;
-            }
-          </style>
-        </head>
-        <body>
-          <h1>HỢP ĐỒNG THUÊ PHÒNG</h1>
-          <h3>Mã hợp đồng: ${contract.contractId}</h3>
-          <div class="contract-info">
-            <div class="field">
-              <span class="label">Mã phòng:</span> ${contract.roomName}
-            </div>
-            <div class="field">
-              <span class="label">Ngày bắt đầu:</span> ${formatDate(contract.startDate)}
-            </div>
-            <div class="field">
-              <span class="label">Ngày kết thúc:</span> ${formatDate(contract.endDate)}
-            </div>
-            <div class="field">
-              <span class="label">Giá thuê:</span> ${contract.price.toLocaleString()} VNĐ
-            </div>
-            <div class="field">
-              <span class="label">Trạng thái cọc:</span> ${getDepositStatusLabel(contract.depositStatus)}
-            </div>
-            <div class="field">
-              <span class="label">Trạng thái hợp đồng:</span> ${getContractStatusLabel(contract.contractStatus)}
-            </div>
-            <div class="field">
-              <span class="label">Ghi chú:</span> ${contract.note}
-            </div>
-            <div class="field">
-              <span class="label">Cập nhật lần cuối:</span> ${formatDate(contract.updatedAt)}
-            </div>
-          </div>
+  <html>
+    <head>
+      <title>Hợp đồng - ${contract.contractId}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2, h3 { text-align: center; }
+        .contract-info { margin: 20px 0; }
+        .label { font-weight: bold; }
+        .field { margin-bottom: 10px; }
+      </style>
+    </head>
+    <body>
+      <h1>HỢP ĐỒNG THUÊ PHÒNG</h1>
+      <h3>Mã hợp đồng: ${contract.contractId}</h3>
+      <div class="contract-info">
+        <div class="field">
+          <span class="label">Khách hàng:</span> ${contract.userName}
+        </div>
+        <div class="field">
+          <span class="label">Mã phòng:</span> ${contract.roomName}
+        </div>
+        <div class="field">
+          <span class="label">Ngày bắt đầu:</span> ${formatDate(contract.startDate)}
+        </div>
+        <div class="field">
+          <span class="label">Ngày kết thúc:</span> ${formatDate(contract.endDate)}
+        </div>
+        <div class="field">
+          <span class="label">Giá thuê:</span> ${contract.price.toLocaleString()} VNĐ
+        </div>
+        <div class="field">
+          <span class="label">Trạng thái cọc:</span> ${getDepositStatusLabel(contract.depositStatus)}
+        </div>
+        <div class="field">
+          <span class="label">Trạng thái hợp đồng:</span> ${getContractStatusLabel(contract.contractStatus)}
+        </div>
+        <div class="field">
+          <span class="label">Ghi chú:</span> ${contract.note}
+        </div>
+        <div class="field">
+          <span class="label">Cập nhật lần cuối:</span> ${formatDate(contract.updatedAt)}
+        </div>
+      </div>
 
-          <p>Người thuê cam kết tuân thủ mọi quy định...</p>
-          <p>Chữ ký bên A (Chủ trọ)..............</p>
-          <p>Chữ ký bên B (Người thuê)...........</p>
+      <p>Người thuê cam kết tuân thủ mọi quy định...</p>
+      <p>Chữ ký bên A (Chủ trọ)..............</p>
+      <p>Chữ ký bên B (Người thuê)...........</p>
 
-          <script>
-            // In trang
-            window.print();
-          </script>
-        </body>
-      </html>
-    `;
+      <script>
+        window.print();
+      </script>
+    </body>
+  </html>
+`;
 
     // Ghi nội dung vào cửa sổ
     newWindow.document.open();
@@ -204,27 +198,29 @@ const ContractManagement: React.FC = () => {
 
       {/* Bảng danh sách hợp đồng */}
       <table>
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th>Mã HĐ</th>
-            <th>Phòng</th>
-            <th>Ngày bắt đầu</th>
-            <th>Ngày kết thúc</th>
-            <th>Giá thuê</th>
-            <th>Thanh toán</th>
-            <th>Trạng thái</th>
-            <th>Ghi chú</th>
-            <th>Cập nhật</th>
-            <th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
+      <thead>
+  <tr>
+    <th>STT</th>
+    <th>Mã HĐ</th>
+    <th>Khách hàng</th> {/* Thêm cột Tên khách hàng */}
+    <th>Phòng</th>
+    <th>Ngày bắt đầu</th>
+    <th>Ngày kết thúc</th>
+    <th>Giá thuê</th>
+    <th>Thanh toán</th>
+    <th>Trạng thái</th>
+    <th>Ghi chú</th>
+    <th>Cập nhật</th>
+    <th>Thao tác</th>
+  </tr>
+</thead>
+<tbody>
   {contracts.map((contract, index) => (
     <tr key={contract.contractId}>
       <td>{index + 1}</td>
       <td>{contract.contractId}</td>
-      <td>{contract.roomName}</td> {/* Sử dụng roomName */}
+      <td>{contract.userName}</td> {/* Hiển thị tên khách hàng */}
+      <td>{contract.roomName}</td>
       <td>{formatDate(contract.startDate)}</td>
       <td>{formatDate(contract.endDate)}</td>
       <td>{contract.price?.toLocaleString()} VNĐ</td>
@@ -243,6 +239,7 @@ const ContractManagement: React.FC = () => {
     </tr>
   ))}
 </tbody>
+
 
       </table>
     </div>

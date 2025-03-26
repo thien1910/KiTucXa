@@ -1,119 +1,221 @@
-/* Tổng thể container */
-.service-container {
-  padding: 30px;
-  max-width: 1100px;
-  margin: auto;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.5s ease-in-out;
-}
+/* RoomManagement.css */
 
-/* Nút thêm dịch vụ */
-.add-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  /* Tạo khoảng cách giữa icon và text */
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.add-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 91, 255, 0.4);
-}
-
-/* Căn chỉnh icon */
-.add-button i {
-  font-size: 18px;
-}
-/* Bảng dịch vụ */
-.service-table {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  border-collapse: collapse;
-}
-
-.service-table th {
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
-  padding: 14px;
-  text-align: left;
-  font-size: 17px;
-}
-
-.service-table td {
-  padding: 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 15px;
+/* Tổng thể layout */
+.room-management-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
-/* Hiệu ứng hover từng dòng */
-.service-table tr {
-  transition: background 0.3s ease-in-out;
+/* Tiêu đề */
+.room-management-title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
-.service-table tr:hover {
-  background: rgba(0, 123, 255, 0.1);
-}
-
-/* Nút sửa & xóa */
-.edit-button,
-.delete-button {
-  padding: 10px 16px;
+/* Nút chính */
+.add-button {
+  background-color: #3498db;
+  color: white;
+  padding: 0.8rem 1.5rem;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: bold;
+  border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
 }
 
-.edit-button {
-  background: linear-gradient(135deg, #28a745, #218838);
+.add-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Card chứa form và danh sách */
+.form-card,
+.room-list-card {
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Bảng danh sách phòng */
+.room-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.room-table th,
+.room-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.room-table th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.room-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Badge trạng thái */
+.status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-badge.available {
+  background-color: #2ecc71;
   color: white;
 }
 
+.status-badge.occupied {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Nút hành động */
+.action-column button {
+  padding: 0.4rem 0.8rem;
+  margin: 0.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.edit-button {
+  background-color: #f1c40f;
+  color: #2c3e50;
+}
+
 .edit-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+  background-color: #f39c12;
 }
 
 .delete-button {
-  background: linear-gradient(135deg, #dc3545, #c82333);
+  background-color: #e74c3c;
   color: white;
 }
 
 .delete-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+  background-color: #c0392b;
 }
 
-/* Hiệu ứng fade in khi load trang */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
+.detail-button {
+  background-color: #27ae60;
+  color: white;
+}
+
+.detail-button:hover {
+  background-color: #219a52;
+}
+
+/* Form thêm/sửa phòng */
+.form-group {
+  display: grid;
+  grid-gap: 1rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Modal */
+.ant-modal-content {
+  border-radius: 10px !important;
+}
+
+.ant-modal-header {
+  border-radius: 10px 10px 0 0 !important;
+  background-color: #f8f9fa !important;
+}
+
+/* Form chỉnh sửa */
+.edit-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 500px;
+}
+
+.edit-form h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.edit-form button[type="button"] {
+  margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .room-table thead {
+    display: none;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .room-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #ecf0f1;
+    border-radius: 6px;
+  }
+
+  .room-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+  }
+
+  .room-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 1rem;
+    color: #7f8c8d;
+  }
+
+  .action-column {
+    flex-direction: column;
+  }
+
+  .action-column button {
+    width: 100%;
+    margin: 0.2rem 0;
   }
 }

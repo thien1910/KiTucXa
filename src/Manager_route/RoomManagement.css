@@ -1,257 +1,155 @@
-.select-option{
-    margin-bottom: 8px;
+/* ServiceManagement.css */
+.service-container {
+  padding: 24px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
 }
 
-.room-management-container {
-    padding: 20px;
-    font-family: "Arial", sans-serif;
-    background-color: #f4f7fa;
-    overflow-x: hidden; /* Loại bỏ cuộn ngang */
+.service-container h2 {
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: left;
+  padding-left: 12px;
+  border-left: 4px solid #3b82f6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+input[type="text"] {
+  width: 100%;
+  max-width: 400px; /* Giới hạn chiều rộng */
+  padding: 10px 16px;
+  font-size: 16px;
+  border: 2px solid #d1d5db; /* Viền nhẹ */
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover & Focus */
+input[type="text"]:hover {
+  border-color: #3b82f6;
+}
+
+input[type="text"]:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Nút chính */
+.add-button {
+  background-color: #10b981;
+  border-color: #10b981;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.add-button:hover {
+  background-color: #059669 !important;
+  transform: translateY(-1px);
+}
+
+/* Bảng */
+.service-table {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.service-table .ant-table-thead > tr > th {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  font-weight: 600;
+  padding: 16px !important;
+}
+
+.service-table .ant-table-tbody > tr > td {
+  color: #64748b;
+  transition: background-color 0.2s ease;
+}
+
+.service-table .ant-table-tbody > tr:hover > td {
+  background-color: #f8fafc !important;
+}
+
+/* Nút hành động */
+.edit-button {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white !important;
+  margin-right: 8px;
+}
+
+.delete-button {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white !important;
+}
+
+/* Modal */
+.service-container .ant-modal-content {
+  border-radius: 12px !important;
+  padding: 24px !important;
+}
+
+.service-container .ant-modal-header {
+  border-radius: 12px 12px 0 0 !important;
+  background-color: #f8fafc;
+}
+
+/* Form */
+.service-container .ant-form-item-label > label {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+.service-container .ant-input,
+.service-container .ant-select-selector {
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+}
+
+.service-container .ant-btn-primary[type='submit'] {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .service-container {
+    padding: 16px;
   }
   
-  .room-management-title {
-    font-size: 28px;
-    color: #333;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .form-card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    overflow-x: hidden; /* Đảm bảo không có tràn ngang */
-  }
-  
-  .form-card h2 {
-    font-size: 20px;
-    color: #555;
-    margin-bottom: 15px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-  }
-  
-  .form-group input,
-  .form-group select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    flex: 1;
-    min-width: 120px;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-  }
-  
-  .form-group button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  .service-table {
+    overflow-x: auto;
+    display: block;
   }
   
   .add-button {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .add-button:hover {
-    background-color: #218838;
-  }
-  
-  .update-button {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .update-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .cancel-button {
-    background-color: #6c757d;
-    color: white;
-  }
-  
-  .cancel-button:hover {
-    background-color: #5a6268;
-  }
-  
-  .room-list-card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    overflow-x: hidden; /* Loại bỏ cuộn ngang trong bảng */
-  }
-  
-  .room-list-card h2 {
-    font-size: 20px;
-    color: #555;
-    margin-bottom: 15px;
-  }
-  
-  .room-table {
     width: 100%;
-    border-collapse: collapse;
-    overflow-x: auto; /* Chỉ cuộn ngang khi cần */
   }
-  
-  .room-table th,
-  .room-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .room-table th {
-    background-color: #007bff;
-    color: white;
-    font-weight: 600;
-  }
-  
-  .room-table tr:hover {
-    background-color: #f9f9f9;
-  }
-  
-  .status-badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    color: white;
-    white-space: nowrap;
-    text-align: center;
-    min-width: 80px;
-  }
-  
-  .status-badge.available {
-    background-color: #28a745;
-  }
-  
-  .status-badge.occupied {
-    background-color: #dc3545;
-  }
-  
-  .action-column {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .action-column button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .edit-button {
-    background-color: #ffc107;
-    color: #333;
-  }
-  
-  .edit-button:hover {
-    background-color: #e0a800;
-  }
-  
-  .delete-button {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .delete-button:hover {
-    background-color: #c82333;
-  }
-  
-  .assign-button {
-    background-color: #17a2b8;
-    color: white;
-  }
-  
-  .assign-button:hover {
-    background-color: #138496;
-  }
-  
-  .service-button {
-    background-color: #6f42c1;
-    color: white;
-  }
-  
-  .service-button:hover {
-    background-color: #5a32a3;
-  }
-  
-  .action-column select {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 12px;
-  }
-  
-  .action-column select:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .service-checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    max-width: 200px;
-  }
-  
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    color: #555;
-    cursor: pointer;
-  }
-  
-  .checkbox-label input[type="checkbox"] {
-    margin-right: 5px;
-    accent-color: #6f42c1;
-  }
-  
-  .checkbox-label:hover {
-    color: #333;
-  }
-  
-  .edit-form {
-    background-color: #fff5e6;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    font-weight: bold;
-    padding: 10px;
-    background-color: #f8d7da;
-    border-radius: 5px;
-    margin-bottom: 15px;
-  }
-  
-  
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.service-container .ant-modal-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Hiệu ứng hover */
+.service-container .ant-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}

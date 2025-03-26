@@ -15,12 +15,19 @@ interface Invoice {
   createdAt: string;
 }
 
+interface Contract {
+  contractId: string;
+  roomName: string;
+  customerName: string;
+}
+
 const token = localStorage.getItem("token");
 const userId = localStorage.getItem("userId");
 const API_URL = `http://localhost:8080/api/v1/bills/user/${userId}`;
 
 const InvoiceStudent: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [contracts, setContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
   // State để quản lý modal thanh toán
@@ -30,35 +37,60 @@ const InvoiceStudent: React.FC = () => {
   const [qrValue, setQrValue] = useState("");
 
   useEffect(() => {
-    const fetchInvoices = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(API_URL, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu");
-        const data = await response.json();
-        const mappedInvoices: Invoice[] = data.map((item: any) => ({
-          id: item.billId,
-          contractId: item.contractId,
-          totalAmount: item.sumPrice,
-          paymentDate: item.paymentDate,
-          paymentMethod: item.paymentMethod,
-          status: item.billStatus === "PAID" ? "paid" : "unpaid",
-          createdAt: item.createdAt.split("T")[0],
-        }));
-        setInvoices(mappedInvoices);
-      } catch (error) {
-        console.error("Lỗi:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchInvoices();
+    fetchContracts();
   }, []);
+
+  // Fetch hóa đơn của sinh viên
+  const fetchInvoices = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu hóa đơn");
+      const data = await response.json();
+      const mappedInvoices: Invoice[] = data.map((item: any) => ({
+        id: item.billId,
+        contractId: item.contractId,
+        totalAmount: item.sumPrice,
+        paymentDate: item.paymentDate,
+        paymentMethod: item.paymentMethod,
+        status: item.billStatus === "PAID" ? "paid" : "unpaid",
+        createdAt: item.createdAt.split("T")[0],
+      }));
+      setInvoices(mappedInvoices);
+    } catch (error) {
+      console.error("Lỗi:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch hợp đồng của sinh viên và lấy thông tin roomName, customerName từ dữ liệu JSON mẫu
+  const fetchContracts = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/contracts/user/${userId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu hợp đồng");
+      const data = await response.json();
+      const mappedContracts: Contract[] = data.map((item: any) => ({
+        contractId: item.contractId,
+        roomName: item.room?.roomName || "N/A",       // Lấy roomName từ đối tượng room
+        customerName: item.user?.fullName || "N/A",     // Lấy fullName từ đối tượng user
+      }));
+      setContracts(mappedContracts);
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  };
 
   const handleSearch = (value: string) => {
     setSearchQuery(value.toLowerCase());
@@ -85,9 +117,13 @@ const InvoiceStudent: React.FC = () => {
     }
   }, [selectedInvoice, paymentMethod]);
 
+  // Hàm in hóa đơn, bổ sung tên phòng và tên khách hàng
   const handlePrintInvoice = (invoice: Invoice) => {
     const newWindow = window.open("", "_blank", "width=800,height=600");
     if (!newWindow) return;
+    const relatedContract = contracts.find(
+      (c) => c.contractId === invoice.contractId
+    );
     const invoiceHtml = `
       <html>
         <head>
@@ -106,6 +142,12 @@ const InvoiceStudent: React.FC = () => {
           <div class="invoice-info">
             <div class="field">
               <span class="label">Mã hợp đồng:</span> ${invoice.contractId}
+            </div>
+            <div class="field">
+              <span class="label">Tên phòng:</span> ${relatedContract?.roomName || "N/A"}
+            </div>
+            <div class="field">
+              <span class="label">Tên khách hàng:</span> ${relatedContract?.customerName || "N/A"}
             </div>
             <div class="field">
               <span class="label">Ngày thanh toán:</span> ${invoice.paymentDate}
@@ -198,7 +240,7 @@ const InvoiceStudent: React.FC = () => {
       alert("Có lỗi xảy ra khi cập nhật hóa đơn.");
     }
   };
-  
+
   return (
     <div className="invoice-student">
       <h1>Danh sách hóa đơn</h1>
@@ -209,8 +251,26 @@ const InvoiceStudent: React.FC = () => {
         columns={[
           { title: "Mã hóa đơn", dataIndex: "id", key: "id" },
           { title: "Mã hợp đồng", dataIndex: "contractId", key: "contractId" },
-          { title: "Ngày tạo", dataIndex: "paymentDate", key: "paymentDate" },
-          { title: "Phương thức thanh toán", dataIndex: "paymentMethod", key: "paymentMethod" },
+          {
+            title: "Tên phòng",
+            key: "roomName",
+            render: (_: any, record: Invoice) => {
+              const relatedContract = contracts.find(
+                (c) => c.contractId === record.contractId
+              );
+              return relatedContract?.roomName || "N/A";
+            },
+          },
+          {
+            title: "Ngày tạo",
+            dataIndex: "paymentDate",
+            key: "paymentDate",
+          },
+          {
+            title: "Phương thức thanh toán",
+            dataIndex: "paymentMethod",
+            key: "paymentMethod",
+          },
           {
             title: "Tổng tiền",
             dataIndex: "totalAmount",
@@ -262,7 +322,7 @@ const InvoiceStudent: React.FC = () => {
         footer={null}
         className="modal-payment"
         width="60vw"
-  bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
       >
         {selectedInvoice && (
           <form onSubmit={handlePaymentSubmit}>
@@ -293,9 +353,6 @@ const InvoiceStudent: React.FC = () => {
                 <QRCode value={qrValue} size={128} />
               </div>
             )}
-            {/* <Button type="primary" htmlType="submit">
-              Thanh toán
-            </Button> */}
           </form>
         )}
       </Modal>
