@@ -7,6 +7,7 @@ import com.project.KiTucXa.Dto.Request.ApiResponse;
 import com.project.KiTucXa.Dto.Request.RoomServiceDto;
 import com.project.KiTucXa.Dto.Response.RoomServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,10 @@ public class RoomServiceController {
         return roomServiceService.getRoomServiceById(roomServiceId);
     }
 
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<List<RoomServiceResponse>> getRoomServicesByRoomId(@PathVariable String roomId) {
+        return ResponseEntity.ok(roomServiceService.getRoomServicesByRoomId(roomId));
+    }
 
     @DeleteMapping("/delete/{roomServiceId}")
     String deleteRoomService (@PathVariable String roomServiceId){

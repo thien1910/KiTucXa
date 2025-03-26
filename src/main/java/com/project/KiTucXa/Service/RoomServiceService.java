@@ -68,4 +68,13 @@ public class RoomServiceService {
         }
         roomServiceRepository.deleteById(roomServiceId);
     }
+    public List<RoomServiceResponse> getRoomServicesByRoomId(String roomId) {
+        List<RoomService> roomServices = roomServiceRepository.findByRoom_RoomId(roomId);
+
+        return roomServices.stream()
+                .map(roomServiceMapper::toRoomServiceResponse)
+                .collect(Collectors.toList());
+    }
+
+
 }
