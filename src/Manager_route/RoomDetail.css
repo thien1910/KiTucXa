@@ -204,7 +204,8 @@ button {
 }
 
 /* Loading và error message */
-.loading, .error {
+.loading,
+.error {
   text-align: center;
   font-size: 18px;
   padding: 20px;

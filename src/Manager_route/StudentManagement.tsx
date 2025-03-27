@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./StudentManagement.css";
-import { Modal, Form, Input, DatePicker, Select, Button, message, Alert } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  DatePicker,
+  Select,
+  Button,
+  message,
+  Alert,
+} from "antd";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
@@ -34,11 +43,12 @@ const StudentManagement: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [activeContract, setActiveContract] = useState<any>(null);
   const [contractError, setContractError] = useState<string>("");
-
+  const [searchName, setSearchName] = useState(""); // Tìm kiếm theo họ tên
+  const [searchStatus, setSearchStatus] = useState(""); // Tìm kiếm theo trạng thái
   // State cho Modal Xếp phòng
   const [assignModalVisible, setAssignModalVisible] = useState(false);
   const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
-  
+
   // Sử dụng form của Ant Design cho Modal Xếp phòng
   const [assignForm] = Form.useForm();
 
@@ -62,13 +72,16 @@ const StudentManagement: React.FC = () => {
 
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/v1/user/manager/list", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "http://localhost:8080/api/v1/user/manager/list",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           throw new Error("Lỗi khi lấy dữ liệu!");
@@ -80,7 +93,7 @@ const StudentManagement: React.FC = () => {
         if (data.result && Array.isArray(data.result)) {
           // Lọc theo role STUDENT
           const filteredStudents = data.result.filter((student: Student) =>
-            student.roles.includes("STUDENT")
+            student.roles.includes("STUDENT"),
           );
           setStudents(filteredStudents);
         } else {
@@ -131,20 +144,23 @@ const StudentManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-  
+
       if (!contractResponse.ok) {
         throw new Error("Lỗi khi lấy hợp đồng của sinh viên");
       }
-  
+
       const contractData = await contractResponse.json();
-  
+
       // Giả sử API trả về hợp đồng ở dạng contractData.result là một mảng hợp đồng
-      const active = contractData.result && Array.isArray(contractData.result)
-        ? contractData.result.find((contract: any) => contract.contractStatus === "Active")
-        : null;
-  
+      const active =
+        contractData.result && Array.isArray(contractData.result)
+          ? contractData.result.find(
+              (contract: any) => contract.contractStatus === "Active",
+            )
+          : null;
+
       // Lưu thông tin hợp đồng còn hiệu lực vào state
       setActiveContract(active);
     } catch (error) {
@@ -152,7 +168,7 @@ const StudentManagement: React.FC = () => {
       setActiveContract(null);
       message.error("Không thể kiểm tra hợp đồng của sinh viên!");
     }
-  
+
     // Hiển thị modal luôn, cho dù có hợp đồng hay không
     setSelectedStudent(student);
     fetchAvailableRooms();
@@ -166,9 +182,11 @@ const StudentManagement: React.FC = () => {
     try {
       // Reset lỗi trước khi bắt đầu xử lý
       setContractError("");
-      
+
       // Tìm phòng được chọn từ availableRooms để lấy giá thuê tự động
-      const selectedRoom = availableRooms.find((room) => room.roomId === values.roomId);
+      const selectedRoom = availableRooms.find(
+        (room) => room.roomId === values.roomId,
+      );
       if (!selectedRoom) {
         setContractError("Phòng được chọn không hợp lệ!");
         return;
@@ -184,18 +202,21 @@ const StudentManagement: React.FC = () => {
         contractStatus: "Active",
         note: values.note || "",
       };
-  
-      const response = await fetch("http://localhost:8080/api/v1/contracts/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+
+      const response = await fetch(
+        "http://localhost:8080/api/v1/contracts/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
-  
+      );
+
       const result = await response.json();
-  
+
       if (result.code === 1000) {
         message.success("Tạo hợp đồng thành công!");
         setAssignModalVisible(false);
@@ -207,14 +228,18 @@ const StudentManagement: React.FC = () => {
           result.activeContractId
         ) {
           setContractError(
-            `Lỗi khi tạo hợp đồng: ${result.message}. Hợp đồng hiện tại: ${result.activeContractId}`
+            `Lỗi khi tạo hợp đồng: ${result.message}. Hợp đồng hiện tại: ${result.activeContractId}`,
           );
         } else {
-          setContractError("Lỗi khi tạo hợp đồng: " + (result.message || "Không rõ lỗi"));
+          setContractError(
+            "Lỗi khi tạo hợp đồng: " + (result.message || "Không rõ lỗi"),
+          );
         }
       }
     } catch (error: any) {
-      setContractError("Tạo hợp đồng thất bại: " + (error.message || "Lỗi không xác định"));
+      setContractError(
+        "Tạo hợp đồng thất bại: " + (error.message || "Lỗi không xác định"),
+      );
       console.error("Lỗi:", error);
     }
   };
@@ -225,30 +250,52 @@ const StudentManagement: React.FC = () => {
   };
 
   // Lọc sinh viên theo username
-  const filteredStudents = students.filter((student) =>
-    student.userName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students.filter((student) => {
+    const matchesName = student.fullName
+      ?.toLowerCase()
+      .includes(searchName.toLowerCase());
+    const matchesStatus = student.status
+      ?.toLowerCase()
+      .includes(searchStatus.toLowerCase());
+    const matchesUsername = student.userName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    return matchesName && matchesStatus && matchesUsername;
+  });
 
   // Hàm xem hợp đồng của sinh viên từ bảng danh sách
-// ...
-const navigate = useNavigate();
+  // ...
+  const navigate = useNavigate();
 
-const handleViewContract = (student: Student) => {
-  // Chuyển hướng đến trang quản lý hợp đồng với query parameter userId
-  navigate(`/contracts?userId=${student.userId}`);
-};
-
-
+  const handleViewContract = (student: Student) => {
+    // Chuyển hướng đến trang quản lý hợp đồng với query parameter userId
+    navigate(`/contracts?userId=${student.userId}`);
+  };
 
   return (
     <div className="student-management">
       <h2>Quản lý sinh viên</h2>
-      <input
-        type="text"
-        placeholder="Tìm kiếm theo username..."
-        value={searchTerm}
-        onChange={handleSearch}
-      />
+      <div className="search-filters">
+        <input
+          type="text"
+          placeholder="Tìm kiếm theo họ tên..."
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+        />
+        {/* <input
+    type="text"
+    placeholder="Tìm kiếm theo trạng thái..."
+    value={searchStatus}
+    onChange={(e) => setSearchStatus(e.target.value)}
+  /> */}
+        <input
+          type="text"
+          placeholder="Tìm kiếm theo username..."
+          value={searchTerm}
+          onChange={handleSearch}
+        />
+      </div>
       <table>
         <thead>
           <tr>
@@ -318,7 +365,7 @@ const handleViewContract = (student: Student) => {
               type="primary"
               style={{ marginTop: 8 }}
               onClick={() =>
-                window.location.href = `/contracts/${activeContract.contractId}`
+                (window.location.href = `/contracts/${activeContract.contractId}`)
               }
             >
               Xem hợp đồng hiện có
@@ -360,7 +407,9 @@ const handleViewContract = (student: Student) => {
           <Form.Item
             label="Ngày kết thúc"
             name="endDate"
-            rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc!" }]}
+            rules={[
+              { required: true, message: "Vui lòng chọn ngày kết thúc!" },
+            ]}
           >
             <DatePicker format="YYYY-MM-DD" />
           </Form.Item>

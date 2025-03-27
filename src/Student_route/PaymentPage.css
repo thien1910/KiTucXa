@@ -7,7 +7,6 @@
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
-  
 }
 h1 {
   text-align: center;
@@ -34,7 +33,9 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
   border-left: 5px solid #007bff;
 }
 
@@ -45,7 +46,7 @@ h1 {
 
 /* Nút thanh toán */
 .pay-button {
-  background: linear-gradient(135deg, #4CAF50, #388E3C);
+  background: linear-gradient(135deg, #4caf50, #388e3c);
   color: white;
   border: none;
   padding: 10px 18px;

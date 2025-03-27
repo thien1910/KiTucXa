@@ -31,7 +31,7 @@ const ContractManagement: React.FC = () => {
           console.error("Token hoặc userId không tồn tại trong localStorage.");
           return;
         }
-  
+
         const response = await fetch(
           `http://localhost:8080/api/v1/contracts/user/${userId}`,
           {
@@ -40,42 +40,47 @@ const ContractManagement: React.FC = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-  
+
         const data = await response.json();
         console.log("Dữ liệu từ API:", data); // Kiểm tra dữ liệu trả về
-  
+
         const initialContracts = data.map((item: any) => ({
           contractId: item.contractId,
           userId: item.user ? item.user.userId : "Không có dữ liệu",
-          userName: item.user ? item.user.fullName || "Không có dữ liệu" : "Không có dữ liệu", // Lấy tên khách hàng
+          userName: item.user
+            ? item.user.fullName || "Không có dữ liệu"
+            : "Không có dữ liệu", // Lấy tên khách hàng
           roomName: item.room ? item.room.roomName : "Không có dữ liệu",
-          startDate: item.startDate ? new Date(item.startDate).toISOString() : "",
+          startDate: item.startDate
+            ? new Date(item.startDate).toISOString()
+            : "",
           endDate: item.endDate ? new Date(item.endDate).toISOString() : "",
           price: item.price || 0,
           depositStatus: item.depositStatus || "PENDING",
           contractStatus: item.contractStatus || "Unknown",
           note: item.note || "",
-          createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-          updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+          createdAt: item.createdAt
+            ? new Date(item.createdAt).toISOString()
+            : "",
+          updatedAt: item.updatedAt
+            ? new Date(item.updatedAt).toISOString()
+            : "",
         }));
-        
-        
-  
+
         setContracts(initialContracts);
       } catch (error) {
         console.error("Lỗi khi gọi API:", error);
       }
     };
-  
+
     fetchContracts();
   }, []);
-  
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
@@ -198,49 +203,47 @@ const ContractManagement: React.FC = () => {
 
       {/* Bảng danh sách hợp đồng */}
       <table>
-      <thead>
-  <tr>
-    <th>STT</th>
-    <th>Mã HĐ</th>
-    <th>Khách hàng</th> {/* Thêm cột Tên khách hàng */}
-    <th>Phòng</th>
-    <th>Ngày bắt đầu</th>
-    <th>Ngày kết thúc</th>
-    <th>Giá thuê</th>
-    <th>Thanh toán</th>
-    <th>Trạng thái</th>
-    <th>Ghi chú</th>
-    <th>Cập nhật</th>
-    <th>Thao tác</th>
-  </tr>
-</thead>
-<tbody>
-  {contracts.map((contract, index) => (
-    <tr key={contract.contractId}>
-      <td>{index + 1}</td>
-      <td>{contract.contractId}</td>
-      <td>{contract.userName}</td> {/* Hiển thị tên khách hàng */}
-      <td>{contract.roomName}</td>
-      <td>{formatDate(contract.startDate)}</td>
-      <td>{formatDate(contract.endDate)}</td>
-      <td>{contract.price?.toLocaleString()} VNĐ</td>
-      <td>{getDepositStatusLabel(contract.depositStatus)}</td>
-      <td>{getContractStatusLabel(contract.contractStatus)}</td>
-      <td>{contract.note}</td>
-      <td>{formatDate(contract.updatedAt)}</td>
-      <td>
-        <button
-          onClick={() => handlePrintContract(contract)}
-          className="print-button"
-        >
-          In hợp đồng
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã HĐ</th>
+            <th>Khách hàng</th> {/* Thêm cột Tên khách hàng */}
+            <th>Phòng</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Giá thuê</th>
+            <th>Thanh toán</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
+            <th>Cập nhật</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          {contracts.map((contract, index) => (
+            <tr key={contract.contractId}>
+              <td>{index + 1}</td>
+              <td>{contract.contractId}</td>
+              <td>{contract.userName}</td> {/* Hiển thị tên khách hàng */}
+              <td>{contract.roomName}</td>
+              <td>{formatDate(contract.startDate)}</td>
+              <td>{formatDate(contract.endDate)}</td>
+              <td>{contract.price?.toLocaleString()} VNĐ</td>
+              <td>{getDepositStatusLabel(contract.depositStatus)}</td>
+              <td>{getContractStatusLabel(contract.contractStatus)}</td>
+              <td>{contract.note}</td>
+              <td>{formatDate(contract.updatedAt)}</td>
+              <td>
+                <button
+                  onClick={() => handlePrintContract(contract)}
+                  className="print-button"
+                >
+                  In hợp đồng
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );

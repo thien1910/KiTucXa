@@ -1,9 +1,11 @@
 # Hệ thống quản lý ký túc xá (FrontEnd)
 
 ## Giới Thiệu
+
 Dự án này là một hệ thống quản lý ký túc xá trên nền tảng web, được xây dựng bằng React Typescript. Hệ thống giúp quản lý sinh viên, hợp đồng, hóa đơn, dịch vụ tiện ích và các phòng ở trong ký túc xá một cách hiệu quả.
 
 ## Tính Năng
+
 - Xác thực người dùng (đăng nhập/đăng xuất)
 - Quản lý thông tin cá nhân
 - Quản lý sinh viên và hợp đồng
@@ -14,10 +16,14 @@ Dự án này là một hệ thống quản lý ký túc xá trên nền tảng 
 - Giao diện API RESTful
 
 ## Cài Đặt
+
 ### Yêu Cầu
+
 - Đã cài đặt npm
 - Đã khởi động backend ở nhánh main
+
 ### Sao Chép Kho Lưu Trữ
+
 ```sh
 git clone https://github.com/thien1910/KiTucXa.git
 git switch admin
@@ -26,24 +32,28 @@ git switch admin
 ```
 
 ### Cài Đặt Các Gói Phụ Thuộc
+
 ```sh
 npm install
 ```
 
 ### Chạy Ứng Dụng
+
 ```sh
 npm start
 ```
+
 Ứng dụng sẽ chạy tại `http://localhost:3000`.
 
 ## Testing
+
 Dự án bao gồm các bài kiểm thử bằng Selenium
 
-
 ## Cấu Trúc Thư Mục
+
 ```
 |── node_modules/                     #chứa toàn bộ module của dự án
-|── public/                           #Chứa các tài nguyên tĩnh                
+|── public/                           #Chứa các tài nguyên tĩnh
 │── src/                              #Mã nguồn chính
 │── package-lock.json                 #Ghi lại mã nguồn đã cài đặt
 │── package.json                      #cấu hình dự án
@@ -52,6 +62,7 @@ Dự án bao gồm các bài kiểm thử bằng Selenium
 ```
 
 ## Người Đóng Góp
+
 - Nguyễn Đình Việt - Developer
 - Nguyễn Sơn Tùng - Developer
 - Nguyễn Minh Huy - Developer
@@ -59,9 +70,11 @@ Dự án bao gồm các bài kiểm thử bằng Selenium
 - Trần Mai Trung - Developer
 
 ## Giảng Viên Hướng Dẫn
+
 - Vũ Việt Vũ
 - Trương Anh Hoàng
 - Đặng Quốc Hữu
 
 ## Liên Hệ
+
 Nếu bạn có bất kỳ câu hỏi hoặc góp ý nào, vui lòng liên hệ qua email hoặc GitHub của nhóm phát triển.

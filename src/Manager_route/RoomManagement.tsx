@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 // import { useRouter } from "next/navigation"
-import "./RoomManagement.css";
+// import "../styles/Management.css";
 import { useNavigate } from "react-router-dom";
 
 interface Room {
@@ -84,7 +84,7 @@ const RoomManagement: React.FC = () => {
 
   // Hàm thêm phòng qua API
   const addRoom = async (
-    roomData: Omit<Room, "roomId" | "createdAt" | "updatedAt">
+    roomData: Omit<Room, "roomId" | "createdAt" | "updatedAt">,
   ) => {
     try {
       const response = await fetch("http://localhost:8080/api/v1/rooms/add", {
@@ -117,7 +117,7 @@ const RoomManagement: React.FC = () => {
       !newRoom.department
     ) {
       alert(
-        "Vui lòng điền đầy đủ thông tin bắt buộc: Tên phòng, Giá phòng, Số lượng tối đa, Khoa/Bộ phận."
+        "Vui lòng điền đầy đủ thông tin bắt buộc: Tên phòng, Giá phòng, Số lượng tối đa, Khoa/Bộ phận.",
       );
       return;
     }
@@ -158,7 +158,7 @@ const RoomManagement: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(editingRoom),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -187,7 +187,7 @@ const RoomManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -213,7 +213,7 @@ const RoomManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -252,9 +252,8 @@ const RoomManagement: React.FC = () => {
   return (
     <div className="room-management-container">
       <div className="title-wrapper">
-    <h1 className="room-management-title">Quản lý phòng</h1>
-    
-  </div>
+        <h1 className="room-management-title">Quản lý phòng</h1>
+      </div>
 
       {/* Nút mở Modal thêm phòng mới */}
       <button className="add-button" onClick={() => setAddModalVisible(true)}>
@@ -287,10 +286,10 @@ const RoomManagement: React.FC = () => {
                   type === "Single"
                     ? 1
                     : type === "Double"
-                    ? 2
-                    : type === "Quad"
-                    ? 4
-                    : 1;
+                      ? 2
+                      : type === "Quad"
+                        ? 4
+                        : 1;
                 setNewRoom({
                   ...newRoom,
                   roomType: type,
@@ -367,7 +366,7 @@ const RoomManagement: React.FC = () => {
                   <td>
                     <span
                       className={`status-badge ${getStatusBadgeClass(
-                        room.roomStatus
+                        room.roomStatus,
                       )}`}
                     >
                       {getRoomStatusDisplay(room.roomStatus)}
@@ -434,10 +433,10 @@ const RoomManagement: React.FC = () => {
                     newType === "Single"
                       ? 1
                       : newType === "Double"
-                      ? 2
-                      : newType === "Quad"
-                      ? 4
-                      : editingRoom.maximumOccupancy;
+                        ? 2
+                        : newType === "Quad"
+                          ? 4
+                          : editingRoom.maximumOccupancy;
                   setEditingRoom({
                     ...editingRoom,
                     roomType: newType,

@@ -38,7 +38,10 @@ const PaymentPage: React.FC = () => {
         sum_price: invoiceFromState.totalAmount,
         payment_date: invoiceFromState.paymentDate || "",
         payment_method: invoiceFromState.paymentMethod || "",
-        status: invoiceFromState.status === "paid" ? "Đã thanh toán" : "Chưa thanh toán",
+        status:
+          invoiceFromState.status === "paid"
+            ? "Đã thanh toán"
+            : "Chưa thanh toán",
         notes: "",
       };
       setSelectedBill(bill);
@@ -48,7 +51,7 @@ const PaymentPage: React.FC = () => {
   useEffect(() => {
     if (selectedBill && paymentMethod) {
       setQrValue(
-        `bill_id:${selectedBill.bill_id},sum_price:${selectedBill.sum_price},payment_method:${paymentMethod}`
+        `bill_id:${selectedBill.bill_id},sum_price:${selectedBill.sum_price},payment_method:${paymentMethod}`,
       );
     }
   }, [selectedBill, paymentMethod]);
@@ -72,12 +75,12 @@ const PaymentPage: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
         throw new Error(
-          `Lỗi ${response.status}: Không thể tải danh sách hóa đơn.`
+          `Lỗi ${response.status}: Không thể tải danh sách hóa đơn.`,
         );
       }
 
@@ -148,7 +151,7 @@ const PaymentPage: React.FC = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify(updateBillData),
-        }
+        },
       );
 
       if (updateResponse.ok) {
@@ -158,7 +161,7 @@ const PaymentPage: React.FC = () => {
         fetchBills(); // Tải lại danh sách
       } else {
         alert(
-          "Thanh toán thành công nhưng không thể cập nhật trạng thái hóa đơn."
+          "Thanh toán thành công nhưng không thể cập nhật trạng thái hóa đơn.",
         );
       }
     } catch (error) {
@@ -185,15 +188,14 @@ const PaymentPage: React.FC = () => {
                   <strong>Mã hóa đơn:</strong> {bill.bill_id}
                 </p>
                 <p>
-                  <strong>Tổng tiền:</strong>{" "}
-                  {bill.sum_price.toLocaleString()} VND
+                  <strong>Tổng tiền:</strong> {bill.sum_price.toLocaleString()}{" "}
+                  VND
                 </p>
                 <p>
                   <strong>Ngày tạo:</strong> {bill.payment_date}
                 </p>
                 <p>
-                  <strong>Phương thức thanh toán:</strong>{" "}
-                  {bill.payment_method}
+                  <strong>Phương thức thanh toán:</strong> {bill.payment_method}
                 </p>
                 <p>
                   <strong>Trạng thái:</strong> {bill.status}
@@ -247,7 +249,7 @@ const PaymentPage: React.FC = () => {
           </div>
 
           {["bank_transfer", "credit_card", "momo", "zalo_pay"].includes(
-            paymentMethod
+            paymentMethod,
           ) && (
             <div className="form-group">
               <label>Mã QR:</label>

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Table, Input, Button, Form, Modal, Select, message } from "antd";
-import { EditOutlined, DeleteOutlined, PrinterOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PrinterOutlined,
+} from "@ant-design/icons";
 import "./InvoiceManagement.css";
 
 const { Search } = Input;
@@ -40,7 +44,7 @@ const InvoiceManagement: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [paymentMethodFilter, setPaymentMethodFilter] = useState("");
   const [roomNameFilter, setRoomNameFilter] = useState("");
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -83,13 +87,16 @@ const InvoiceManagement: React.FC = () => {
 
   const fetchContracts = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/contracts/list", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "http://localhost:8080/api/v1/contracts/list",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       if (!response.ok) throw new Error("Lỗi khi lấy danh sách hợp đồng");
       const data = await response.json();
       // Enrich hợp đồng với thông tin roomName và customerName
@@ -97,30 +104,38 @@ const InvoiceManagement: React.FC = () => {
         data.map(async (contract: any) => {
           let roomName = "N/A";
           try {
-            const roomRes = await fetch(`http://localhost:8080/api/v1/rooms/${contract.roomId}`, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+            const roomRes = await fetch(
+              `http://localhost:8080/api/v1/rooms/${contract.roomId}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            });
+            );
             if (roomRes.ok) {
               const roomData = await roomRes.json();
-              roomName = roomData.result?.roomName || roomData.roomName || "N/A";
+              roomName =
+                roomData.result?.roomName || roomData.roomName || "N/A";
             }
           } catch (error) {
             console.error("Lỗi khi lấy thông tin phòng:", error);
           }
           let customerName = "N/A";
           try {
-            const userRes = await fetch(`http://localhost:8080/api/v1/user/manager/${contract.userId}`, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+            const userRes = await fetch(
+              `http://localhost:8080/api/v1/user/manager/${contract.userId}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            });
+            );
             if (userRes.ok) {
               const userData = await userRes.json();
-              customerName = userData.result?.fullName || userData.fullName || "N/A";
+              customerName =
+                userData.result?.fullName || userData.fullName || "N/A";
             }
           } catch (error) {
             console.error("Lỗi khi lấy thông tin khách hàng:", error);
@@ -138,7 +153,7 @@ const InvoiceManagement: React.FC = () => {
             roomName,
             customerName,
           };
-        })
+        }),
       );
       setContracts(enrichedContracts);
     } catch (error) {
@@ -160,20 +175,29 @@ const InvoiceManagement: React.FC = () => {
     const matchesStatus = statusFilter ? invoice.status === statusFilter : true;
 
     const matchesPaymentMethod = paymentMethodFilter
-      ? invoice.paymentMethod.toLowerCase() === paymentMethodFilter.toLowerCase()
+      ? invoice.paymentMethod.toLowerCase() ===
+        paymentMethodFilter.toLowerCase()
       : true;
 
     const relatedContract = contracts.find((c) => c.id === invoice.contractId);
     const matchesRoomName = roomNameFilter
-      ? (relatedContract?.roomName || "N/A").toLowerCase() === roomNameFilter.toLowerCase()
+      ? (relatedContract?.roomName || "N/A").toLowerCase() ===
+        roomNameFilter.toLowerCase()
       : true;
 
-    return matchesInvoiceQuery && matchesStatus && matchesPaymentMethod && matchesRoomName;
+    return (
+      matchesInvoiceQuery &&
+      matchesStatus &&
+      matchesPaymentMethod &&
+      matchesRoomName
+    );
   });
 
   // Lấy danh sách tên phòng duy nhất từ mảng contracts
   const uniqueRoomNames = Array.from(
-    new Set(contracts.map((c) => c.roomName).filter((name) => name && name !== "N/A"))
+    new Set(
+      contracts.map((c) => c.roomName).filter((name) => name && name !== "N/A"),
+    ),
   );
 
   const handleAddInvoice = async (values: any) => {
@@ -210,13 +234,16 @@ const InvoiceManagement: React.FC = () => {
 
   const handleDeleteInvoice = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/bills/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:8080/api/v1/bills/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       if (!response.ok) throw new Error("Lỗi khi xóa hóa đơn!");
       message.success("Xóa hóa đơn thành công!");
       setInvoices((prev) => prev.filter((invoice) => invoice.id !== id));
@@ -259,7 +286,7 @@ const InvoiceManagement: React.FC = () => {
             billStatus: values.billStatus,
             note: values.note,
           }),
-        }
+        },
       );
       const result = await response.json();
       if (response.ok && result.billId) {
@@ -275,8 +302,8 @@ const InvoiceManagement: React.FC = () => {
                   paymentMethod: values.paymentMethod,
                   status: values.billStatus === "PAID" ? "paid" : "unpaid",
                 }
-              : invoice
-          )
+              : invoice,
+          ),
         );
         setIsModalOpen(false);
         form.resetFields();
@@ -309,7 +336,9 @@ const InvoiceManagement: React.FC = () => {
             <p><strong>Mã hóa đơn:</strong> ${invoice.id}</p>
             <p><strong>Mã hợp đồng:</strong> ${invoice.contractId}</p>
             ${(() => {
-              const relatedContract = contracts.find((c) => c.id === invoice.contractId);
+              const relatedContract = contracts.find(
+                (c) => c.id === invoice.contractId,
+              );
               return `
                 <p><strong>Tên phòng:</strong> ${relatedContract?.roomName || "N/A"}</p>
                 <p><strong>Tên khách hàng:</strong> ${relatedContract?.customerName || "N/A"}</p>
@@ -339,7 +368,12 @@ const InvoiceManagement: React.FC = () => {
       <h1>Quản lý Hóa đơn</h1>
       <div
         className="search-filter"
-        style={{ marginBottom: 16, display: "flex", gap: "8px", flexWrap: "wrap" }}
+        style={{
+          marginBottom: 16,
+          display: "flex",
+          gap: "8px",
+          flexWrap: "wrap",
+        }}
       >
         <Search
           placeholder="Nhập mã hóa đơn hoặc mã hợp đồng"
@@ -405,7 +439,9 @@ const InvoiceManagement: React.FC = () => {
             title: "Tên phòng",
             key: "roomName",
             render: (_: any, record: Invoice) => {
-              const relatedContract = contracts.find((c) => c.id === record.contractId);
+              const relatedContract = contracts.find(
+                (c) => c.id === record.contractId,
+              );
               return relatedContract?.roomName || "N/A";
             },
           },
@@ -419,8 +455,16 @@ const InvoiceManagement: React.FC = () => {
               </span>
             ),
           },
-          { title: "Phương thức thanh toán", dataIndex: "paymentMethod", key: "paymentMethod" },
-          { title: "Ngày thanh toán", dataIndex: "paymentDate", key: "paymentDate" },
+          {
+            title: "Phương thức thanh toán",
+            dataIndex: "paymentMethod",
+            key: "paymentMethod",
+          },
+          {
+            title: "Ngày thanh toán",
+            dataIndex: "paymentDate",
+            key: "paymentDate",
+          },
           { title: "Tổng tiền", dataIndex: "totalAmount", key: "totalAmount" },
           {
             title: "Hành động",
@@ -485,14 +529,21 @@ const InvoiceManagement: React.FC = () => {
           <Form.Item
             label="Ngày thanh toán"
             name="paymentDate"
-            rules={[{ required: true, message: "Vui lòng chọn ngày thanh toán!" }]}
+            rules={[
+              { required: true, message: "Vui lòng chọn ngày thanh toán!" },
+            ]}
           >
             <Input type="date" />
           </Form.Item>
           <Form.Item
             label="Phương thức thanh toán"
             name="paymentMethod"
-            rules={[{ required: true, message: "Vui lòng chọn phương thức thanh toán!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn phương thức thanh toán!",
+              },
+            ]}
           >
             <Select>
               <Option value="BANK_TRANSFER">BANK_TRANSFER</Option>

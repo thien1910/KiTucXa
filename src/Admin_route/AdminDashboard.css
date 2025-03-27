@@ -4,7 +4,7 @@
 }
 
 .sidebar {
-  width: 250px;
+  width: 350px;
   background-color: #147de7;
   border-right: 1px solid #dee2e6;
   display: flex;
@@ -62,7 +62,7 @@ nav ul li:hover {
 .main-content {
   flex-grow: 1;
   padding: 20px;
-  margin-left: 250px; /* Giữ nguyên */
+  margin-left: 350px; /* Giữ nguyên */
 }
 
 .dashboard-header {

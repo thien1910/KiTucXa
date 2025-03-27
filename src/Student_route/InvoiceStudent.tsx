@@ -73,18 +73,21 @@ const InvoiceStudent: React.FC = () => {
   // Fetch hợp đồng của sinh viên và lấy thông tin roomName, customerName từ dữ liệu JSON mẫu
   const fetchContracts = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/contracts/user/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:8080/api/v1/contracts/user/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu hợp đồng");
       const data = await response.json();
       const mappedContracts: Contract[] = data.map((item: any) => ({
         contractId: item.contractId,
-        roomName: item.room?.roomName || "N/A",       // Lấy roomName từ đối tượng room
-        customerName: item.user?.fullName || "N/A",     // Lấy fullName từ đối tượng user
+        roomName: item.room?.roomName || "N/A", // Lấy roomName từ đối tượng room
+        customerName: item.user?.fullName || "N/A", // Lấy fullName từ đối tượng user
       }));
       setContracts(mappedContracts);
     } catch (error) {
@@ -99,7 +102,7 @@ const InvoiceStudent: React.FC = () => {
   const filteredInvoices = invoices.filter(
     (invoice) =>
       invoice.id.toLowerCase().includes(searchQuery) ||
-      invoice.contractId.toLowerCase().includes(searchQuery)
+      invoice.contractId.toLowerCase().includes(searchQuery),
   );
 
   const openPaymentModal = (invoice: Invoice) => {
@@ -112,7 +115,7 @@ const InvoiceStudent: React.FC = () => {
   useEffect(() => {
     if (selectedInvoice && paymentMethod) {
       setQrValue(
-        `bill_id:${selectedInvoice.id},sum_price:${selectedInvoice.totalAmount},payment_method:${paymentMethod}`
+        `bill_id:${selectedInvoice.id},sum_price:${selectedInvoice.totalAmount},payment_method:${paymentMethod}`,
       );
     }
   }, [selectedInvoice, paymentMethod]);
@@ -122,7 +125,7 @@ const InvoiceStudent: React.FC = () => {
     const newWindow = window.open("", "_blank", "width=800,height=600");
     if (!newWindow) return;
     const relatedContract = contracts.find(
-      (c) => c.contractId === invoice.contractId
+      (c) => c.contractId === invoice.contractId,
     );
     const invoiceHtml = `
       <html>
@@ -183,13 +186,13 @@ const InvoiceStudent: React.FC = () => {
       alert("Vui lòng chọn hóa đơn và phương thức thanh toán.");
       return;
     }
-  
+
     const billUpdateData = {
       billStatus: "PAID",
       paymentMethod: paymentMethod.toUpperCase(),
       paymentDate: new Date().toISOString().split("T")[0],
     };
-  
+
     try {
       const response = await fetch(
         `http://localhost:8080/api/v1/bills/update/${selectedInvoice.id}`,
@@ -200,9 +203,9 @@ const InvoiceStudent: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(billUpdateData),
-        }
+        },
       );
-  
+
       if (!response.ok) {
         let errorData;
         try {
@@ -213,13 +216,13 @@ const InvoiceStudent: React.FC = () => {
         alert(`Lỗi cập nhật hóa đơn: ${errorData.message}`);
         return;
       }
-  
+
       try {
         await response.json();
       } catch (e) {
         // Nếu không có body JSON thì bỏ qua
       }
-  
+
       setInvoices((prevInvoices) =>
         prevInvoices.map((inv) =>
           inv.id === selectedInvoice.id
@@ -229,10 +232,10 @@ const InvoiceStudent: React.FC = () => {
                 paymentMethod: paymentMethod.toUpperCase(),
                 paymentDate: new Date().toISOString().split("T")[0],
               }
-            : inv
-        )
+            : inv,
+        ),
       );
-  
+
       setShowPaymentModal(false);
       alert("Thanh toán thành công! Hóa đơn đã được cập nhật trên server.");
     } catch (error) {
@@ -256,7 +259,7 @@ const InvoiceStudent: React.FC = () => {
             key: "roomName",
             render: (_: any, record: Invoice) => {
               const relatedContract = contracts.find(
-                (c) => c.contractId === record.contractId
+                (c) => c.contractId === record.contractId,
               );
               return relatedContract?.roomName || "N/A";
             },
@@ -294,17 +297,28 @@ const InvoiceStudent: React.FC = () => {
               <>
                 {record.status === "unpaid" ? (
                   <>
-                    <Button type="primary" onClick={() => openPaymentModal(record)}>
+                    <Button
+                      type="primary"
+                      onClick={() => openPaymentModal(record)}
+                    >
                       Thanh toán
                     </Button>
-                    <Button style={{ marginLeft: 8 }} onClick={() => handlePrintInvoice(record)}>
+                    <Button
+                      style={{ marginLeft: 8 }}
+                      onClick={() => handlePrintInvoice(record)}
+                    >
                       In hóa đơn
                     </Button>
                   </>
                 ) : (
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ color: "green", fontWeight: "bold" }}>Đã thanh toán</span>
-                    <Button style={{ marginLeft: 8 }} onClick={() => handlePrintInvoice(record)}>
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      Đã thanh toán
+                    </span>
+                    <Button
+                      style={{ marginLeft: 8 }}
+                      onClick={() => handlePrintInvoice(record)}
+                    >
                       In hóa đơn
                     </Button>
                   </div>
@@ -314,7 +328,7 @@ const InvoiceStudent: React.FC = () => {
           },
         ]}
       />
-  
+
       <Modal
         visible={showPaymentModal}
         title="Thanh toán hóa đơn"
@@ -322,7 +336,7 @@ const InvoiceStudent: React.FC = () => {
         footer={null}
         className="modal-payment"
         width="60vw"
-        bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
       >
         {selectedInvoice && (
           <form onSubmit={handlePaymentSubmit}>

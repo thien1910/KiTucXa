@@ -5,7 +5,7 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
@@ -35,7 +35,7 @@
 .add-button:hover {
   background-color: #2980b9;
   transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Card chứa form và danh sách */

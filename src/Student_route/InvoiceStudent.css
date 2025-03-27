@@ -2,302 +2,300 @@
 /* Vùng Container và tiêu đề      */
 /* ------------------------------ */
 .invoice-student {
-    padding: 20px;
-    width: 100%;
-    min-height: 100vh; /* Chiều cao tối thiểu bằng chiều cao màn hình */
-    font-family: Arial, sans-serif;
-    background: #ffffff;
-  }
-  
-  /* Căn lề tiêu đề */
-  .invoice-student h1 {
-    text-align: left;
-  }
-  
-  /* ------------------------------ */
-  /* Form (nếu có sử dụng)          */
-  /* ------------------------------ */
-  .invoice-form {
-    background: #f1f1f1;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
+  padding: 20px;
+  width: 100%;
+  min-height: 100vh; /* Chiều cao tối thiểu bằng chiều cao màn hình */
+  font-family: Arial, sans-serif;
+  background: #ffffff;
+}
+
+/* Căn lề tiêu đề */
+.invoice-student h1 {
+  text-align: left;
+}
+
+/* ------------------------------ */
+/* Form (nếu có sử dụng)          */
+/* ------------------------------ */
+.invoice-form {
+  background: #f1f1f1;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.invoice-form input,
+.invoice-form select {
+  flex: 1;
+  min-width: 45%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border 0.3s;
+}
+
+.invoice-form input:focus,
+.invoice-form select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Nút lưu (nếu có) */
+.save-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+  width: 100%;
+}
+
+.save-btn:hover {
+  background-color: #218838;
+}
+
+/* ------------------------------ */
+/* Search bar và các nút tạo mới  */
+/* ------------------------------ */
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.search-btn,
+.create-btn {
+  padding: 12px 18px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.create-btn {
+  background-color: #28a745;
+}
+
+.create-btn:hover {
+  background-color: #218838;
+}
+
+.search-btn:hover {
+  background-color: #0056b3;
+}
+
+/* ------------------------------ */
+/* Bảng hóa đơn (Table)           */
+/* ------------------------------ */
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.invoice-table th,
+.invoice-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.invoice-table th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+/* Trạng thái Paid/Unpaid */
+.paid {
+  color: green;
+  font-weight: bold;
+}
+
+.unpaid {
+  color: red;
+  font-weight: bold;
+}
+
+/* ------------------------------ */
+/* Modal chung (nếu sử dụng)      */
+/* ------------------------------ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 450px;
+  max-width: 90%;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+/* ------------------------------ */
+/* Responsive Design              */
+/* ------------------------------ */
+@media (max-width: 768px) {
   .invoice-form input,
   .invoice-form select {
-    flex: 1;
-    min-width: 45%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    transition: border 0.3s;
+    min-width: 100%;
   }
-  
-  .invoice-form input:focus,
-  .invoice-form select:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  /* Nút lưu (nếu có) */
-  .save-btn {
-    background-color: #28a745;
-    color: white;
-    padding: 12px 18px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s;
-    width: 100%;
-  }
-  
-  .save-btn:hover {
-    background-color: #218838;
-  }
-  
-  /* ------------------------------ */
-  /* Search bar và các nút tạo mới  */
-  /* ------------------------------ */
   .search-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 20px;
+    flex-direction: column;
   }
-  
-  .search-bar input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
   .search-btn,
   .create-btn {
-    padding: 12px 18px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .create-btn {
-    background-color: #28a745;
-  }
-  
-  .create-btn:hover {
-    background-color: #218838;
-  }
-  
-  .search-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  /* ------------------------------ */
-  /* Bảng hóa đơn (Table)           */
-  /* ------------------------------ */
-  .invoice-table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
   }
-  
   .invoice-table th,
   .invoice-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-  }
-  
-  .invoice-table th {
-    background-color: #f8f8f8;
-    font-weight: bold;
-  }
-  
-  /* Trạng thái Paid/Unpaid */
-  .paid {
-    color: green;
-    font-weight: bold;
-  }
-  
-  .unpaid {
-    color: red;
-    font-weight: bold;
-  }
-  
-  /* ------------------------------ */
-  /* Modal chung (nếu sử dụng)      */
-  /* ------------------------------ */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 450px;
-    max-width: 90%;
-  }
-  
-  .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-  }
-  
-  /* ------------------------------ */
-  /* Responsive Design              */
-  /* ------------------------------ */
-  @media (max-width: 768px) {
-    .invoice-form input,
-    .invoice-form select {
-      min-width: 100%;
-    }
-    .search-bar {
-      flex-direction: column;
-    }
-    .search-btn,
-    .create-btn {
-      width: 100%;
-    }
-    .invoice-table th,
-    .invoice-table td {
-      padding: 8px;
-      font-size: 14px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .invoice-student {
-      padding: 10px;
-    }
-    .invoice-form {
-      padding: 15px;
-    }
-    .invoice-form input,
-    .invoice-form select {
-      padding: 10px;
-    }
-    .save-btn {
-      padding: 10px;
-      font-size: 14px;
-    }
-    .modal-content {
-      padding: 15px;
-      width: 90%;
-    }
-  }
-  
-  /* ------------------------------ */
-  /* Tùy chỉnh Modal Thanh toán     */
-  /* (Sử dụng Ant Design Modal)     */
-  /* ------------------------------ */
-/* Ví dụ tùy chỉnh modal có className = "modal-payment" */
-.modal-payment .ant-modal-content {
-    border-radius: 12px; /* Bo góc mềm mại */
-    background-color: #f9f9f9; /* Nền sáng */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Bóng đổ đẹp mắt */
-    border: 1px solid #e2e2e2; /* Viền mỏng tinh tế */
-  }
-  
-  /* Header của modal */
-  .modal-payment .ant-modal-header {
-    background-color: #ffffff; /* Màu xanh đậm (Bootstrap) */
-    border-bottom: none; /* Xóa đường kẻ ngang mặc định */
-    border-radius: 12px 12px 0 0; /* Bo góc phía trên đồng bộ với content */
-    padding: 16px; /* Thêm khoảng cách */
-  }
-  
-  /* Tiêu đề modal */
-  .modal-payment .ant-modal-title {
-    color: #000000; /* Màu chữ trắng nổi bật trên nền xanh */
-    font-weight: bold;
-  }
-  
-  /* Body modal */
-  .modal-payment .ant-modal-body {
-    padding: 24px; /* Tăng padding cho thoáng */
-  }
-  
-  /* Form-group: căn chỉnh label, input */
-  .modal-payment .form-group {
-    margin-bottom: 16px;
-  }
-  
-  .modal-payment .form-group label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 6px;
-    color: #333;
-  }
-  
-  .modal-payment .form-group p {
-    margin: 0;
     padding: 8px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  /* Tùy chỉnh select */
-  .modal-payment select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
     font-size: 14px;
   }
-  
-  /* Nút Thanh toán */
-  .modal-payment .ant-btn-primary {
-    width: 100%;
-    height: auto;
-    padding: 10px 0;
-    background-color: #28a745;
-    border: none;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-    margin-top: 16px; /* Thêm khoảng cách trên */
+}
+
+@media (max-width: 480px) {
+  .invoice-student {
+    padding: 10px;
   }
-  
-  .modal-payment .ant-btn-primary:hover {
-    background-color: #218838; /* Hover màu xanh đậm hơn */
+  .invoice-form {
+    padding: 15px;
   }
-  
-  /* Căn giữa QR code */
-  .modal-payment .form-group > div {
-    display: flex;
-    justify-content: center;
-    margin-top: 8px;
+  .invoice-form input,
+  .invoice-form select {
+    padding: 10px;
   }
-  
-  /* Thu gọn nút Close (nếu muốn) */
-  .modal-payment .ant-modal-close {
-    top: 14px;
-    right: 14px;
+  .save-btn {
+    padding: 10px;
+    font-size: 14px;
   }
-  
-  
+  .modal-content {
+    padding: 15px;
+    width: 90%;
+  }
+}
+
+/* ------------------------------ */
+/* Tùy chỉnh Modal Thanh toán     */
+/* (Sử dụng Ant Design Modal)     */
+/* ------------------------------ */
+/* Ví dụ tùy chỉnh modal có className = "modal-payment" */
+.modal-payment .ant-modal-content {
+  border-radius: 12px; /* Bo góc mềm mại */
+  background-color: #f9f9f9; /* Nền sáng */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Bóng đổ đẹp mắt */
+  border: 1px solid #e2e2e2; /* Viền mỏng tinh tế */
+}
+
+/* Header của modal */
+.modal-payment .ant-modal-header {
+  background-color: #ffffff; /* Màu xanh đậm (Bootstrap) */
+  border-bottom: none; /* Xóa đường kẻ ngang mặc định */
+  border-radius: 12px 12px 0 0; /* Bo góc phía trên đồng bộ với content */
+  padding: 16px; /* Thêm khoảng cách */
+}
+
+/* Tiêu đề modal */
+.modal-payment .ant-modal-title {
+  color: #000000; /* Màu chữ trắng nổi bật trên nền xanh */
+  font-weight: bold;
+}
+
+/* Body modal */
+.modal-payment .ant-modal-body {
+  padding: 24px; /* Tăng padding cho thoáng */
+}
+
+/* Form-group: căn chỉnh label, input */
+.modal-payment .form-group {
+  margin-bottom: 16px;
+}
+
+.modal-payment .form-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.modal-payment .form-group p {
+  margin: 0;
+  padding: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Tùy chỉnh select */
+.modal-payment select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Nút Thanh toán */
+.modal-payment .ant-btn-primary {
+  width: 100%;
+  height: auto;
+  padding: 10px 0;
+  background-color: #28a745;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  margin-top: 16px; /* Thêm khoảng cách trên */
+}
+
+.modal-payment .ant-btn-primary:hover {
+  background-color: #218838; /* Hover màu xanh đậm hơn */
+}
+
+/* Căn giữa QR code */
+.modal-payment .form-group > div {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* Thu gọn nút Close (nếu muốn) */
+.modal-payment .ant-modal-close {
+  top: 14px;
+  right: 14px;
+}

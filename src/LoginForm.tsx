@@ -17,12 +17,16 @@ const LoginForm: React.FC = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:8080/api/v1/auth/token", {
-        userName: email,
-        passWord: password,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth/token",
+        {
+          userName: email,
+          passWord: password,
+        },
+      );
 
-      const { token, authenticated, roles, userId, fullName } = response.data.result;
+      const { token, authenticated, roles, userId, fullName } =
+        response.data.result;
 
       if (!authenticated) {
         setError("Xác thực thất bại!");
@@ -42,7 +46,7 @@ const LoginForm: React.FC = () => {
         navigate("/manager/dashboard");
       } else if (roles.includes("STUDENT")) {
         navigate("/student/dashboard");
-      }else if (roles.includes("ADMIN")) {
+      } else if (roles.includes("ADMIN")) {
         navigate("/admin/dashboard");
       }
     } catch (error: any) {
@@ -70,7 +74,7 @@ const LoginForm: React.FC = () => {
         <div className="login-content">
           <h1>Đăng nhập</h1>
           <p className="subtitle">
-              Hãy đăng nhập vào hệ thống ký túc xá KTX của chúng tôi 
+            Hãy đăng nhập vào hệ thống ký túc xá KTX của chúng tôi
           </p>
 
           {/* Bạn có thể thêm tab nếu muốn, ví dụ: Login / Create Profile */}
@@ -113,7 +117,10 @@ const LoginForm: React.FC = () => {
           {/* <button className="facebook-btn">Continue with Facebook</button> */}
 
           {/* Nút đăng nhập khách */}
-          <button className="facebook-btn" onClick={() => navigate("/guestdashboard")}>
+          <button
+            className="facebook-btn"
+            onClick={() => navigate("/guestdashboard")}
+          >
             Continue as Guest
           </button>
         </div>

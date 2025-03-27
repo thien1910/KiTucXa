@@ -25,7 +25,9 @@ h2 {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
 }
 
 .filters select:focus,

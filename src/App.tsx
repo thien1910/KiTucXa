@@ -23,7 +23,6 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginForm />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manager/dashboard" element={<Dashboard />} />
-
         <Route path="/account-management" element={<AccountManagement />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/student-mangement" element={<StudentManagement />} />
@@ -31,12 +30,15 @@ const App: React.FC = () => {
         <Route path="/invoice-management" element={<InvoiceManagement />} />
         <Route path="/room-management" element={<RoomManagement />} />
         <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/service-management" element={<ServiceManagement />} /> {/* Add this line */}
-        <Route path="/guestdashboard" element={<GuestDashboard/>} />
-        <Route path="/student/dashboard" element={<StudentDashboard/>} />
-        <Route path="/admin/dashboard" element={<AdminDashboard/>} />
+        <Route
+          path="/service-management"
+          element={<ServiceManagement />}
+        />{" "}
+        {/* Add this line */}
+        <Route path="/guestdashboard" element={<GuestDashboard />} />
+        <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/room-details" element={<RoomDetail />} />
-
       </Routes>
     </Router>
   );

@@ -2,7 +2,16 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Table, Input, Button, Modal, Form, Select, Popconfirm, message } from "antd";
+import {
+  Table,
+  Input,
+  Button,
+  Modal,
+  Form,
+  Select,
+  Popconfirm,
+  message,
+} from "antd";
 import { EditOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 import "./AccountManagement.css";
@@ -96,7 +105,7 @@ const AccountManagement: React.FC = () => {
   };
 
   const filteredAccounts = accounts.filter((acc) =>
-    acc.userName.toLowerCase().includes(searchTerm.toLowerCase())
+    acc.userName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Handle edit
@@ -152,7 +161,7 @@ const AccountManagement: React.FC = () => {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(payload),
-          }
+          },
         );
 
         const data = await response.json();
@@ -177,23 +186,26 @@ const AccountManagement: React.FC = () => {
   const handleDelete = async (userId: string) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8080/api/v1/user/${userId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:8080/api/v1/user/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
-  
+      );
+
       // Log response trước khi parse JSON
       const text = await response.text();
       console.log("Response từ server:", text);
-  
+
       // Nếu server trả về HTML, không parse JSON
       if (!response.ok) {
         throw new Error(`Lỗi API: ${response.status} - ${response.statusText}`);
       }
-  
+
       // Nếu phản hồi không phải JSON hợp lệ
       let data;
       try {
@@ -201,7 +213,7 @@ const AccountManagement: React.FC = () => {
       } catch (error) {
         throw new Error("Lỗi parse JSON: Server không trả về JSON hợp lệ.");
       }
-  
+
       // Xử lý dữ liệu JSON
       if (data.code === 1000) {
         message.success("Xóa tài khoản thành công");
@@ -220,14 +232,17 @@ const AccountManagement: React.FC = () => {
     try {
       const token = localStorage.getItem("token");
       const payload = { status: newStatus };
-      const response = await fetch(`http://localhost:8080/api/v1/user/${record.userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:8080/api/v1/user/${record.userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+      );
       const data = await response.json();
       if (data.code === 1000) {
         message.success("Cập nhật trạng thái thành công");
@@ -252,7 +267,6 @@ const AccountManagement: React.FC = () => {
       await handleChangeStatus(record, "Disciplined");
     }
   };
-
 
   // Render status tag with color
   const getStatusTag = (status: string | null) => {
@@ -286,7 +300,12 @@ const AccountManagement: React.FC = () => {
         onChange={handleSearch}
         className="search-input"
       />
-      <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} className="add-button">
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={handleAdd}
+        className="add-button"
+      >
         Thêm tài khoản
       </Button>
       <Table
@@ -301,7 +320,11 @@ const AccountManagement: React.FC = () => {
           { title: "Giới tính", dataIndex: "gender", key: "gender" },
           // { title: "Phòng", dataIndex: "roomNameStudent", key: "roomNameStudent" },
           { title: "CCCD", dataIndex: "cccd", key: "cccd" },
-          { title: "Số điện thoại", dataIndex: "phoneNumber", key: "phoneNumber" },
+          {
+            title: "Số điện thoại",
+            dataIndex: "phoneNumber",
+            key: "phoneNumber",
+          },
           { title: "Quốc gia", dataIndex: "country", key: "country" },
           {
             title: "Trạng thái",
@@ -334,16 +357,17 @@ const AccountManagement: React.FC = () => {
                 >
                   <Button danger icon={<DeleteOutlined />} />
                 </Popconfirm>
-                
-                <Button
-  onClick={() => handleToggleActivation(record)}
-  style={{ marginLeft: 8 }}
-  type={record.status === "Disciplined" ? "primary" : "default"}
-  danger={record.status !== "Disciplined"}
->
-  {record.status === "Disciplined" ? "Kích hoạt" : "Vô hiệu hóa"}
-</Button>
 
+                <Button
+                  onClick={() => handleToggleActivation(record)}
+                  style={{ marginLeft: 8 }}
+                  type={record.status === "Disciplined" ? "primary" : "default"}
+                  danger={record.status !== "Disciplined"}
+                >
+                  {record.status === "Disciplined"
+                    ? "Kích hoạt"
+                    : "Vô hiệu hóa"}
+                </Button>
               </>
             ),
           },

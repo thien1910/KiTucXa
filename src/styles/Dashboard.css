@@ -4,7 +4,7 @@
 }
 
 .sidebar {
-  width: 300px;
+  width: 400px;
   background-color: #f8f9fa;
   border-right: 1px solid #dee2e6;
   display: flex;
@@ -29,7 +29,12 @@
 .sidebar-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #343a40;
+  color: #ffffff;
+}
+.sidebar-header h1 {
+  margin: 0;
+  font-size: 20px;
+  color: #f8fcff;
 }
 
 .sidebar-header p {
@@ -62,7 +67,7 @@ nav ul li:hover {
 .main-content {
   flex-grow: 1;
   padding: 20px;
-  margin-left: 250px; /* Giữ nguyên */
+  margin-left: 300px; /* Giữ nguyên */
 }
 
 .dashboard-header {
@@ -140,7 +145,7 @@ nav ul li:hover {
   }
 
   .main-content {
-    margin-left: 200px;
+    margin-left: 300px;
   }
 
   .dashboard-box {
@@ -156,6 +161,8 @@ nav ul li:hover {
   }
 
   .main-content {
+    /* margin-left: 300px; Cho margin-left khớp với width của sidebar */
+
     margin-left: 0;
     padding: 10px;
   }

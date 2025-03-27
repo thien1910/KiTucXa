@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./UserProfileStudent.css";
+import "../styles/UserProfileStudent.css";
 
 interface User {
   userId: string;
@@ -39,13 +39,16 @@ const UserProfileStudent: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/v1/user/my-info", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          "http://localhost:8080/api/v1/user/my-info",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           throw new Error("Lỗi khi lấy dữ liệu");
@@ -98,14 +101,17 @@ const UserProfileStudent: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/user/${user.userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:8080/api/v1/user/${user.userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedData),
         },
-        body: JSON.stringify(updatedData),
-      });
+      );
 
       const result = await response.json();
       if (!response.ok) {
@@ -124,37 +130,40 @@ const UserProfileStudent: React.FC = () => {
   // Đổi mật khẩu
   const handleChangePassword = async () => {
     if (!user) return;
-  
+
     if (newPassword !== confirmPassword) {
       alert("Mật khẩu mới và xác nhận mật khẩu không khớp.");
       return;
     }
-  
+
     const passwordData = {
       oldPassword,
       newPassword,
     };
-  
+
     console.log("Sending request to change password with token:", token);
-  
+
     try {
-      const response = await fetch("http://localhost:8080/api/v1/user/change-password", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "http://localhost:8080/api/v1/user/change-password",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(passwordData),
         },
-        body: JSON.stringify(passwordData),
-      });
-  
+      );
+
       console.log("Response status:", response.status);
       const result = await response.json();
       console.log("Response body:", result);
-  
+
       if (!response.ok) {
         throw new Error(result.message || "Lỗi khi đổi mật khẩu.");
       }
-  
+
       setIsEditingPassword(false);
       setOldPassword("");
       setNewPassword("");
@@ -165,8 +174,6 @@ const UserProfileStudent: React.FC = () => {
       alert("Đổi mật khẩu thất bại!");
     }
   };
-  
-  
 
   return (
     <div className="profile-page">
@@ -177,7 +184,9 @@ const UserProfileStudent: React.FC = () => {
             <img src={user.avatarUrl} alt="Avatar" className="avatar-img" />
             <h2 className="user-name">{user.fullName}</h2>
             <p className="user-role">{user.roles.join(", ")}</p>
-            <p className="user-status">Phòng: {user.roomNameStudent || "Chưa có phòng"}</p>
+            <p className="user-status">
+              Phòng: {user.roomNameStudent || "Chưa có phòng"}
+            </p>
           </>
         )}
       </div>
@@ -195,7 +204,8 @@ const UserProfileStudent: React.FC = () => {
                 <strong>Phone:</strong> {user.phoneNumber}
               </p>
               <p>
-                <strong>Giới tính:</strong> {user.gender === "MALE" ? "Nam" : "Nữ"}
+                <strong>Giới tính:</strong>{" "}
+                {user.gender === "MALE" ? "Nam" : "Nữ"}
               </p>
               <p>
                 <strong>CCCD:</strong> {user.cccd}
@@ -262,7 +272,9 @@ const UserProfileStudent: React.FC = () => {
               <label>Giới tính</label>
               <select
                 value={editedGender}
-                onChange={(e) => setEditedGender(e.target.value as "MALE" | "FEMALE")}
+                onChange={(e) =>
+                  setEditedGender(e.target.value as "MALE" | "FEMALE")
+                }
               >
                 <option value="MALE">Nam</option>
                 <option value="FEMALE">Nữ</option>
@@ -281,7 +293,10 @@ const UserProfileStudent: React.FC = () => {
               <button className="save-btn" onClick={handleSaveInfo}>
                 Lưu
               </button>
-              <button className="cancel-btn" onClick={() => setIsEditingInfo(false)}>
+              <button
+                className="cancel-btn"
+                onClick={() => setIsEditingInfo(false)}
+              >
                 Hủy
               </button>
             </div>
@@ -323,7 +338,10 @@ const UserProfileStudent: React.FC = () => {
               <button className="save-btn" onClick={handleChangePassword}>
                 Lưu
               </button>
-              <button className="cancel-btn" onClick={() => setIsEditingPassword(false)}>
+              <button
+                className="cancel-btn"
+                onClick={() => setIsEditingPassword(false)}
+              >
                 Hủy
               </button>
             </div>

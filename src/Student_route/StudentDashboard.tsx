@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./Dashboard.css";
+import "./StudentDashboard.css";
 import UserProfileStudent from "./UserProfileStudent";
 import ContractStudent from "./ContractStudent";
 import InvoiceStudent from "./InvoiceStudent";
 import PaymentPage from "./PaymentPageStudent";
 import { useNavigate } from "react-router-dom";
-
-
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -16,10 +14,10 @@ const StudentDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Xóa token
-    localStorage.removeItem("user");  // Xóa thông tin user
+    localStorage.removeItem("user"); // Xóa thông tin user
     navigate("/"); // Điều hướng về trang đăng nhập
   };
-  
+
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -40,7 +38,9 @@ const StudentDashboard = () => {
             <span style={{ fontSize: "40px" }}>🏠</span>
           </div>
           <h2>Ký túc xá KTX</h2>
-          <h1>Xin chào <br/> {fullName}!</h1>
+          <h1>
+            Xin chào <br /> {fullName}!
+          </h1>
         </div>
         <nav>
           <ul>
@@ -48,16 +48,13 @@ const StudentDashboard = () => {
             <li onClick={() => setView("userProfileStudent")}>
               Thông tin cá nhân
             </li>
-            <li onClick={() => setView("contractStudent")}>
-              Hợp đồng
-            </li>
-            <li onClick={() => setView("invoiceStudent")}>
-              Hóa đơn
-            </li>
+            <li onClick={() => setView("contractStudent")}>Hợp đồng</li>
+            <li onClick={() => setView("invoiceStudent")}>Hóa đơn</li>
             {/* <li onClick={() => setView("payment")}>Thanh toán</li> */}
-            
-            <li onClick={handleLogout} className="logout-button">🚪 Đăng xuất</li>
 
+            <li onClick={handleLogout} className="logout-button">
+              🚪 Đăng xuất
+            </li>
           </ul>
         </nav>
       </aside>
