@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.KiTucXa.Enum.ContractStatus.Active;
+import static org.hibernate.engine.transaction.internal.jta.JtaStatusHelper.isActive;
+
 @Service
 @RequiredArgsConstructor
 public class BillService {
@@ -31,24 +34,31 @@ public class BillService {
         Contract contract = contractRepository.findById(billDto.getContractId())
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
+        // Kiểm tra hợp đồng có đang active không
+        if (!contract.getContractStatus().equals(Active)) {
+            throw new AppException(ErrorCode.CONTRACT_INACTIVE);
+        }
+
         Bill bill = billMapper.toBill(billDto);
         bill.setContract(contract);
-
         billRepository.save(bill);
+
         BillResponse response = billMapper.toBillResponse(bill);
         response.setFullName(contract.getUser().getFullName());
+
         // Nếu phương thức thanh toán là BANK_TRANSFER, tạo mã QR
         if (bill.getPaymentMethod() == PaymentMethod.BANK_TRANSFER) {
             String paymentInfo = "Chuyển khoản: " + bill.getSumPrice() + " VND";
             try {
-                response.setQrCode
-                        (com.project.KiTucXa.Service.QRCodeGenerator.generateQRCode(paymentInfo));
+                response.setQrCode(QRCodeGenerator.generateQRCode(paymentInfo));
             } catch (WriterException | IOException e) {
                 throw new RuntimeException("Lỗi khi tạo mã QR", e);
             }
         }
+
         return response;
     }
+
 
     public List<BillResponse> getAllBills() {
         return billRepository.findAll().stream()

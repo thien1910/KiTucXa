@@ -1,7 +1,15 @@
 package com.project.KiTucXa.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import com.project.KiTucXa.Dto.Request.ManagerDto;
 import com.project.KiTucXa.Dto.Response.ManagerResponse;
+import com.project.KiTucXa.Dto.Response.UserResponse;
 import com.project.KiTucXa.Dto.Update.ManagerUpdateDto;
 import com.project.KiTucXa.Entity.Manager;
 import com.project.KiTucXa.Entity.User;
@@ -18,12 +26,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class ManagerServiceTest {
 
@@ -31,113 +33,156 @@ public class ManagerServiceTest {
     private ManagerRepository managerRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private ManagerMapper managerMapper;
 
     @Mock
-    private ManagerMapper managerMapper;
+    private UserRepository userRepository;
 
     @InjectMocks
     private ManagerService managerService;
 
+    // Các biến dùng chung cho test
     private Manager manager;
-    private User user;
     private ManagerDto managerDto;
+    private ManagerUpdateDto managerUpdateDto;
     private ManagerResponse managerResponse;
+    private User user;
+    private UserResponse userResponse;
 
     @BeforeEach
     void setUp() {
+        // Giả lập đối tượng User
         user = new User();
-        user.setUserId("user-123");
+        user.setUserId("user123");
+        // Giả sử user có thêm thông tin khác nếu cần
 
+        // Giả lập đối tượng Manager (Entity)
         manager = new Manager();
-        manager.setManagerId("manager-123");
-        manager.setUser(user);
+        manager.setManagerId("manager123");
         manager.setDepartment("IT");
+        manager.setUser(user);
 
-        managerDto = new ManagerDto("user-123", "IT");
-        managerResponse = new ManagerResponse();
+        // Giả lập DTO để tạo Manager
+        managerDto = new ManagerDto("user123", "IT");
 
-        when(userRepository.findById("user-123")).thenReturn(Optional.of(user));
-        when(managerMapper.toManager(managerDto, user)).thenReturn(manager);
-        when(managerRepository.save(manager)).thenReturn(manager);
-        when(managerMapper.toManagerResponse(manager, user)).thenReturn(managerResponse);
+        // Giả lập DTO để update Manager (chỉ cập nhật department)
+        managerUpdateDto = new ManagerUpdateDto("HR");
+
+        // Giả lập response của Manager
+        userResponse = new UserResponse();
+        // Cấu hình các trường của UserResponse nếu cần
+
+        managerResponse = ManagerResponse.builder()
+                .managerId("manager123")
+                .userId("user123")
+                .department("IT")
+                .user(userResponse)
+                .build();
     }
 
     @Test
-    void testCreateManager_Success() {
-        ManagerResponse result = managerService.createManager(managerDto);
-
-        assertNotNull(result, "ManagerResponse không được null");
-        verify(managerRepository).save(manager);
-        verify(managerMapper).toManagerResponse(manager, user);
-    }
-
-    @Test
-    void testCreateManager_UserNotFound() {
-        when(userRepository.findById("user-123")).thenReturn(Optional.empty());
-
-        AppException exception = assertThrows(AppException.class, () -> managerService.createManager(managerDto));
-
-        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
-        verify(managerRepository, never()).save(any());
-    }
-
-    @Test
-    void testGetAllManagers_Success() {
-        when(managerRepository.findAll()).thenReturn(List.of(manager));
+    void testGetAllManagers() {
+        // Giả lập repository trả về 1 danh sách gồm 1 Manager
+        when(managerRepository.findAll()).thenReturn(Arrays.asList(manager));
+        // Giả lập mapper chuyển đối tượng sang response
         when(managerMapper.toManagerResponse(manager, user)).thenReturn(managerResponse);
 
-        List<ManagerResponse> result = managerService.getAllManagers();
+        List<ManagerResponse> responses = managerService.getAllManagers();
 
-        assertEquals(1, result.size());
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
         verify(managerRepository).findAll();
     }
 
     @Test
     void testGetManager_Success() {
-        when(managerRepository.findById("manager-123")).thenReturn(Optional.of(manager));
+        when(managerRepository.findById("manager123")).thenReturn(Optional.of(manager));
+        when(managerMapper.toManagerResponse(manager, user)).thenReturn(managerResponse);
 
-        ManagerResponse result = managerService.getManager("manager-123");
+        ManagerResponse response = managerService.getManager("manager123");
 
-        assertNotNull(result);
-        verify(managerRepository).findById("manager-123");
+        assertNotNull(response);
+        assertEquals("manager123", response.getManagerId());
+        verify(managerRepository).findById("manager123");
     }
 
     @Test
     void testGetManager_NotFound() {
-        when(managerRepository.findById("invalid-id")).thenReturn(Optional.empty());
+        when(managerRepository.findById("manager123")).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(RuntimeException.class, () -> managerService.getManager("invalid-id"));
-
-        assertEquals("Manager not found", exception.getMessage());
+        AppException ex = assertThrows(AppException.class, () -> managerService.getManager("manager123"));
+        assertEquals(ErrorCode.MANAGER_NOT_FOUND, ex.getErrorCode());
     }
 
     @Test
-    void testUpdateManager_Success() {
-        ManagerUpdateDto updateDto = new ManagerUpdateDto("manager-123", "user-123", "HR");
-        when(managerRepository.findById("manager-123")).thenReturn(Optional.of(manager));
+    void testCreateManager_Success() {
+        // Giả lập rằng chưa có manager nào có department "IT"
+        when(managerRepository.existsByDepartment("IT")).thenReturn(false);
+        // Giả lập tìm kiếm user theo userId
+        when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        // Chuyển đổi từ DTO sang entity
+        when(managerMapper.toManager(managerDto, user)).thenReturn(manager);
+        // Lưu entity vào repository
+        when(managerRepository.save(manager)).thenReturn(manager);
+        // Chuyển từ entity sang response
+        when(managerMapper.toManagerResponse(manager, user)).thenReturn(managerResponse);
 
-        ManagerResponse result = managerService.updateManager("manager-123", updateDto);
+        ManagerResponse response = managerService.createManager(managerDto);
 
-        assertNotNull(result);
+        assertNotNull(response);
+        assertEquals("manager123", response.getManagerId());
+        verify(managerRepository).existsByDepartment("IT");
+        verify(userRepository).findById("user123");
         verify(managerRepository).save(manager);
     }
 
     @Test
+    void testCreateManager_ManagerAlreadyExisted() {
+        // Nếu đã tồn tại manager với department tương ứng
+        when(managerRepository.existsByDepartment("IT")).thenReturn(true);
+
+        AppException ex = assertThrows(AppException.class, () -> managerService.createManager(managerDto));
+        assertEquals(ErrorCode.MANAGER_EXITED, ex.getErrorCode());
+    }
+
+    @Test
+    void testUpdateManager_Success() {
+        when(managerRepository.findById("manager123")).thenReturn(Optional.of(manager));
+        // Giả lập mapper updateManager (không trả về gì)
+        doNothing().when(managerMapper).updateManager(manager, managerUpdateDto);
+        when(managerRepository.save(manager)).thenReturn(manager);
+        when(managerMapper.toManagerResponse(manager, user)).thenReturn(managerResponse);
+
+        ManagerResponse response = managerService.updateManager("manager123", managerUpdateDto);
+
+        assertNotNull(response);
+        assertEquals("manager123", response.getManagerId());
+        verify(managerRepository).findById("manager123");
+        verify(managerRepository).save(manager);
+    }
+
+    @Test
+    void testUpdateManager_NotFound() {
+        when(managerRepository.findById("manager123")).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class, () -> managerService.updateManager("manager123", managerUpdateDto));
+        assertEquals(ErrorCode.MANAGER_NOT_FOUND, ex.getErrorCode());
+    }
+
+    @Test
     void testDeleteManager_Success() {
-        when(managerRepository.existsById("manager-123")).thenReturn(true);
+        when(managerRepository.existsById("manager123")).thenReturn(true);
+        doNothing().when(managerRepository).deleteById("manager123");
 
-        assertDoesNotThrow(() -> managerService.deleteManager("manager-123"));
-
-        verify(managerRepository).deleteById("manager-123");
+        assertDoesNotThrow(() -> managerService.deleteManager("manager123"));
+        verify(managerRepository).deleteById("manager123");
     }
 
     @Test
     void testDeleteManager_NotFound() {
-        when(managerRepository.existsById("invalid-id")).thenReturn(false);
+        when(managerRepository.existsById("manager123")).thenReturn(false);
 
-        Exception exception = assertThrows(RuntimeException.class, () -> managerService.deleteManager("invalid-id"));
-
-        assertEquals("Manager not found", exception.getMessage());
+        AppException ex = assertThrows(AppException.class, () -> managerService.deleteManager("manager123"));
+        assertEquals(ErrorCode.MANAGER_NOT_FOUND, ex.getErrorCode());
     }
 }

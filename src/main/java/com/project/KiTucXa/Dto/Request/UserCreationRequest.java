@@ -29,4 +29,6 @@ public class UserCreationRequest {
     Status status;
     String country;
 
+    public UserCreationRequest(String testuser, String password, String testUser, Gender gender, String number, String number1, Status status, String vietnam) {
+    }
 }

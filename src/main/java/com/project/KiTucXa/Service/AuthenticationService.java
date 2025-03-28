@@ -40,24 +40,35 @@ public class AuthenticationService {
 
     @NonFinal
     @Value("${jwt.signerKey}")
-    protected String SIGNER_KEY;
+    public String SIGNER_KEY;
 
-    public IntrospectResponse introspect(IntrospectRequest request)
-            throws JOSEException, ParseException {
-        var token = request.getToken();
+    public IntrospectResponse introspect(IntrospectRequest request) {
+        try {
+            var token = request.getToken();
+            log.info("Received token for introspection: {}", token);
 
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+            // Kiểm tra định dạng token trước khi parse
+            if (token == null || !token.matches("^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$")) {
+                log.error("Invalid token format");
+                return IntrospectResponse.builder().valid(false).build();
+            }
 
-        SignedJWT signedJWT = SignedJWT.parse(token);
+            SignedJWT signedJWT = SignedJWT.parse(token);
 
-        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+            boolean verified = signedJWT.verify(verifier);
+            boolean isExpired = signedJWT.getJWTClaimsSet().getExpirationTime().before(new Date());
 
-        var verified = signedJWT.verify(verifier);
+            return IntrospectResponse.builder().valid(verified && !isExpired).build();
+        } catch (ParseException e) {
+            log.error("Error parsing token", e);
+        } catch (JOSEException e) {
+            log.error("Token verification failed", e);
+        }
 
-        return IntrospectResponse.builder()
-                .valid(verified && expiryTime.after(new Date()))
-                .build();
+        return IntrospectResponse.builder().valid(false).build();
     }
+
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
@@ -89,7 +100,7 @@ public class AuthenticationService {
 
 
 
-    private String generateToken(User user) {
+    public String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()

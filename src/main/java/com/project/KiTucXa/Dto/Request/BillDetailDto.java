@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor // khoi tao ko tham so
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
 public class BillDetailDto {
     @NotNull(message = "BillId is required")
     String billId;
@@ -18,4 +20,7 @@ public class BillDetailDto {
     String utilityServiceId;
     Integer quantity;
     BigDecimal totalPrice;
+
+    public BillDetailDto(String bill1, String utility1, int i) {
+    }
 }

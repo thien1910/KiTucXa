@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 

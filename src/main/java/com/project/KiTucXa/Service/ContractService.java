@@ -13,7 +13,9 @@ import com.project.KiTucXa.Mapper.ContractMapper;
 import com.project.KiTucXa.Repository.ContractRepository;
 import com.project.KiTucXa.Repository.RoomRepository;
 import com.project.KiTucXa.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -65,10 +67,21 @@ public class ContractService {
     }
 
     public List<ContractResponse> getAllContracts() {
-        return contractRepository.findAll().stream()
+        List<Contract> contracts = contractRepository.findAll();
+        Date now = new Date();
+
+        for (Contract contract : contracts) {
+            if (contract.getContractStatus() == ContractStatus.Active && contract.getEndDate().before(now)) {
+                contract.setContractStatus(ContractStatus.Inactive);
+                contractRepository.save(contract);
+            }
+        }
+
+        return contracts.stream()
                 .map(contractMapper::toContractResponse)
                 .collect(Collectors.toList());
     }
+
 
     public ContractResponse getContractById(String contractId) {
         Contract contract = contractRepository.findById(contractId)
@@ -95,5 +108,18 @@ public class ContractService {
     }
     public List<Contract> getContractsByUserId(String userId) {
         return contractRepository.findByUser_UserId(userId);
+    }
+    @Scheduled(cron = "0 0 0 * * ?") // Mỗi ngày lúc 00:00
+    @Transactional
+    public void updateExpiredContracts() {
+        Date now = new Date();
+        List<Contract> expiredContracts = contractRepository.findByEndDateBeforeAndContractStatus(now, ContractStatus.Active);
+
+        for (Contract contract : expiredContracts) {
+            contract.setContractStatus(ContractStatus.Inactive);
+        }
+
+        contractRepository.saveAll(expiredContracts);
+        System.out.println("Updated " + expiredContracts.size() + " expired contracts to INACTIVE.");
     }
 }

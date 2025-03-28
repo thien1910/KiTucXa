@@ -19,4 +19,7 @@ public class BillDetailResponse {
     BigDecimal totalPrice;
     Timestamp createdAt;
     Timestamp updatedAt;
+
+    public BillDetailResponse(String billDetail1, String bill1, String utility1, int i, BigDecimal bigDecimal) {
+    }
 }

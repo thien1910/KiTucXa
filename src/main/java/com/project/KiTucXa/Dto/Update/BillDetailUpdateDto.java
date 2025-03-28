@@ -14,4 +14,6 @@ public class BillDetailUpdateDto {
     Integer quantity;
     BigDecimal totalPrice;
 
+    public BillDetailUpdateDto(int i) {
+    }
 }

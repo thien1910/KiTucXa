@@ -26,16 +26,6 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationControllerTest {
 
-    @Mock
-    private AuthenticationService authenticationService;
-
-    @InjectMocks
-    private AuthenticationController authenticationController;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
 
 

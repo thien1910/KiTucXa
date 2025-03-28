@@ -69,8 +69,12 @@ class RoomServiceServiceTest {
 
         roomServiceDto = new RoomServiceDto("1", "1", BigDecimal.valueOf(1000));
         roomServiceUpdateDto = new RoomServiceUpdateDto(BigDecimal.valueOf(1500));
+
         roomServiceResponse = new RoomServiceResponse();
+        roomServiceResponse.setRoomServiceId("1"); // Đảm bảo giá trị này được set
+        // Nếu có các field khác, bạn cũng nên set giá trị cho chúng.
     }
+
 
     @Test
     void testCreateRoomService_Success() {

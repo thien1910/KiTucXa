@@ -27,4 +27,7 @@ public class RoomDto {
     BigDecimal roomPrice;
     RoomStatus roomStatus;
     String note;
+
+    public RoomDto(String number, String a101, String it, int i, int i1, String standard, BigDecimal bigDecimal, Object o, String note) {
+    }
 }

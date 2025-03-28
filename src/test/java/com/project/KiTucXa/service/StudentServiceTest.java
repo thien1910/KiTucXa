@@ -1,7 +1,16 @@
 package com.project.KiTucXa.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import com.project.KiTucXa.Dto.Request.StudentDto;
 import com.project.KiTucXa.Dto.Response.StudentResponse;
+import com.project.KiTucXa.Dto.Response.UserResponse;
 import com.project.KiTucXa.Dto.Update.StudentUpdateDto;
 import com.project.KiTucXa.Entity.Student;
 import com.project.KiTucXa.Entity.User;
@@ -11,17 +20,13 @@ import com.project.KiTucXa.Mapper.StudentMapper;
 import com.project.KiTucXa.Repository.StudentRepository;
 import com.project.KiTucXa.Repository.UserRepository;
 import com.project.KiTucXa.Service.StudentService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.List;
-import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
@@ -38,118 +43,200 @@ class StudentServiceTest {
     @InjectMocks
     private StudentService studentService;
 
+    private StudentDto studentDto;
     private Student student;
     private User user;
     private StudentResponse studentResponse;
-    private StudentDto studentDto;
     private StudentUpdateDto studentUpdateDto;
 
     @BeforeEach
     void setUp() {
+        // Khởi tạo User
         user = new User();
-        user.setUserId("1");
+        user.setUserId("user123");
+        user.setUserName("testuser");
 
+        // Khởi tạo Student
         student = new Student();
-        student.setStudentId("1");
-        student.setMaSinhVien("SV001");
+        student.setStudentId("student123");
+        student.setMaSinhVien("MSV001");
         student.setUser(user);
 
-        studentResponse = new StudentResponse();
-        studentResponse.setStudentId("1");
-        studentResponse.setMaSinhVien("SV001");
+        // Khởi tạo DTO
+        studentDto = new StudentDto("user123", "MSV001");
 
-        studentDto = new StudentDto("1", "SV001");
-        studentUpdateDto = new StudentUpdateDto("SV002");
+        // Khởi tạo Response
+        studentResponse = new StudentResponse();
+        studentResponse.setStudentId("student123");
+        studentResponse.setUserId("user123");
+        studentResponse.setMaSinhVien("MSV001");
+        studentResponse.setUser(new UserResponse());
+
+        // Khởi tạo Update DTO (giả sử có trường nào cần update)
+        studentUpdateDto = new StudentUpdateDto();
+        // Bạn có thể thêm các field cần update nếu có
     }
 
     @Test
     void testCreateStudent_Success() {
-        when(studentRepository.existsByMaSinhVien(any())).thenReturn(false);
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(studentMapper.toStudent(any(), any())).thenReturn(student);
-        when(studentRepository.save(any())).thenReturn(student);
-        when(studentMapper.toStudentResponse(any(), any())).thenReturn(studentResponse);
+        // Kiểm tra student chưa tồn tại
+        when(studentRepository.existsByMaSinhVien("MSV001")).thenReturn(false);
+        // Tìm User theo userId
+        when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        // Mapping từ DTO sang Student
+        when(studentMapper.toStudent(studentDto, user)).thenReturn(student);
+        // Lưu student
+        when(studentRepository.save(student)).thenReturn(student);
+        // Mapping sang StudentResponse
+        when(studentMapper.toStudentResponse(student, user)).thenReturn(studentResponse);
 
         StudentResponse result = studentService.createStudent(studentDto);
 
         assertNotNull(result);
-        assertEquals("1", result.getStudentId());
-        verify(studentRepository, times(1)).save(any());
+        assertEquals("student123", result.getStudentId());
+        verify(studentRepository).existsByMaSinhVien("MSV001");
+        verify(userRepository).findById("user123");
+        verify(studentRepository).save(student);
     }
 
     @Test
-    void testCreateStudent_AlreadyExists() {
-        when(studentRepository.existsByMaSinhVien(any())).thenReturn(true);
+    void testCreateStudent_StudentAlreadyExisted() {
+        // Nếu student đã tồn tại
+        when(studentRepository.existsByMaSinhVien("MSV001")).thenReturn(true);
 
-        AppException exception = assertThrows(AppException.class, () -> studentService.createStudent(studentDto));
-        assertEquals(ErrorCode.STUDENT_EXITED, exception.getErrorCode());
+        AppException ex = assertThrows(AppException.class, () -> studentService.createStudent(studentDto));
+        assertEquals(ErrorCode.STUDENT_EXITED, ex.getErrorCode());
     }
 
     @Test
     void testGetAllStudents() {
-        when(studentRepository.findAll()).thenReturn(List.of(student));
-        when(studentMapper.toStudentResponse(any(), any())).thenReturn(studentResponse);
+        // Giả sử có 1 student trong danh sách
+        when(studentRepository.findAll()).thenReturn(Arrays.asList(student));
+        // Giả sử khi tìm user theo id luôn trả về user
+        when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        // Mapping cho studentResponse
+        when(studentMapper.toStudentResponse(student, user)).thenReturn(studentResponse);
 
-        List<StudentResponse> result = studentService.getAllStudents();
+        List<StudentResponse> responses = studentService.getAllStudents();
 
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        verify(studentRepository).findAll();
     }
 
     @Test
-    void testGetStudentById_Success() {
-        when(studentRepository.findById(any())).thenReturn(Optional.of(student));
-        when(studentMapper.toStudentResponse(any(), any())).thenReturn(studentResponse);
+    void testGetStudent_Success() {
+        when(studentRepository.findById("student123")).thenReturn(Optional.of(student));
+        when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        when(studentMapper.toStudentResponse(student, user)).thenReturn(studentResponse);
 
-        StudentResponse result = studentService.getStudent("1");
+        StudentResponse result = studentService.getStudent("student123");
 
         assertNotNull(result);
-        assertEquals("1", result.getStudentId());
+        assertEquals("student123", result.getStudentId());
+        verify(studentRepository).findById("student123");
     }
 
     @Test
-    void testGetStudentById_NotFound() {
-        when(studentRepository.findById(any())).thenReturn(Optional.empty());
+    void testGetStudent_NotFound() {
+        when(studentRepository.findById("student123")).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> studentService.getStudent("1"));
-        assertEquals(ErrorCode.STUDENT_NOT_FOUND, exception.getErrorCode());
+        AppException ex = assertThrows(AppException.class, () -> studentService.getStudent("student123"));
+        assertEquals(ErrorCode.STUDENT_NOT_FOUND, ex.getErrorCode());
     }
 
     @Test
     void testUpdateStudent_Success() {
-        when(studentRepository.findById(any())).thenReturn(Optional.of(student));
-        when(studentRepository.save(any())).thenReturn(student);
-        when(studentMapper.toStudentResponse(any(), any())).thenReturn(studentResponse);
+        when(studentRepository.findById("student123")).thenReturn(Optional.of(student));
+        // Giả sử update mapper cập nhật student theo DTO
+        doNothing().when(studentMapper).updateStudent(student, studentUpdateDto);
+        when(studentRepository.save(student)).thenReturn(student);
+        when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        when(studentMapper.toStudentResponse(student, user)).thenReturn(studentResponse);
 
-        StudentResponse result = studentService.updateStudent("1", studentUpdateDto);
+        StudentResponse result = studentService.updateStudent("student123", studentUpdateDto);
 
         assertNotNull(result);
-        verify(studentRepository, times(1)).save(any());
+        assertEquals("student123", result.getStudentId());
+        verify(studentRepository).findById("student123");
+        verify(studentRepository).save(student);
     }
 
     @Test
     void testUpdateStudent_NotFound() {
-        when(studentRepository.findById(any())).thenReturn(Optional.empty());
+        when(studentRepository.findById("student123")).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> studentService.updateStudent("1", studentUpdateDto));
-        assertEquals(ErrorCode.STUDENT_NOT_FOUND, exception.getErrorCode());
+        AppException ex = assertThrows(AppException.class, () -> studentService.updateStudent("student123", studentUpdateDto));
+        assertEquals(ErrorCode.STUDENT_NOT_FOUND, ex.getErrorCode());
     }
 
     @Test
     void testDeleteStudent_Success() {
-        when(studentRepository.existsById(any())).thenReturn(true);
-        doNothing().when(studentRepository).deleteById(any());
+        when(studentRepository.existsById("student123")).thenReturn(true);
+        doNothing().when(studentRepository).deleteById("student123");
 
-        studentService.deleteStudent("1");
-
-        verify(studentRepository, times(1)).deleteById(any());
+        assertDoesNotThrow(() -> studentService.deleteStudent("student123"));
+        verify(studentRepository).deleteById("student123");
     }
 
     @Test
     void testDeleteStudent_NotFound() {
-        when(studentRepository.existsById(any())).thenReturn(false);
+        when(studentRepository.existsById("student123")).thenReturn(false);
 
-        AppException exception = assertThrows(AppException.class, () -> studentService.deleteStudent("1"));
-        assertEquals(ErrorCode.STUDENT_NOT_FOUND, exception.getErrorCode());
+        AppException ex = assertThrows(AppException.class, () -> studentService.deleteStudent("student123"));
+        assertEquals(ErrorCode.STUDENT_NOT_FOUND, ex.getErrorCode());
+    }
+
+    @Test
+    void testGetMyInfoStudent_Success() {
+        // Thiết lập SecurityContext với username
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("testuser");
+        SecurityContextHolder.setContext(securityContext);
+
+        // Tìm User theo userName
+        when(userRepository.findByuserName("testuser")).thenReturn(Optional.of(user));
+        // Tìm Student theo user
+        when(studentRepository.findByUser(user)).thenReturn(Optional.of(student));
+        // Mapping sang StudentResponse
+        when(studentMapper.toStudentResponse(student, user)).thenReturn(studentResponse);
+
+        StudentResponse result = studentService.getMyInfoStudent();
+        assertNotNull(result);
+        assertEquals("student123", result.getStudentId());
+
+        verify(userRepository).findByuserName("testuser");
+        verify(studentRepository).findByUser(user);
+    }
+
+    @Test
+    void testGetMyInfoStudent_UserNotFound() {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("nonexistent");
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByuserName("nonexistent")).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class, () -> studentService.getMyInfoStudent());
+        assertEquals(ErrorCode.USER_NOT_EXITED, ex.getErrorCode());
+    }
+
+    @Test
+    void testGetMyInfoStudent_StudentNotFound() {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("testuser");
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByuserName("testuser")).thenReturn(Optional.of(user));
+        when(studentRepository.findByUser(user)).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class, () -> studentService.getMyInfoStudent());
+        assertEquals(ErrorCode.STUDENT_NOT_FOUND, ex.getErrorCode());
     }
 }

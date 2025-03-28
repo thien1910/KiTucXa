@@ -24,4 +24,7 @@ public class RoomUpdateDto {
     @Enumerated(EnumType.STRING)
     RoomStatus roomStatus;
     String note;
+
+    public RoomUpdateDto(String number, String a102, String it, int i, int i1, String deluxe, BigDecimal bigDecimal, Object o, String updatedNote) {
+    }
 }

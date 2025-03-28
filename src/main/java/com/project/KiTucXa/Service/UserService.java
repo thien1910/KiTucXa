@@ -25,7 +25,7 @@ import java.util.List;
 
 @Service
 @Data
-@Builder
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
