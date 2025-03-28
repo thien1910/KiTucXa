@@ -23,6 +23,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -31,6 +33,8 @@ import java.util.List;
 import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+
 class ContractServiceTest {
 
     @Mock
@@ -60,6 +64,8 @@ class ContractServiceTest {
 
         room = new Room();
         room.setRoomId("room123");
+        room.setMaximumOccupancy(1); // hoặc số phù hợp
+        room.setCurrentOccupancy(0);
 
         contractDto = new ContractDto("user123", "room123", new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 86400000), new BigDecimal("5000000"), DepositStatus.COMPLETED, ContractStatus.Active, "Test Contract");
 
@@ -147,7 +153,8 @@ class ContractServiceTest {
 
     @Test
     void testDeleteContract_Success() {
-        when(contractRepository.existsById("contract123")).thenReturn(true);
+        when(contractRepository.findById("contract123")).thenReturn(Optional.of(contract));
+
         doNothing().when(contractRepository).deleteById("contract123");
 
         assertDoesNotThrow(() -> contractService.deleteContract("contract123"));

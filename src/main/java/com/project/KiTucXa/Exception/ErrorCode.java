@@ -36,7 +36,8 @@ public enum ErrorCode {
     PAYMENT_LIMIT_EXCEEDED (1026, "payment limit exceeded", HttpStatus.BAD_REQUEST),
     USER_FORBIDDENED(1027,"user account is unaccessible",HttpStatus.BAD_REQUEST),
     USER_HAS_ACTIVE_CONTRACT(1028,"User still has an active contract",HttpStatus.BAD_REQUEST),
-    CONTRACT_INACTIVE(1029,"Contract inactive",HttpStatus.BAD_REQUEST);
+    CONTRACT_INACTIVE(1029,"Contract inactive",HttpStatus.BAD_REQUEST),
+    ROOM_FULL(1030,"Room is full can't add student",HttpStatus.BAD_REQUEST);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode){
         this.code = code;

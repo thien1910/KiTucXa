@@ -23,7 +23,7 @@ public class UserResponse {
     String fullName;
     @Enumerated(EnumType.STRING)
     Gender gender;
-    String roomNameStudent;
+//    String roomNameStudent;
     String cccd;
     String phoneNumber;
     @Enumerated(EnumType.STRING)

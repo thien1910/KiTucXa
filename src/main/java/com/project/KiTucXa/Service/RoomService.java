@@ -72,25 +72,4 @@ public class RoomService {
         }
         roomRepository.deleteById(roomId);
     }
-   /* public void updateRoomOccupancy(String roomId, int newOccupancy) {
-        Optional<Room> roomOpt = roomRepository.findById(roomId);
-        if (roomOpt.isPresent()) {
-            Room room = roomOpt.get();
-            room.setCurrentOccupancy(newOccupancy);
-            room.setRoomStatus(determineRoomStatus(room));
-            roomRepository.save(room);
-        } else {
-            throw new RuntimeException("Room not found with ID: " + roomId);
-        }
-    }
-
-    private RoomStatus determineRoomStatus(Room room) {
-        if (room.getCurrentOccupancy() == 0) {
-            return RoomStatus.empty_room;
-        } else if (room.getCurrentOccupancy() == room.getMaximumOccupancy()) {
-            return RoomStatus.full_room;
-        } else {
-            return RoomStatus.maintenance_room;
-        }
-    }*/
 }

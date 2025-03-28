@@ -33,7 +33,7 @@ public interface ManagerMapper {
                 .passWord(user.getPassWord())
                 .fullName(user.getFullName())
                 .gender(user.getGender())
-                .roomNameStudent(user.getRoomNameStudent())
+//                .roomNameStudent(user.getRoomNameStudent())
                 .cccd(user.getCccd())
                 .phoneNumber(user.getPhoneNumber())
                 .status(user.getStatus())

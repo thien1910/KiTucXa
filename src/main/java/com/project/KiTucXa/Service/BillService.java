@@ -7,16 +7,21 @@ import com.project.KiTucXa.Dto.Response.BillResponse;
 import com.project.KiTucXa.Dto.Update.BillUpdateDto;
 import com.project.KiTucXa.Entity.Bill;
 import com.project.KiTucXa.Entity.Contract;
+import com.project.KiTucXa.Entity.Room;
+import com.project.KiTucXa.Enum.ContractStatus;
 import com.project.KiTucXa.Enum.PaymentMethod;
 import com.project.KiTucXa.Exception.AppException;
 import com.project.KiTucXa.Exception.ErrorCode;
 import com.project.KiTucXa.Mapper.BillMapper;
 import com.project.KiTucXa.Repository.BillRepository;
 import com.project.KiTucXa.Repository.ContractRepository;
+import com.project.KiTucXa.Repository.RoomServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.project.KiTucXa.Entity.RoomService;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,17 +35,36 @@ public class BillService {
     private final ContractRepository contractRepository;
     private final BillMapper billMapper;
 
+    private final RoomServiceRepository roomServiceRepository;
+
     public BillResponse createBill(BillDto billDto) {
         Contract contract = contractRepository.findById(billDto.getContractId())
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
-        // Kiểm tra hợp đồng có đang active không
-        if (!contract.getContractStatus().equals(Active)) {
+        // Kiểm tra hợp đồng có đang Active không
+        if (!contract.getContractStatus().equals(ContractStatus.Active)) {
             throw new AppException(ErrorCode.CONTRACT_INACTIVE);
         }
 
+        // Lấy thông tin phòng từ hợp đồng
+        Room room = contract.getRoom();
+
+        // Lấy danh sách các dịch vụ của phòng
+        List<com.project.KiTucXa.Entity.RoomService> roomServices = roomServiceRepository.findByRoom_RoomId(room.getRoomId());
+
+        // Tính tổng tiền của các dịch vụ (mỗi dịch vụ chỉ tính một lần)
+        BigDecimal totalServicePrice = roomServices.stream()
+                .map(rs -> rs.getUtilityService().getPricePerUnit())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Tổng tiền hóa đơn = tiền phòng + tiền dịch vụ
+        BigDecimal totalBillPrice = room.getRoomPrice().add(totalServicePrice);
+
+        // Tạo hóa đơn và gán tổng tiền
         Bill bill = billMapper.toBill(billDto);
         bill.setContract(contract);
+        bill.setSumPrice(totalBillPrice);
+
         billRepository.save(bill);
 
         BillResponse response = billMapper.toBillResponse(bill);
@@ -58,6 +82,7 @@ public class BillService {
 
         return response;
     }
+
 
 
     public List<BillResponse> getAllBills() {

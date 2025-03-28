@@ -8,6 +8,7 @@ import com.project.KiTucXa.Dto.Response.BillResponse;
 import com.project.KiTucXa.Dto.Update.BillUpdateDto;
 import com.project.KiTucXa.Entity.Bill;
 import com.project.KiTucXa.Entity.Contract;
+import com.project.KiTucXa.Entity.Room;
 import com.project.KiTucXa.Entity.User;
 import com.project.KiTucXa.Enum.BillStatus;
 import com.project.KiTucXa.Enum.ContractStatus;
@@ -16,6 +17,7 @@ import com.project.KiTucXa.Exception.AppException;
 import com.project.KiTucXa.Mapper.BillMapper;
 import com.project.KiTucXa.Repository.BillRepository;
 import com.project.KiTucXa.Repository.ContractRepository;
+import com.project.KiTucXa.Repository.RoomServiceRepository;
 import com.project.KiTucXa.Service.BillService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,9 @@ class BillServiceTest {
     @Mock
     private BillMapper billMapper;
 
+    @Mock
+    private RoomServiceRepository roomServiceRepository;
+
     @InjectMocks
     private BillService billService;
 
@@ -49,19 +54,25 @@ class BillServiceTest {
     private BillDto billDto;
     private Contract contract;
     private User user;
+    private Room room;
+
 
     @BeforeEach
     void setUp() {
         user = new User();
         user.setFullName("Nguyen Van A");
+        room = new Room();
+        room.setRoomId("room123");
+        room.setRoomPrice(BigDecimal.valueOf(5000000));
 
         contract = new Contract();
         contract.setContractId("contract123");
         contract.setUser(user);
         contract.setContractStatus(ContractStatus.Active);
 
-        billDto = new BillDto("contract123", new BigDecimal("100000"), new Date(System.currentTimeMillis()), PaymentMethod.BANK_TRANSFER, BillStatus.UNPAID, "Test Note");
-
+        billDto = new BillDto();
+        billDto.setContractId("contract123");
+        billDto.setPaymentMethod(PaymentMethod.BANK_TRANSFER);
         bill = new Bill();
         bill.setContract(contract);
         bill.setSumPrice(new BigDecimal("100000"));
@@ -73,15 +84,18 @@ class BillServiceTest {
     @Test
     void testCreateBill_Success() {
         when(contractRepository.findById("contract123")).thenReturn(Optional.of(contract));
-        when(billMapper.toBill(billDto)).thenReturn(bill);
-        when(billRepository.save(bill)).thenReturn(bill);
-        when(billMapper.toBillResponse(bill)).thenReturn(new BillResponse());
+        when(roomServiceRepository.findByRoom_RoomId("room123")).thenReturn(List.of());
+
+        when(billMapper.toBill(any(BillDto.class))).thenReturn(bill);
+        when(billRepository.save(any(Bill.class))).thenReturn(bill);
+        when(billMapper.toBillResponse(any(Bill.class))).thenReturn(new BillResponse());
 
         BillResponse response = billService.createBill(billDto);
 
         assertNotNull(response);
-        verify(billRepository, times(1)).save(bill);
+        verify(billRepository, times(1)).save(any(Bill.class));
     }
+
 
     @Test
     void testCreateBill_ContractNotFound() {

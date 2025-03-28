@@ -7,6 +7,7 @@ import com.project.KiTucXa.Entity.Contract;
 import com.project.KiTucXa.Entity.Room;
 import com.project.KiTucXa.Entity.User;
 import com.project.KiTucXa.Enum.ContractStatus;
+import com.project.KiTucXa.Enum.RoomStatus;
 import com.project.KiTucXa.Exception.AppException;
 import com.project.KiTucXa.Exception.ErrorCode;
 import com.project.KiTucXa.Mapper.ContractMapper;
@@ -37,6 +38,11 @@ public class ContractService {
         Room room = roomRepository.findById(contractDto.getRoomId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
+        // Kiểm tra xem phòng đã đầy người chưa
+        if (room.getCurrentOccupancy() >= room.getMaximumOccupancy()) {
+            throw new AppException(ErrorCode.ROOM_FULL);
+        }
+
         // Kiểm tra xem user đã có hợp đồng hiệu lực chưa
         List<Contract> activeContracts = contractRepository.findByUser_UserId(user.getUserId())
                 .stream()
@@ -52,9 +58,7 @@ public class ContractService {
                 })
                 .collect(Collectors.toList());
 
-
         if (!activeContracts.isEmpty()) {
-            // Giả sử bạn đã định nghĩa ErrorCode.USER_HAS_ACTIVE_CONTRACT trong ErrorCode
             throw new AppException(ErrorCode.USER_HAS_ACTIVE_CONTRACT);
         }
 
@@ -62,9 +66,24 @@ public class ContractService {
         contract.setUser(user);
         contract.setRoom(room);
 
+        // Lưu hợp đồng
         contractRepository.save(contract);
+
+        // Tăng currentOccupancy của phòng lên 1
+        room.setCurrentOccupancy(room.getCurrentOccupancy() + 1);
+
+        // Nếu sau khi tăng, currentOccupancy bằng với maximumOccupancy thì cập nhật trạng thái phòng thành FULL
+        if (room.getCurrentOccupancy() == room.getMaximumOccupancy()) {
+            room.setRoomStatus(RoomStatus.full_room);
+        }
+
+        roomRepository.save(room);
+
         return contractMapper.toContractResponse(contract);
     }
+
+
+
 
     public List<ContractResponse> getAllContracts() {
         List<Contract> contracts = contractRepository.findAll();
@@ -101,11 +120,29 @@ public class ContractService {
     }
 
     public void deleteContract(String contractId) {
-        if (!contractRepository.existsById(contractId)) {
-            throw new AppException(ErrorCode.CONTRACT_NOT_FOUND);
-        }
+        // Lấy hợp đồng cần xóa
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+
+        // Lấy phòng liên quan từ hợp đồng
+        Room room = contract.getRoom();
+
+        // Xóa hợp đồng
         contractRepository.deleteById(contractId);
+
+        // Giảm currentOccupancy của phòng đi 1 nếu có giá trị > 0
+        if (room.getCurrentOccupancy() > 0) {
+            room.setCurrentOccupancy(room.getCurrentOccupancy() - 1);
+
+            // Nếu phòng trước đó ở trạng thái FULL và sau khi giảm số lượng người mà chưa đạt max thì cập nhật lại trạng thái phòng (ví dụ: AVAILABLE)
+            if (room.getCurrentOccupancy() < room.getMaximumOccupancy() && room.getRoomStatus() == RoomStatus.full_room) {
+                room.setRoomStatus(RoomStatus.empty_room); // Giả sử bạn có định nghĩa RoomStatus.AVAILABLE
+            }
+
+            roomRepository.save(room);
+        }
     }
+
     public List<Contract> getContractsByUserId(String userId) {
         return contractRepository.findByUser_UserId(userId);
     }
@@ -117,9 +154,17 @@ public class ContractService {
 
         for (Contract contract : expiredContracts) {
             contract.setContractStatus(ContractStatus.Inactive);
+
+            // Lấy phòng liên quan và giảm currentOccupancy xuống 1 nếu có giá trị > 0
+            Room room = contract.getRoom();
+            if (room.getCurrentOccupancy() > 0) {
+                room.setCurrentOccupancy(room.getCurrentOccupancy() - 1);
+                roomRepository.save(room);
+            }
         }
 
         contractRepository.saveAll(expiredContracts);
         System.out.println("Updated " + expiredContracts.size() + " expired contracts to INACTIVE.");
     }
+
 }
