@@ -323,6 +323,32 @@ const ContractManagement: React.FC = () => {
 
   const createContractApi = async (contractData: Contract) => {
     try {
+      message.info("Đang kiểm tra phòng...");
+      // Gọi API lấy thông tin phòng theo roomId của hợp đồng
+      const roomResponse = await fetch(
+        `http://localhost:8080/api/v1/rooms/${contractData.roomId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (!roomResponse.ok) {
+        throw new Error(`Không thể lấy thông tin phòng (Mã lỗi: ${roomResponse.status})`);
+      }
+  
+      const roomData = await roomResponse.json();
+  
+      // Giả sử roomData có trường currentOccupancy và maximumOccupancy
+      if (roomData.currentOccupancy >= roomData.maximumOccupancy) {
+        message.error("Phòng đã đầy. Không thể tạo hợp đồng mới!");
+        return false;
+      }
+  
+      // Nếu phòng chưa đầy, tiến hành tạo hợp đồng
       message.info("Đang tạo hợp đồng mới...");
       const response = await fetch(
         "http://localhost:8080/api/v1/contracts/add",
@@ -333,7 +359,7 @@ const ContractManagement: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(contractData),
-        },
+        }
       );
       const result = await response.json();
       if (!response.ok) {
@@ -346,6 +372,7 @@ const ContractManagement: React.FC = () => {
       return false;
     }
   };
+  
 
   const handleSave = async () => {
     if (isEditing && currentContract) {
@@ -422,22 +449,61 @@ const ContractManagement: React.FC = () => {
   };
 
   // Phần tạo hóa đơn
-  const handleCreateInvoice = (contract: Contract) => {
+  const handleCreateInvoice = async (contract: Contract) => {
     const currentDate = new Date();
     const contractEndDate = new Date(contract.endDate);
-
+  
     if (currentDate > contractEndDate) {
       message.error("Hợp đồng đã hết hiệu lực. Không thể tạo hóa đơn.");
       return; // Dừng xử lý nếu hợp đồng đã hết hạn
     }
-
-    message.info("Mở form tạo hóa đơn...");
-    invoiceForm.setFieldsValue({
-      contractId: contract.contractId,
-      sumPrice: contract.price,
-    });
-    setIsInvoiceModalOpen(true);
+  
+    try {
+      // Gọi API lấy danh sách dịch vụ của phòng theo roomId
+      const roomServiceResponse = await fetch(
+        `http://localhost:8080/api/v1/room-services/room/${contract.roomId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (!roomServiceResponse.ok) {
+        throw new Error(`HTTP error! Status: ${roomServiceResponse.status}`);
+      }
+  
+      const roomServices = await roomServiceResponse.json();
+      console.log("Room services:", roomServices);
+  
+      // Tính tổng tiền của các dịch vụ (mỗi dịch vụ tính 1 lần)
+      const totalServicePrice = roomServices.reduce((total: number, rs: any) => {
+        return total + (rs.price ? parseFloat(rs.price) : 0);
+      }, 0);
+      
+      console.log("Total service price:", totalServicePrice);
+  
+      // Tổng tiền hóa đơn = tiền phòng + tiền dịch vụ
+      const roomPrice = parseFloat(contract.price.toString()); // đảm bảo là số
+      const totalPrice = roomPrice + totalServicePrice;
+      console.log("Total price (room + services):", totalPrice);
+  
+      message.info("Mở form tạo hóa đơn...");
+      invoiceForm.setFieldsValue({
+        contractId: contract.contractId,
+        sumPrice: totalPrice,
+      });
+      setIsInvoiceModalOpen(true);
+    } catch (error) {
+      console.error("Lỗi khi lấy dịch vụ của phòng:", error);
+      message.error("Lỗi khi lấy thông tin dịch vụ của phòng.");
+    }
   };
+  
+  
+  
 
   const handleInvoiceSubmit = async (values: any) => {
     try {
@@ -743,7 +809,7 @@ const ContractManagement: React.FC = () => {
             <Input disabled />
           </Form.Item>
           <Form.Item
-            label="Tổng tiền"
+            label="Tổng tiền ( đã bao gồm dịch vụ )"
             name="sumPrice"
             rules={[
               { required: true, message: "Tổng tiền không được để trống" },

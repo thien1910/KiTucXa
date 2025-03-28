@@ -62,8 +62,11 @@ const AccountManagement: React.FC = () => {
       const data: ApiResponse = await response.json();
 
       if (data.code === 1000) {
-        setAccounts(data.result);
-        console.log("Fetched accounts:", data.result); // Debug: Kiểm tra dữ liệu từ API
+        // Lọc bỏ các tài khoản có role là "admin"
+        const filteredAccounts = data.result.filter(account => !account.roles.includes("ADMIN"));
+
+        setAccounts(filteredAccounts);
+        console.log("Fetched accounts (excluding admins):", filteredAccounts); // Debug
       } else {
         console.error("Failed to fetch accounts:", data);
       }
@@ -74,9 +77,10 @@ const AccountManagement: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
+useEffect(() => {
+  fetchAccounts();
+}, []);
+
 
   // Set form values when editing an account
   useEffect(() => {

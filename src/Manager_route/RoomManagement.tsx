@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
-// import { useRouter } from "next/navigation"
-// import "../styles/Management.css";
 import { useNavigate } from "react-router-dom";
+import "../styles/Dashboard.css";
 
 interface Room {
   roomId: string;
@@ -31,25 +30,22 @@ const RoomManagement: React.FC = () => {
 
   // State form thêm phòng mới
   const [newRoom, setNewRoom] = useState<
-    Omit<Room, "roomId" | "createdAt" | "updatedAt">
+    Omit<Room, "roomId" | "createdAt" | "updatedAt" | "currentOccupancy">
   >({
-    userId: "2b68ba14-fef7-4dd8-8147-088f27e68be3", // Default userId
+    userId: "2ed9ef4f-90ec-4267-8e4b-76feb836f6b8", // Default userId
     roomName: "",
     roomType: "Single",
     roomPrice: 0,
     maximumOccupancy: 1,
-    currentOccupancy: 0,
+    // currentOccupancy sẽ được cập nhật tự động dựa trên hợp đồng còn hiệu lực
+    // currentOccupancy: 0,
     roomStatus: "empty_room",
     department: "",
     note: "",
   });
 
-  const router = useNavigate(); // Khai báo router từ useNavigate
-
-  // State cho form sửa phòng
-  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  // const router = useRouter()
 
   // Hàm lấy danh sách phòng từ API
   const fetchRooms = async () => {
@@ -62,13 +58,12 @@ const RoomManagement: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const data = await response.json();
-      setRooms(data);
+      // Sau khi lấy phòng, cập nhật currentOccupancy dựa trên hợp đồng còn hiệu lực
+      updateRoomsOccupancy(data);
       setError(null);
     } catch (err) {
       console.error("Error fetching rooms:", err);
@@ -78,13 +73,50 @@ const RoomManagement: React.FC = () => {
     }
   };
 
+  // Hàm lấy danh sách hợp đồng và cập nhật currentOccupancy cho mỗi phòng
+  const updateRoomsOccupancy = async (fetchedRooms: Room[]) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/contracts/list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const contracts = await response.json();
+      const currentDate = new Date();
+
+      // Với mỗi phòng, đếm số hợp đồng còn hiệu lực (active)
+      const updatedRooms = fetchedRooms.map((room: Room) => {
+        const activeCount = contracts.filter((contract: any) => {
+          // Giả sử contract có các trường: roomId, startDate, endDate
+          const start = new Date(contract.startDate);
+          const end = new Date(contract.endDate);
+          return (
+            contract.roomId === room.roomId &&
+            currentDate >= start &&
+            currentDate <= end
+          );
+        }).length;
+        return { ...room, currentOccupancy: activeCount };
+      });
+
+      setRooms(updatedRooms);
+    } catch (err) {
+      console.error("Error updating rooms occupancy:", err);
+    }
+  };
+
   useEffect(() => {
     fetchRooms();
   }, []);
 
   // Hàm thêm phòng qua API
   const addRoom = async (
-    roomData: Omit<Room, "roomId" | "createdAt" | "updatedAt">,
+    roomData: Omit<Room, "roomId" | "createdAt" | "updatedAt" | "currentOccupancy">
   ) => {
     try {
       const response = await fetch("http://localhost:8080/api/v1/rooms/add", {
@@ -95,11 +127,9 @@ const RoomManagement: React.FC = () => {
         },
         body: JSON.stringify(roomData),
       });
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const data = await response.json();
       return data;
     } catch (err) {
@@ -117,7 +147,7 @@ const RoomManagement: React.FC = () => {
       !newRoom.department
     ) {
       alert(
-        "Vui lòng điền đầy đủ thông tin bắt buộc: Tên phòng, Giá phòng, Số lượng tối đa, Khoa/Bộ phận.",
+        "Vui lòng điền đầy đủ thông tin bắt buộc: Tên phòng, Giá phòng, Số lượng tối đa, Khoa/Bộ phận."
       );
       return;
     }
@@ -127,12 +157,12 @@ const RoomManagement: React.FC = () => {
       fetchRooms();
       // Reset form thêm phòng
       setNewRoom({
-        userId: "2b68ba14-fef7-4dd8-8147-088f27e68be3",
+        userId: "2ed9ef4f-90ec-4267-8e4b-76feb836f6b8",
         roomName: "",
         roomType: "Single",
         roomPrice: 0,
         maximumOccupancy: 1,
-        currentOccupancy: 0,
+        // currentOccupancy: 0,
         roomStatus: "empty_room",
         department: "",
         note: "",
@@ -147,7 +177,6 @@ const RoomManagement: React.FC = () => {
   // Hàm cập nhật phòng
   const handleUpdateRoom = async () => {
     if (!editingRoom) return;
-
     try {
       const response = await fetch(
         `http://localhost:8080/api/v1/rooms/update/${editingRoom.roomId}`,
@@ -158,13 +187,11 @@ const RoomManagement: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(editingRoom),
-        },
+        }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       fetchRooms();
       setEditingRoom(null);
       alert("Phòng đã được cập nhật thành công!");
@@ -177,7 +204,6 @@ const RoomManagement: React.FC = () => {
   // Hàm xóa phòng
   const handleDeleteRoom = async (roomId: string) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa phòng này không?")) return;
-
     try {
       const response = await fetch(
         `http://localhost:8080/api/v1/rooms/delete/${roomId}`,
@@ -187,13 +213,11 @@ const RoomManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       fetchRooms();
       alert("Phòng đã được xóa thành công!");
     } catch (err) {
@@ -213,13 +237,11 @@ const RoomManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const data = await response.json();
       return data;
     } catch (err) {
@@ -227,6 +249,9 @@ const RoomManagement: React.FC = () => {
       throw err;
     }
   };
+
+  // State cho form sửa phòng
+  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
 
   // Xử lý chuyển sang form sửa phòng
   const handleEditRoom = async (room: Room) => {
@@ -281,15 +306,14 @@ const RoomManagement: React.FC = () => {
               value={newRoom.roomType}
               onChange={(e) => {
                 const type = e.target.value;
-                // Cập nhật occupancy dựa trên loại phòng
                 const occupancy =
                   type === "Single"
                     ? 1
                     : type === "Double"
-                      ? 2
-                      : type === "Quad"
-                        ? 4
-                        : 1;
+                    ? 2
+                    : type === "Quad"
+                    ? 4
+                    : 1;
                 setNewRoom({
                   ...newRoom,
                   roomType: type,
@@ -309,13 +333,6 @@ const RoomManagement: React.FC = () => {
                 setNewRoom({ ...newRoom, roomPrice: Number(e.target.value) })
               }
             />
-            {/* Ẩn ô nhập số lượng tối đa vì đã tự động cập nhật */}
-            {/* <input
-        type="number"
-        placeholder="Số lượng tối đa *"
-        value={newRoom.maximumOccupancy || ""}
-        onChange={(e) => setNewRoom({ ...newRoom, maximumOccupancy: Number(e.target.value) })}
-      /> */}
             <input
               type="text"
               placeholder="Khoa/Bộ phận *"
@@ -328,7 +345,9 @@ const RoomManagement: React.FC = () => {
               type="text"
               placeholder="Ghi chú"
               value={newRoom.note}
-              onChange={(e) => setNewRoom({ ...newRoom, note: e.target.value })}
+              onChange={(e) =>
+                setNewRoom({ ...newRoom, note: e.target.value })
+              }
             />
             <button className="add-button" onClick={handleAddRoom}>
               Thêm phòng
@@ -366,7 +385,7 @@ const RoomManagement: React.FC = () => {
                   <td>
                     <span
                       className={`status-badge ${getStatusBadgeClass(
-                        room.roomStatus,
+                        room.roomStatus
                       )}`}
                     >
                       {getRoomStatusDisplay(room.roomStatus)}
@@ -388,7 +407,7 @@ const RoomManagement: React.FC = () => {
                     <button
                       className="detail-button"
                       onClick={() =>
-                        router(`/room-details?roomId=${room.roomId}`)
+                        navigate(`/room-details?roomId=${room.roomId}`)
                       }
                     >
                       Chi tiết phòng
@@ -403,120 +422,88 @@ const RoomManagement: React.FC = () => {
 
       {/* Form sửa phòng */}
       {editingRoom && (
-        <div className="form-card edit-form bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            Sửa thông tin phòng
-          </h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Tên phòng:
-              </label>
-              <input
-                type="text"
-                value={editingRoom.roomName}
-                onChange={(e) =>
-                  setEditingRoom({ ...editingRoom, roomName: e.target.value })
-                }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="mb-3 block text-sm font-medium text-gray-700">
-                Loại phòng:
-              </label>
-              <select
-                value={editingRoom.roomType}
-                onChange={(e) => {
-                  const newType = e.target.value;
-                  const occupancy =
-                    newType === "Single"
-                      ? 1
-                      : newType === "Double"
-                        ? 2
-                        : newType === "Quad"
-                          ? 4
-                          : editingRoom.maximumOccupancy;
-                  setEditingRoom({
-                    ...editingRoom,
-                    roomType: newType,
-                    maximumOccupancy: occupancy,
-                  });
-                }}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Single">Single</option>
-                <option value="Double">Double</option>
-                <option value="Quad">Quad</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Giá phòng (VNĐ):
-              </label>
-              <input
-                type="number"
-                value={editingRoom.roomPrice || ""}
-                onChange={(e) =>
-                  setEditingRoom({
-                    ...editingRoom,
-                    roomPrice: Number(e.target.value),
-                  })
-                }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Số lượng tối đa:
-              </label>
-              <input
-                type="number"
-                value={editingRoom.maximumOccupancy || ""}
-                readOnly
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Khoa/Bộ phận:
-              </label>
-              <input
-                type="text"
-                value={editingRoom.department}
-                onChange={(e) =>
-                  setEditingRoom({ ...editingRoom, department: e.target.value })
-                }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Ghi chú:
-              </label>
-              <input
-                type="text"
-                value={editingRoom.note}
-                onChange={(e) =>
-                  setEditingRoom({ ...editingRoom, note: e.target.value })
-                }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onClick={handleUpdateRoom}
-              >
-                Cập nhật
-              </button>
-              <button
-                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                onClick={() => setEditingRoom(null)}
-              >
-                Hủy
-              </button>
-            </div>
+        <div className="form-card edit-form">
+          <h2>Sửa thông tin phòng</h2>
+          <div className="form-group">
+            <label>Tên phòng:</label>
+            <input
+              type="text"
+              value={editingRoom.roomName}
+              onChange={(e) =>
+                setEditingRoom({ ...editingRoom, roomName: e.target.value })
+              }
+            />
+          </div>
+          <div className="form-group">
+            <label>Loại phòng:</label>
+            <select
+              value={editingRoom.roomType}
+              onChange={(e) => {
+                const newType = e.target.value;
+                const occupancy =
+                  newType === "Single"
+                    ? 1
+                    : newType === "Double"
+                    ? 2
+                    : newType === "Quad"
+                    ? 4
+                    : editingRoom.maximumOccupancy;
+                setEditingRoom({
+                  ...editingRoom,
+                  roomType: newType,
+                  maximumOccupancy: occupancy,
+                });
+              }}
+            >
+              <option value="Single">Single</option>
+              <option value="Double">Double</option>
+              <option value="Quad">Quad</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Giá phòng (VNĐ):</label>
+            <input
+              type="number"
+              value={editingRoom.roomPrice || ""}
+              onChange={(e) =>
+                setEditingRoom({
+                  ...editingRoom,
+                  roomPrice: Number(e.target.value),
+                })
+              }
+            />
+          </div>
+          <div className="form-group">
+            <label>Số lượng tối đa:</label>
+            <input
+              type="number"
+              value={editingRoom.maximumOccupancy || ""}
+              readOnly
+            />
+          </div>
+          <div className="form-group">
+            <label>Khoa/Bộ phận:</label>
+            <input
+              type="text"
+              value={editingRoom.department}
+              onChange={(e) =>
+                setEditingRoom({ ...editingRoom, department: e.target.value })
+              }
+            />
+          </div>
+          <div className="form-group">
+            <label>Ghi chú:</label>
+            <input
+              type="text"
+              value={editingRoom.note}
+              onChange={(e) =>
+                setEditingRoom({ ...editingRoom, note: e.target.value })
+              }
+            />
+          </div>
+          <div className="form-actions">
+            <button onClick={handleUpdateRoom}>Cập nhật</button>
+            <button onClick={() => setEditingRoom(null)}>Hủy</button>
           </div>
         </div>
       )}

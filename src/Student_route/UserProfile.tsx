@@ -1,21 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./UserProfile.css";
 
 interface User {
-  id: number;
-  name: string;
+  userId: string;
+  fullName: string;
   email: string;
   role: string;
 }
 
-const UserProfile = () => {
-  const [users, setUsers] = useState<User[]>([
-    { id: 1, name: "Nguyễn Văn A", email: "a@example.com", role: "Admin" },
-    { id: 2, name: "Trần Thị B", email: "b@example.com", role: "User" },
-  ]);
+interface Contract {
+  contractId: string;
+  userId: string;
+  roomName: string;
+  startDate: string;
+  endDate: string;
+}
+
+const UserProfile: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [contracts, setContracts] = useState<Contract[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Token không tồn tại trong localStorage.");
+          return;
+        }
+        const response = await fetch("http://localhost:8080/api/v1/users", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+        }
+        const data = await response.json();
+        setUsers(data);
+      } catch (error) {
+        console.error("Lỗi khi gọi API người dùng:", error);
+      }
+    };
+
+    const fetchContracts = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Token không tồn tại trong localStorage.");
+          return;
+        }
+        const response = await fetch("http://localhost:8080/api/v1/contracts", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+        }
+        const data = await response.json();
+        setContracts(data);
+      } catch (error) {
+        console.error("Lỗi khi gọi API hợp đồng:", error);
+      }
+    };
+
+    fetchUsers();
+    fetchContracts();
+  }, []);
 
   const handleEditClick = (user: User) => {
     setSelectedUser(user);
@@ -34,6 +93,20 @@ const UserProfile = () => {
     setIsChangingPassword(false);
   };
 
+  const getActiveRoomName = (userId: string): string => {
+    const currentDate = new Date();
+    const activeContract = contracts.find((contract) => {
+      const start = new Date(contract.startDate);
+      const end = new Date(contract.endDate);
+      return (
+        contract.userId === userId &&
+        currentDate >= start &&
+        currentDate <= end
+      );
+    });
+    return activeContract ? activeContract.roomName : "N/A";
+  };
+
   return (
     <div className="user-profile-container">
       <h2>Quản lý thông tin cá nhân</h2>
@@ -45,16 +118,18 @@ const UserProfile = () => {
               <th>Họ và tên</th>
               <th>Email</th>
               <th>Vai trò</th>
+              {/* <th>Phòng (Hợp đồng hiệu lực)</th> */}
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.name}</td>
+              <tr key={user.userId}>
+                <td>{user.userId}</td>
+                <td>{user.fullName}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>
+                {/* <td>{getActiveRoomName(user.userId)}</td> */}
                 <td>
                   <button
                     className="edit-button"
@@ -82,7 +157,7 @@ const UserProfile = () => {
             <>
               <div className="form-group">
                 <label>Họ và tên</label>
-                <input type="text" defaultValue={selectedUser.name} />
+                <input type="text" defaultValue={selectedUser.fullName} />
               </div>
               <div className="form-group">
                 <label>Email</label>
