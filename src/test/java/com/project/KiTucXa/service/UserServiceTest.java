@@ -73,8 +73,8 @@ class UserServiceTest {
 
         // Khởi tạo request cho update user
         userUpdateRequest = new UserUpdateRequest(
-                "updatedPassword", "Updated Name", Gender.FEMALE,
-                "NewRoom", "987654321", "0987654321",
+                "updatedPassword", "Updated Name", Gender.FEMALE
+                , "987654321", "0987654321",
                 Status.Staying, "USA"
         );
 
@@ -121,6 +121,11 @@ class UserServiceTest {
                 () -> userService.createUser(userCreationRequest));
         assertEquals(ErrorCode.USER_EXITED, ex.getErrorCode());
     }
+    @Test
+    void testCreateUser_NullRequest() {
+        assertThrows(NullPointerException.class, () -> userService.createUser(null));
+    }
+
 
     // ------------------ updateUser ------------------
     @Test
@@ -237,6 +242,12 @@ class UserServiceTest {
                 () -> userService.getMyInfo());
         assertEquals(ErrorCode.USER_NOT_EXITED, ex.getErrorCode());
     }
+    @Test
+    void testGetMyInfo_NoAuthentication() {
+        // Xóa context hiện tại
+        SecurityContextHolder.clearContext();
+        assertThrows(RuntimeException.class, () -> userService.getMyInfo());
+    }
 
     // ------------------ changePassword ------------------
     @Test
@@ -293,4 +304,11 @@ class UserServiceTest {
                 () -> userService.changePassword(passwordUpdateDto));
         assertEquals(ErrorCode.UNAUTHENTICATED, ex.getErrorCode());
     }
+    @Test
+    void testGetUser_EmptyUserId() {
+        when(userRepository.findById("")).thenReturn(Optional.empty());
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.getUser(""));
+        assertEquals("User not found", ex.getMessage());
+    }
+
 }

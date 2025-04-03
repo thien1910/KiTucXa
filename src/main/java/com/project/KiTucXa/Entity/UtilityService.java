@@ -25,5 +25,9 @@ public class UtilityService extends BaseEntity {
     String calculationUnit;
     @Enumerated(EnumType.STRING)
     ContractStatus status;
+    public UtilityService(String serviceName, BigDecimal pricePerUnit) {
+        this.serviceName = serviceName;
+        this.pricePerUnit = pricePerUnit;
+    }
 
 }

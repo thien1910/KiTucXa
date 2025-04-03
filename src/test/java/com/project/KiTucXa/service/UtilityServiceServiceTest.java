@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,4 +140,14 @@ class UtilityServiceServiceTest {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> utilityServiceService.updateUtilityService("1", utilityServiceUpdateDto));
         assertEquals("Service not found", exception.getMessage());
     }
+    @Test
+    void testGetAllUtilityServices_Empty() {
+        when(utilityServiceRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<UtilityServiceResponse> responses = utilityServiceService.getAllUtilityServices();
+
+        assertNotNull(responses);
+        assertTrue(responses.isEmpty());
+    }
+
 }

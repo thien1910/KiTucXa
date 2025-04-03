@@ -146,25 +146,25 @@ public class ContractService {
     public List<Contract> getContractsByUserId(String userId) {
         return contractRepository.findByUser_UserId(userId);
     }
-    @Scheduled(cron = "0 0 0 * * ?") // Mỗi ngày lúc 00:00
-    @Transactional
-    public void updateExpiredContracts() {
-        Date now = new Date();
-        List<Contract> expiredContracts = contractRepository.findByEndDateBeforeAndContractStatus(now, ContractStatus.Active);
-
-        for (Contract contract : expiredContracts) {
-            contract.setContractStatus(ContractStatus.Inactive);
-
-            // Lấy phòng liên quan và giảm currentOccupancy xuống 1 nếu có giá trị > 0
-            Room room = contract.getRoom();
-            if (room.getCurrentOccupancy() > 0) {
-                room.setCurrentOccupancy(room.getCurrentOccupancy() - 1);
-                roomRepository.save(room);
-            }
-        }
-
-        contractRepository.saveAll(expiredContracts);
-        System.out.println("Updated " + expiredContracts.size() + " expired contracts to INACTIVE.");
-    }
+//    @Scheduled(cron = "0 0 0 * * ?") // Mỗi ngày lúc 00:00
+//    @Transactional
+//    public void updateExpiredContracts() {
+//        Date now = new Date();
+//        List<Contract> expiredContracts = contractRepository.findByEndDateBeforeAndContractStatus(now, ContractStatus.Active);
+//
+//        for (Contract contract : expiredContracts) {
+//            contract.setContractStatus(ContractStatus.Inactive);
+//
+//            // Lấy phòng liên quan và giảm currentOccupancy xuống 1 nếu có giá trị > 0
+//            Room room = contract.getRoom();
+//            if (room.getCurrentOccupancy() > 0) {
+//                room.setCurrentOccupancy(room.getCurrentOccupancy() - 1);
+//                roomRepository.save(room);
+//            }
+//        }
+//
+//        contractRepository.saveAll(expiredContracts);
+//        System.out.println("Updated " + expiredContracts.size() + " expired contracts to INACTIVE.");
+//    }
 
 }

@@ -19,12 +19,13 @@ public class UserUpdateRequest {
      String fullName;
      @Enumerated(EnumType.STRING)
      Gender gender;
-     String roomName;
+//     String roomName;
      String cccd;
      String phoneNumber;
      @Enumerated(EnumType.STRING)
      Status status;
      String country;
+
 
 
 }

@@ -17,12 +17,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+@MockitoSettings(strictness = Strictness.LENIENT)
+
 @ExtendWith(MockitoExtension.class)
 class RoomServiceTest {
 
@@ -76,6 +82,25 @@ class RoomServiceTest {
         assertNotNull(result);
         assertEquals("1", result.getRoomId());
         verify(roomRepository, times(1)).save(any());
+    }
+    @Test
+    void testCreateRoom_UserNotFound() {
+        // Sử dụng lenient() cho stub roomRepository.findByRoomName, vì có thể trong trường hợp này nó không được gọi.
+        lenient().when(roomRepository.findByRoomName(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class, () -> roomService.createRoom(roomDto));
+        assertEquals(ErrorCode.USER_NOT_FOUND, ex.getErrorCode());
+    }
+
+    @Test
+    void testGetAllRoom_Empty() {
+        when(roomRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<RoomResponse> responses = roomService.getAllRoom();
+
+        assertNotNull(responses);
+        assertTrue(responses.isEmpty());
     }
 
     @Test

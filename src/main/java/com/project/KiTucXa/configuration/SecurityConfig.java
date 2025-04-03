@@ -58,7 +58,9 @@ public class SecurityConfig {
             "/api/v1/contracts/{contractId}",
             "/api/v1/user/my-info",
             "/api/v1/Payment/add",
-            "/api/v1/Payment/{paymentId}"
+            "/api/v1/Payment/{paymentId}",            "/api/v1/user/change-password",
+            "/api/v1/user/student/{userId}",
+
 
 
     };

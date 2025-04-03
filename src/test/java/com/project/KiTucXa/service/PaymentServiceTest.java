@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -204,5 +205,27 @@ class PaymentServiceTest {
 
         assertEquals("Payment not found", exception.getMessage());
     }
+    @Test
+    void testGetAllPayment_Empty() {
+        when(paymentRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<PaymentResponse> responses = paymentService.getAllPayment();
+
+        assertNotNull(responses);
+        assertTrue(responses.isEmpty());
+        verify(paymentRepository, times(1)).findAll();
+    }
+    @Test
+    void testUpdatePayment_NotFound() {
+        when(paymentRepository.findById("pmt1")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> {
+            paymentService.updatePayment("pmt1", paymentUpdateDto);
+        });
+
+        assertEquals(ErrorCode.PAYMENT_NOT_FOUND, exception.getErrorCode());
+    }
+
+
 }
 

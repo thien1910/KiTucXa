@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,4 +135,76 @@ class RoomServiceServiceTest {
 
         verify(roomServiceRepository, times(1)).deleteById(any());
     }
+    @Test
+    void testCreateRoomService_RoomNotFound() {
+        when(roomRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class,
+                () -> roomServiceService.createRoomService(roomServiceDto));
+        assertEquals(ErrorCode.ROOM_NOT_FOUND, ex.getErrorCode());
+    }
+    @Test
+    void testCreateRoomService_UtilityServiceNotFound() {
+        when(roomRepository.findById(anyString())).thenReturn(Optional.of(room));
+        when(utilityServiceRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class,
+                () -> roomServiceService.createRoomService(roomServiceDto));
+        assertEquals(ErrorCode.UTILITY_SERVICE_NOT_FOUND, ex.getErrorCode());
+    }
+    @Test
+    void testGetRoomServiceById_NotFound() {
+        when(roomServiceRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class,
+                () -> roomServiceService.getRoomServiceById("1"));
+        assertEquals(ErrorCode.ROOM_SERVICE_NOT_FOUND, ex.getErrorCode());
+    }
+    @Test
+    void testUpdateRoomService_NotFound() {
+        when(roomServiceRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> roomServiceService.updateRoomService("1", roomServiceUpdateDto));
+        assertEquals("RoomService not found", ex.getMessage());
+    }
+    @Test
+    void testDeleteRoomService_NotFound() {
+        when(roomServiceRepository.existsById(anyString())).thenReturn(false);
+
+        AppException ex = assertThrows(AppException.class,
+                () -> roomServiceService.deleteRoomService("1"));
+        assertEquals(ErrorCode.ROOM_SERVICE_NOT_FOUND, ex.getErrorCode());
+    }
+    @Test
+    void testGetRoomServicesByRoomId_WithData() {
+        when(roomServiceRepository.findByRoom_RoomId(anyString())).thenReturn(List.of(roomService));
+        when(roomServiceMapper.toRoomServiceResponse(any())).thenReturn(roomServiceResponse);
+
+        List<RoomServiceResponse> responses = roomServiceService.getRoomServicesByRoomId("1");
+
+        assertNotNull(responses);
+        assertFalse(responses.isEmpty());
+        assertEquals("1", responses.get(0).getRoomServiceId());
+    }
+    @Test
+    void testGetRoomServicesByRoomId_NoData() {
+        when(roomServiceRepository.findByRoom_RoomId(anyString())).thenReturn(Collections.emptyList());
+
+        List<RoomServiceResponse> responses = roomServiceService.getRoomServicesByRoomId("1");
+
+        assertNotNull(responses);
+        assertTrue(responses.isEmpty());
+    }
+    @Test
+    void testGetAllRoomServices_Empty() {
+        when(roomServiceRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<RoomServiceResponse> responses = roomServiceService.getAllRoomServices();
+
+        assertNotNull(responses);
+        assertTrue(responses.isEmpty());
+    }
+
+
 }

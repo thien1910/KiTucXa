@@ -136,6 +136,17 @@ class BillDetailServiceTest {
         assertEquals(ErrorCode.UTILITY_SERVICE_NOT_FOUND, exception.getErrorCode());
     }
 
+    @Test
+    void testGetAllBillDetails_Empty() {
+        // Giả lập repository trả về danh sách rỗng
+        when(billDetailRepository.findAll()).thenReturn(List.of());
+
+        List<BillDetailResponse> result = billDetailService.getAllBillDetails();
+
+        // Kiểm tra xem list trả về có trống không
+        assertTrue(result.isEmpty());
+        verify(billDetailRepository, times(1)).findAll();
+    }
 
     @Test
     void testGetAllBillDetails() {
