@@ -218,10 +218,17 @@ const ServiceManagement: React.FC = () => {
           <Form.Item
             name="pricePerUnit"
             label="Giá mỗi đơn vị"
-            rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập giá" },
+              {
+                pattern: /^[1-9]\d*$/,
+                message: "Giá phải là số nguyên dương",
+              },
+            ]}
           >
-            <Input type="number" />
+            <Input type="number" min="1" />
           </Form.Item>
+
           <Form.Item
             name="calculationUnit"
             label="Đơn vị tính"

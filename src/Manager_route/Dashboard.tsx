@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Dashboard.css";
 import AccountManagement from "../Admin_route/AccountManagement";
-import UserProfile from "../Student_route/UserProfile";
+// import UserProfile from "../Student_route/UserProfile";
 import StudentManagement from "./StudentManagement";
 import ContractManagement from "./ContractManagement";
 import InvoiceManagement from "./InvoiceManagement";
@@ -76,8 +76,6 @@ const Dashboard = () => {
       <main className="main-content">
         {view === "accountManagement" ? (
           <AccountManagement />
-        ) : view === "userProfile" ? (
-          <UserProfile />
         ) : view === "studentManagement" ? (
           <StudentManagement />
         ) : view === "contractManagement" ? (

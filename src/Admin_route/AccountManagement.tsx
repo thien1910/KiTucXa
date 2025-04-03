@@ -63,7 +63,9 @@ const AccountManagement: React.FC = () => {
 
       if (data.code === 1000) {
         // Lọc bỏ các tài khoản có role là "admin"
-        const filteredAccounts = data.result.filter(account => !account.roles.includes("ADMIN"));
+        const filteredAccounts = data.result.filter(
+          (account) => !account.roles.includes("ADMIN"),
+        );
 
         setAccounts(filteredAccounts);
         console.log("Fetched accounts (excluding admins):", filteredAccounts); // Debug
@@ -77,10 +79,9 @@ const AccountManagement: React.FC = () => {
     }
   };
 
-useEffect(() => {
-  fetchAccounts();
-}, []);
-
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
 
   // Set form values when editing an account
   useEffect(() => {
@@ -227,15 +228,17 @@ useEffect(() => {
       }
     } catch (error) {
       console.error("Error deleting account:", error);
-      message.error("Đã xảy ra lỗi khi xóa tài khoản");
+      message.error(
+        "Đã xảy ra lỗi khi xóa tài khoản, có thể tài khoản này đang được sử dụng",
+      );
     }
   };
 
-  // Handle change status từ dropdown
   const handleChangeStatus = async (record: Account, newStatus: string) => {
     try {
       const token = localStorage.getItem("token");
-      const payload = { status: newStatus };
+      const payload = { ...record, status: newStatus }; // Giữ nguyên dữ liệu, chỉ thay đổi trạng thái
+
       const response = await fetch(
         `http://localhost:8080/api/v1/user/${record.userId}`,
         {
@@ -247,6 +250,7 @@ useEffect(() => {
           body: JSON.stringify(payload),
         },
       );
+
       const data = await response.json();
       if (data.code === 1000) {
         message.success("Cập nhật trạng thái thành công");
@@ -418,12 +422,34 @@ useEffect(() => {
           {/* <Form.Item name="roomNameStudent" label="Phòng">
             <Input />
           </Form.Item> */}
-          <Form.Item name="cccd" label="CCCD">
+          <Form.Item
+            name="cccd"
+            label="CCCD"
+            rules={[
+              { required: true, message: "Vui lòng nhập CCCD" },
+              {
+                pattern: /^[1-9]\d*$/,
+                message: "CCCD phải là số nguyên dương",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="phoneNumber" label="Số điện thoại">
+
+          <Form.Item
+            name="phoneNumber"
+            label="Số điện thoại"
+            rules={[
+              { required: true, message: "Vui lòng nhập số điện thoại" },
+              {
+                pattern: /^[1-9]\d*$/,
+                message: "Số điện thoại phải là số nguyên dương",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
+
           <Form.Item name="country" label="Quốc gia">
             <Input />
           </Form.Item>

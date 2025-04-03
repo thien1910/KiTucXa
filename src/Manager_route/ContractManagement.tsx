@@ -26,11 +26,18 @@ interface Contract {
   customerName?: string; // Tên khách hàng (lấy từ API user)
 }
 
+interface Room {
+  roomId: string;
+  roomName: string;
+  // Các thuộc tính khác nếu cần...
+}
+
 const ContractManagement: React.FC = () => {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentContract, setCurrentContract] = useState<Contract | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
 
   const [formData, setFormData] = useState<Contract>({
     contractId: "",
@@ -95,9 +102,33 @@ const ContractManagement: React.FC = () => {
     }
   };
 
-  // Fetch hợp đồng và enrich với tên phòng & tên khách hàng từ API phụ
+  // Fetch available rooms và hợp đồng
   useEffect(() => {
     let isMounted = true; // Cờ kiểm soát
+
+    const fetchAvailableRooms = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/v1/rooms/list",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        if (response.ok) {
+          const data = await response.json();
+          // Giả sử data trả về là mảng các đối tượng có roomId và roomName
+          setAvailableRooms(data as Room[]);
+        } else {
+          message.error("Không lấy được danh sách phòng!");
+        }
+      } catch (error) {
+        console.error("Lỗi fetch available rooms:", error);
+        message.error("Lỗi khi lấy thông tin phòng!");
+      }
+    };
 
     const fetchContracts = async () => {
       try {
@@ -184,12 +215,13 @@ const ContractManagement: React.FC = () => {
       }
     };
 
+    fetchAvailableRooms();
     fetchContracts();
 
     return () => {
       isMounted = false; // Cleanup khi component bị unmount
     };
-  }, []);
+  }, [token]);
 
   // Xử lý tìm kiếm
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,9 +260,7 @@ const ContractManagement: React.FC = () => {
     return matchesSearchQuery && matchesRoomFilter && matchesStatusFilter;
   });
 
-  // Lấy danh sách tên phòng duy nhất từ mảng contracts để hiển thị dropdown
-
-  // Các hàm xử lý khác (delete, edit, create, print, invoice...) giữ nguyên như cũ
+  // Các hàm xử lý khác (delete, edit, create, print, invoice...)
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa hợp đồng này?")) return;
@@ -333,21 +363,23 @@ const ContractManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-  
+
       if (!roomResponse.ok) {
-        throw new Error(`Không thể lấy thông tin phòng (Mã lỗi: ${roomResponse.status})`);
+        throw new Error(
+          `Không thể lấy thông tin phòng (Mã lỗi: ${roomResponse.status})`,
+        );
       }
-  
+
       const roomData = await roomResponse.json();
-  
+
       // Giả sử roomData có trường currentOccupancy và maximumOccupancy
       if (roomData.currentOccupancy >= roomData.maximumOccupancy) {
         message.error("Phòng đã đầy. Không thể tạo hợp đồng mới!");
         return false;
       }
-  
+
       // Nếu phòng chưa đầy, tiến hành tạo hợp đồng
       message.info("Đang tạo hợp đồng mới...");
       const response = await fetch(
@@ -359,7 +391,7 @@ const ContractManagement: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(contractData),
-        }
+        },
       );
       const result = await response.json();
       if (!response.ok) {
@@ -372,7 +404,6 @@ const ContractManagement: React.FC = () => {
       return false;
     }
   };
-  
 
   const handleSave = async () => {
     if (isEditing && currentContract) {
@@ -452,12 +483,12 @@ const ContractManagement: React.FC = () => {
   const handleCreateInvoice = async (contract: Contract) => {
     const currentDate = new Date();
     const contractEndDate = new Date(contract.endDate);
-  
+
     if (currentDate > contractEndDate) {
       message.error("Hợp đồng đã hết hiệu lực. Không thể tạo hóa đơn.");
-      return; // Dừng xử lý nếu hợp đồng đã hết hạn
+      return;
     }
-  
+
     try {
       // Gọi API lấy danh sách dịch vụ của phòng theo roomId
       const roomServiceResponse = await fetch(
@@ -468,28 +499,31 @@ const ContractManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-  
+
       if (!roomServiceResponse.ok) {
         throw new Error(`HTTP error! Status: ${roomServiceResponse.status}`);
       }
-  
+
       const roomServices = await roomServiceResponse.json();
       console.log("Room services:", roomServices);
-  
+
       // Tính tổng tiền của các dịch vụ (mỗi dịch vụ tính 1 lần)
-      const totalServicePrice = roomServices.reduce((total: number, rs: any) => {
-        return total + (rs.price ? parseFloat(rs.price) : 0);
-      }, 0);
-      
+      const totalServicePrice = roomServices.reduce(
+        (total: number, rs: any) => {
+          return total + (rs.price ? parseFloat(rs.price) : 0);
+        },
+        0,
+      );
+
       console.log("Total service price:", totalServicePrice);
-  
+
       // Tổng tiền hóa đơn = tiền phòng + tiền dịch vụ
-      const roomPrice = parseFloat(contract.price.toString()); // đảm bảo là số
+      const roomPrice = parseFloat(contract.price.toString());
       const totalPrice = roomPrice + totalServicePrice;
       console.log("Total price (room + services):", totalPrice);
-  
+
       message.info("Mở form tạo hóa đơn...");
       invoiceForm.setFieldsValue({
         contractId: contract.contractId,
@@ -501,9 +535,6 @@ const ContractManagement: React.FC = () => {
       message.error("Lỗi khi lấy thông tin dịch vụ của phòng.");
     }
   };
-  
-  
-  
 
   const handleInvoiceSubmit = async (values: any) => {
     try {
@@ -522,7 +553,7 @@ const ContractManagement: React.FC = () => {
 
       if (currentDate > contractEndDate) {
         message.error("Hợp đồng đã hết hiệu lực. Không thể tạo hóa đơn.");
-        return; // Dừng xử lý nếu hợp đồng đã hết hạn
+        return;
       }
 
       console.log("Bắt đầu tạo hóa đơn...");
@@ -586,7 +617,7 @@ const ContractManagement: React.FC = () => {
           onChange={handleSearch}
           style={{ width: 300 }}
         />
-        {/* Ô tìm kiếm theo tên phòng */}
+        {/* Dropdown tìm kiếm theo tên phòng */}
         <Select
           placeholder="Tên phòng"
           allowClear
@@ -616,9 +647,9 @@ const ContractManagement: React.FC = () => {
         </Select>
       </div>
 
-      <Button className="create-btn" onClick={handleCreate}>
+      {/* <Button className="create-btn" onClick={handleCreate}>
         Tạo hợp đồng mới
-      </Button>
+      </Button> */}
 
       {/* Bảng danh sách hợp đồng */}
       <table>
@@ -709,13 +740,28 @@ const ContractManagement: React.FC = () => {
           </div>
           <div className="form-group">
             <label>Mã phòng:</label>
-            <input
-              type="text"
-              name="roomId"
-              value={formData.roomId}
-              disabled={isEditing}
-              onChange={handleInputChange}
-            />
+            {isCreating ? (
+              <select
+                name="roomId"
+                value={formData.roomId}
+                onChange={handleInputChange}
+              >
+                <option value="">-- Chọn phòng --</option>
+                {availableRooms.map((room) => (
+                  <option key={room.roomId} value={room.roomId}>
+                    {room.roomName} ({room.roomId})
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                name="roomId"
+                value={formData.roomId}
+                disabled={isEditing}
+                onChange={handleInputChange}
+              />
+            )}
           </div>
           <div className="form-group">
             <label>Ngày bắt đầu:</label>

@@ -332,9 +332,9 @@ const StudentManagement: React.FC = () => {
                   Xếp phòng
                 </button>
                 {/* Nút xem hợp đồng đã có của sinh viên */}
-                <button onClick={() => handleViewContract(student)}>
+                {/* <button onClick={() => handleViewContract(student)}>
                   Xem hợp đồng
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}

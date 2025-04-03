@@ -18,6 +18,8 @@ interface User {
 
 const UserProfileStudent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  // State để lưu tên phòng từ hợp đồng còn hiệu lực
+  const [activeRoomName, setActiveRoomName] = useState<string>("Chưa có phòng");
 
   // State điều khiển hiển thị Modal
   const [isEditingInfo, setIsEditingInfo] = useState(false);
@@ -36,6 +38,7 @@ const UserProfileStudent: React.FC = () => {
 
   const token = localStorage.getItem("token");
 
+  // Fetch thông tin người dùng
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -62,6 +65,8 @@ const UserProfileStudent: React.FC = () => {
           passWord: userData.passWord,
           phoneNumber: userData.phoneNumber,
           gender: userData.gender as "MALE" | "FEMALE",
+          // Nếu API trả về roomNameStudent thì dùng nó,
+          // nhưng chúng ta sẽ ưu tiên cập nhật tên phòng theo hợp đồng Active
           roomNameStudent: userData.roomNameStudent,
           cccd: userData.cccd,
           status: userData.status,
@@ -71,7 +76,7 @@ const UserProfileStudent: React.FC = () => {
         };
         setUser(fetchedUser);
 
-        // Gán giá trị ban đầu cho form
+        // Gán giá trị ban đầu cho form chỉnh sửa
         setEditedFullName(fetchedUser.fullName);
         setEditedPhoneNumber(fetchedUser.phoneNumber);
         setEditedGender(fetchedUser.gender);
@@ -84,7 +89,54 @@ const UserProfileStudent: React.FC = () => {
     fetchUserData();
   }, [token]);
 
-  // Lưu thông tin (không đổi mật khẩu)
+  // Fetch hợp đồng của người dùng để lấy tên phòng của hợp đồng còn hiệu lực
+  useEffect(() => {
+    const fetchActiveContract = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!token || !userId) {
+          console.error("Token hoặc userId không tồn tại trong localStorage.");
+          return;
+        }
+        const response = await fetch(
+          `http://localhost:8080/api/v1/contracts/user/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        // Lọc hợp đồng có trạng thái Active (còn hiệu lực)
+        const activeContract = data.find(
+          (item: any) => item.contractStatus === "Active",
+        );
+        if (activeContract) {
+          // Nếu hợp đồng có đối tượng room, lấy roomName từ đó
+          setActiveRoomName(
+            activeContract.room
+              ? activeContract.room.roomName
+              : "Chưa có phòng",
+          );
+        } else {
+          setActiveRoomName("Chưa có phòng");
+        }
+      } catch (error) {
+        console.error("Lỗi khi gọi API hợp đồng:", error);
+      }
+    };
+
+    fetchActiveContract();
+  }, [token]);
+
+  // Hàm lưu thông tin (không đổi mật khẩu)
   const handleSaveInfo = async () => {
     if (!user) return;
 
@@ -102,7 +154,7 @@ const UserProfileStudent: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/user/${user.userId}`,
+        `http://localhost:8080/api/v1/user/student/${user.userId}`,
         {
           method: "PUT",
           headers: {
@@ -113,21 +165,34 @@ const UserProfileStudent: React.FC = () => {
         },
       );
 
-      const result = await response.json();
+      // Lấy phản hồi dưới dạng text trước
+      const text = await response.text();
+      console.log("Response text:", text);
+
+      let result: any = {};
+      if (text && text.trim() !== "") {
+        try {
+          result = JSON.parse(text);
+        } catch (parseError) {
+          console.error("Lỗi parse JSON:", parseError, "Text:", text);
+        }
+      }
+
       if (!response.ok) {
         throw new Error(result.message || "Lỗi khi cập nhật thông tin.");
       }
 
-      // Cập nhật lại state user
+      // Cập nhật lại state user nếu thành công
       setUser({ ...user, ...updatedData });
       setIsEditingInfo(false);
       alert("Cập nhật thông tin thành công!");
     } catch (error) {
       console.error("Lỗi khi cập nhật thông tin:", error);
+      alert("Cập nhật thông tin thất bại!");
     }
   };
 
-  // Đổi mật khẩu
+  // Hàm xử lý đổi mật khẩu
   const handleChangePassword = async () => {
     if (!user) return;
 
@@ -157,8 +222,17 @@ const UserProfileStudent: React.FC = () => {
       );
 
       console.log("Response status:", response.status);
-      const result = await response.json();
-      console.log("Response body:", result);
+      const text = await response.text();
+      console.log("Response body:", text);
+
+      let result: any = {};
+      if (text && text.trim() !== "") {
+        try {
+          result = JSON.parse(text);
+        } catch (parseError) {
+          console.error("Lỗi parse JSON:", parseError, "Text:", text);
+        }
+      }
 
       if (!response.ok) {
         throw new Error(result.message || "Lỗi khi đổi mật khẩu.");
@@ -184,9 +258,8 @@ const UserProfileStudent: React.FC = () => {
             <img src={user.avatarUrl} alt="Avatar" className="avatar-img" />
             <h2 className="user-name">{user.fullName}</h2>
             <p className="user-role">{user.roles.join(", ")}</p>
-            <p className="user-status">
-              Phòng: {user.roomNameStudent || "Chưa có phòng"}
-            </p>
+            {/* Hiển thị tên phòng từ hợp đồng còn hiệu lực */}
+            <p className="user-status">Phòng: {activeRoomName}</p>
           </>
         )}
       </div>
@@ -198,7 +271,7 @@ const UserProfileStudent: React.FC = () => {
             <h2>THÔNG TIN CÁ NHÂN</h2>
             <div className="info-row">
               <p>
-                <strong>Email:</strong> {user.userName}
+                <strong>Username:</strong> {user.userName}
               </p>
               <p>
                 <strong>Phone:</strong> {user.phoneNumber}
@@ -263,9 +336,16 @@ const UserProfileStudent: React.FC = () => {
             <div className="form-group">
               <label>Số điện thoại</label>
               <input
-                type="text"
+                type="number"
+                min="0"
                 value={editedPhoneNumber}
-                onChange={(e) => setEditedPhoneNumber(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // Chỉ cho phép nhập các ký tự số (0-9)
+                  if (/^\d*$/.test(val)) {
+                    setEditedPhoneNumber(val);
+                  }
+                }}
               />
             </div>
             <div className="form-group">
@@ -283,9 +363,15 @@ const UserProfileStudent: React.FC = () => {
             <div className="form-group">
               <label>CCCD</label>
               <input
-                type="text"
+                type="number"
+                min="0"
                 value={editedCccd}
-                onChange={(e) => setEditedCccd(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d*$/.test(val)) {
+                    setEditedCccd(val);
+                  }
+                }}
               />
             </div>
 

@@ -76,13 +76,16 @@ const RoomManagement: React.FC = () => {
   // Hàm lấy danh sách hợp đồng và cập nhật currentOccupancy cho mỗi phòng
   const updateRoomsOccupancy = async (fetchedRooms: Room[]) => {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/contracts/list", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "http://localhost:8080/api/v1/contracts/list",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -116,7 +119,10 @@ const RoomManagement: React.FC = () => {
 
   // Hàm thêm phòng qua API
   const addRoom = async (
-    roomData: Omit<Room, "roomId" | "createdAt" | "updatedAt" | "currentOccupancy">
+    roomData: Omit<
+      Room,
+      "roomId" | "createdAt" | "updatedAt" | "currentOccupancy"
+    >,
   ) => {
     try {
       const response = await fetch("http://localhost:8080/api/v1/rooms/add", {
@@ -147,7 +153,7 @@ const RoomManagement: React.FC = () => {
       !newRoom.department
     ) {
       alert(
-        "Vui lòng điền đầy đủ thông tin bắt buộc: Tên phòng, Giá phòng, Số lượng tối đa, Khoa/Bộ phận."
+        "Vui lòng điền đầy đủ thông tin bắt buộc: Tên phòng, Giá phòng, Số lượng tối đa, Khoa/Bộ phận.",
       );
       return;
     }
@@ -187,7 +193,7 @@ const RoomManagement: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(editingRoom),
-        }
+        },
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -213,7 +219,7 @@ const RoomManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -237,7 +243,7 @@ const RoomManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -310,10 +316,10 @@ const RoomManagement: React.FC = () => {
                   type === "Single"
                     ? 1
                     : type === "Double"
-                    ? 2
-                    : type === "Quad"
-                    ? 4
-                    : 1;
+                      ? 2
+                      : type === "Quad"
+                        ? 4
+                        : 1;
                 setNewRoom({
                   ...newRoom,
                   roomType: type,
@@ -345,9 +351,7 @@ const RoomManagement: React.FC = () => {
               type="text"
               placeholder="Ghi chú"
               value={newRoom.note}
-              onChange={(e) =>
-                setNewRoom({ ...newRoom, note: e.target.value })
-              }
+              onChange={(e) => setNewRoom({ ...newRoom, note: e.target.value })}
             />
             <button className="add-button" onClick={handleAddRoom}>
               Thêm phòng
@@ -385,7 +389,7 @@ const RoomManagement: React.FC = () => {
                   <td>
                     <span
                       className={`status-badge ${getStatusBadgeClass(
-                        room.roomStatus
+                        room.roomStatus,
                       )}`}
                     >
                       {getRoomStatusDisplay(room.roomStatus)}
@@ -444,10 +448,10 @@ const RoomManagement: React.FC = () => {
                   newType === "Single"
                     ? 1
                     : newType === "Double"
-                    ? 2
-                    : newType === "Quad"
-                    ? 4
-                    : editingRoom.maximumOccupancy;
+                      ? 2
+                      : newType === "Quad"
+                        ? 4
+                        : editingRoom.maximumOccupancy;
                 setEditingRoom({
                   ...editingRoom,
                   roomType: newType,

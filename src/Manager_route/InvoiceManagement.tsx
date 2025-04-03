@@ -95,7 +95,7 @@ const InvoiceManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (!response.ok) throw new Error("Lỗi khi lấy danh sách hợp đồng");
       const data = await response.json();
@@ -110,7 +110,7 @@ const InvoiceManagement: React.FC = () => {
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${token}`,
                 },
-              }
+              },
             );
             if (roomRes.ok) {
               const roomData = await roomRes.json();
@@ -129,7 +129,7 @@ const InvoiceManagement: React.FC = () => {
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${token}`,
                 },
-              }
+              },
             );
             if (userRes.ok) {
               const userData = await userRes.json();
@@ -153,7 +153,7 @@ const InvoiceManagement: React.FC = () => {
             customerName,
             roomId: contract.roomId,
           };
-        })
+        }),
       );
       setContracts(enrichedContracts);
     } catch (error) {
@@ -177,9 +177,7 @@ const InvoiceManagement: React.FC = () => {
         paymentMethodFilter.toLowerCase()
       : true;
 
-    const relatedContract = contracts.find(
-      (c) => c.id === invoice.contractId
-    );
+    const relatedContract = contracts.find((c) => c.id === invoice.contractId);
     const matchesRoomName = roomNameFilter
       ? (relatedContract?.roomName || "N/A").toLowerCase() ===
         roomNameFilter.toLowerCase()
@@ -195,17 +193,19 @@ const InvoiceManagement: React.FC = () => {
 
   const uniqueRoomNames = Array.from(
     new Set(
-      contracts.map((c) => c.roomName).filter((name) => name && name !== "N/A")
-    )
+      contracts.map((c) => c.roomName).filter((name) => name && name !== "N/A"),
+    ),
   );
 
   // Hàm xử lý khi trường mã hợp đồng mất focus (onBlur)
-  const handleContractIdBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleContractIdBlur = async (
+    e: React.FocusEvent<HTMLInputElement>,
+  ) => {
     const contractId = e.target.value;
     if (!contractId) return;
     try {
       console.log("Contract ID on blur:", contractId);
-  
+
       const response = await fetch(
         `http://localhost:8080/api/v1/contracts/${contractId}`,
         {
@@ -214,25 +214,27 @@ const InvoiceManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-  
+
       if (!response.ok) {
         message.error("Hợp đồng không hợp lệ!");
         form.setFieldsValue({ sumPrice: 0 });
         return;
       }
-  
+
       const data = await response.json();
       console.log("Response data from /contracts/:id:", data);
-  
+
       const contractData: Contract = data.result ? data.result : data;
       console.log("Parsed contractData:", contractData);
-  
+
       // Ép kiểu tạm thời: nếu có trường price thì dùng, nếu không, dùng salary
-      const roomPrice = parseFloat(((contractData as any).price || contractData.salary || "0").toString());
+      const roomPrice = parseFloat(
+        ((contractData as any).price || contractData.salary || "0").toString(),
+      );
       console.log("Room price (computed):", roomPrice);
-  
+
       const roomServiceResponse = await fetch(
         `http://localhost:8080/api/v1/room-services/room/${contractData.roomId}`,
         {
@@ -241,10 +243,13 @@ const InvoiceManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      console.log("Room services API response status:", roomServiceResponse.status);
-  
+      console.log(
+        "Room services API response status:",
+        roomServiceResponse.status,
+      );
+
       let totalServicePrice = 0;
       if (roomServiceResponse.ok) {
         const roomServices = await roomServiceResponse.json();
@@ -256,19 +261,17 @@ const InvoiceManagement: React.FC = () => {
       } else {
         console.log("Room services API response not OK");
       }
-  
+
       const totalPrice = roomPrice + totalServicePrice;
       console.log("Final totalPrice:", totalPrice);
-  
+
       form.setFieldsValue({ sumPrice: totalPrice });
     } catch (error) {
       console.error("Lỗi khi lấy thông tin hợp đồng:", error);
       message.error("Lỗi khi lấy thông tin hợp đồng");
     }
   };
-  
-  
-  
+
   const handleAddInvoice = async (values: any) => {
     try {
       const response = await fetch("http://localhost:8080/api/v1/bills/add", {
@@ -311,7 +314,7 @@ const InvoiceManagement: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (!response.ok) throw new Error("Lỗi khi xóa hóa đơn!");
       message.success("Xóa hóa đơn thành công!");
@@ -355,7 +358,7 @@ const InvoiceManagement: React.FC = () => {
             billStatus: values.billStatus,
             note: values.note,
           }),
-        }
+        },
       );
       const result = await response.json();
       if (response.ok && result.billId) {
@@ -371,8 +374,8 @@ const InvoiceManagement: React.FC = () => {
                   paymentMethod: values.paymentMethod,
                   status: values.billStatus === "PAID" ? "paid" : "unpaid",
                 }
-              : invoice
-          )
+              : invoice,
+          ),
         );
         setIsModalOpen(false);
         form.resetFields();
@@ -389,18 +392,16 @@ const InvoiceManagement: React.FC = () => {
 
   const handlePrintInvoice = async (invoice: Invoice) => {
     // Tìm hợp đồng liên quan từ danh sách hợp đồng đã enrich
-    const relatedContract = contracts.find(
-      (c) => c.id === invoice.contractId
-    );
-  
+    const relatedContract = contracts.find((c) => c.id === invoice.contractId);
+
     let serviceDetails = "Không có dịch vụ";
     let totalServicePrice = 0;
     let roomPrice = 0;
-  
+
     if (relatedContract) {
       // Lấy roomPrice từ hợp đồng, sử dụng trường 'salary' (đã được gán từ contract.price)
       roomPrice = parseFloat(relatedContract.salary?.toString() || "0");
-  
+
       try {
         const rsResponse = await fetch(
           `http://localhost:8080/api/v1/room-services/room/${relatedContract.roomId}`,
@@ -410,7 +411,7 @@ const InvoiceManagement: React.FC = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         console.log("Room services API response status:", rsResponse.status);
         if (rsResponse.ok) {
@@ -430,30 +431,33 @@ const InvoiceManagement: React.FC = () => {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
                       },
-                    }
+                    },
                   );
                   if (utilityResponse.ok) {
                     const utilityData = await utilityResponse.json();
                     serviceName = utilityData.serviceName || "N/A";
                   }
                 } catch (error) {
-                  console.error("Lỗi khi lấy thông tin utility service:", error);
+                  console.error(
+                    "Lỗi khi lấy thông tin utility service:",
+                    error,
+                  );
                 }
                 const servicePrice = rs.price ? parseFloat(rs.price) : 0;
                 return { serviceName, servicePrice };
-              })
+              }),
             );
             // Tạo chuỗi hiển thị danh sách dịch vụ
             serviceDetails = detailedServices
               .map(
                 (ds) =>
-                  `${ds.serviceName} - ${ds.servicePrice.toLocaleString()} VND`
+                  `${ds.serviceName} - ${ds.servicePrice.toLocaleString()} VND`,
               )
               .join("<br/>");
             // Tính tổng tiền dịch vụ
             totalServicePrice = detailedServices.reduce(
               (total, ds) => total + ds.servicePrice,
-              0
+              0,
             );
           } else {
             serviceDetails = "Không có dịch vụ";
@@ -465,9 +469,9 @@ const InvoiceManagement: React.FC = () => {
         console.error("Error fetching room services:", error);
       }
     }
-  
+
     const totalPrice = roomPrice + totalServicePrice;
-  
+
     const printContent = `
       <html>
         <head>
@@ -485,11 +489,15 @@ const InvoiceManagement: React.FC = () => {
             <h1>Hóa đơn</h1>
             <p><strong>Mã hóa đơn:</strong> ${invoice.id}</p>
             <p><strong>Mã hợp đồng:</strong> ${invoice.contractId}</p>
-            ${relatedContract ? `
+            ${
+              relatedContract
+                ? `
               <p><strong>Tên phòng:</strong> ${relatedContract.roomName || "N/A"}</p>
               <p><strong>Tên khách hàng:</strong> ${relatedContract.customerName || "N/A"}</p>
               <p><strong>Giá phòng:</strong> ${roomPrice.toLocaleString()} VND</p>
-            ` : ""}
+            `
+                : ""
+            }
             <p><strong>Dịch vụ:</strong></p>
             <p class="service-list">${serviceDetails}</p>
             <p><strong>Tổng tiền dịch vụ:</strong> ${totalServicePrice.toLocaleString()} VND</p>
@@ -502,7 +510,7 @@ const InvoiceManagement: React.FC = () => {
         </body>
       </html>
     `;
-  
+
     const printWindow = window.open("", "_blank", "width=800,height=600");
     if (printWindow) {
       printWindow.document.open();
@@ -512,10 +520,6 @@ const InvoiceManagement: React.FC = () => {
       printWindow.print();
     }
   };
-  
-  
-  
-  
 
   return (
     <div className="invoice-management">
@@ -572,7 +576,7 @@ const InvoiceManagement: React.FC = () => {
           ))}
         </Select>
       </div>
-      <Button
+      {/* <Button
         type="primary"
         onClick={() => {
           setIsModalOpen(true);
@@ -581,7 +585,7 @@ const InvoiceManagement: React.FC = () => {
         style={{ marginBottom: 16 }}
       >
         Thêm hóa đơn
-      </Button>
+      </Button> */}
       <Table
         dataSource={filteredInvoices}
         rowKey="id"
@@ -594,7 +598,7 @@ const InvoiceManagement: React.FC = () => {
             key: "roomName",
             render: (_: any, record: Invoice) => {
               const relatedContract = contracts.find(
-                (c) => c.id === record.contractId
+                (c) => c.id === record.contractId,
               );
               return relatedContract?.roomName || "N/A";
             },
@@ -625,11 +629,11 @@ const InvoiceManagement: React.FC = () => {
             key: "actions",
             render: (record: Invoice) => (
               <div style={{ display: "flex", gap: "8px" }}>
-                <Button
+                {/* <Button
                   className="edit-button"
                   icon={<EditOutlined />}
                   onClick={() => handleEditInvoice(record)}
-                />
+                /> */}
                 <Button
                   danger
                   icon={<DeleteOutlined />}
@@ -671,21 +675,30 @@ const InvoiceManagement: React.FC = () => {
           <Form.Item
             label="Tổng tiền ( đã bao gồm dịch vụ)"
             name="sumPrice"
-            rules={[{ required: true, message: "Tổng tiền không được để trống!" }]}
+            rules={[
+              { required: true, message: "Tổng tiền không được để trống!" },
+            ]}
           >
             <Input type="number" readOnly />
           </Form.Item>
           <Form.Item
             label="Ngày thanh toán"
             name="paymentDate"
-            rules={[{ required: true, message: "Vui lòng chọn ngày thanh toán!" }]}
+            rules={[
+              { required: true, message: "Vui lòng chọn ngày thanh toán!" },
+            ]}
           >
             <Input type="date" />
           </Form.Item>
           <Form.Item
             label="Phương thức thanh toán"
             name="paymentMethod"
-            rules={[{ required: true, message: "Vui lòng chọn phương thức thanh toán!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn phương thức thanh toán!",
+              },
+            ]}
           >
             <Select>
               <Option value="BANK_TRANSFER">BANK_TRANSFER</Option>
