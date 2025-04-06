@@ -32,6 +32,7 @@ public class SecurityConfig {
             "/api/v1/auth/introspect",
             "/api/v1/rooms/list",
             "/api/v1/user/{userId}",
+
     };
     private final String[] MANAGER_ENDPOINTS = {
             "/api/v1/bills/{billId}","/api/v1/bills/list","/api/v1/bills/add","/api/v1/bills/update/{billId}","/api/v1/bills/delete/{billId}",
@@ -43,7 +44,7 @@ public class SecurityConfig {
             "/api/v1/room-services/add", "/api/v1/room-services/{roomServiceId}", "/api/v1/room-services/list", "/api/v1/room-services/update/{roomServiceId}", "/api/v1/room-services/delete/{roomServiceId}",
             "/api/v1/contracts/{contractId}","/api/v1/contracts/add","/api/v1/contracts/list","/api/v1/contracts/update/{contractId}","/api/v1/contracts/delete/{contractId}",
             "/api/v1/utility-services/add","/api/v1/utility-services/{utilityServiceId}","/api/v1/utility-services/list","/api/v1/utility-services/update/{utilityServiceId}","/api/v1/utility-services/delete/{utilityServiceId}",
-            "/api/v1/user/manager/{userId}",
+            "/api/v1/user/manager/{userId}","/api/v1/user/manager/my-info","/api/v1/rooms/asign/{roomId}"
 
     };
     // quyền của student
@@ -56,10 +57,12 @@ public class SecurityConfig {
             "/api/v1/rooms/list","/api/rooms/{roomId}",
             "/api/v1/room-services/{roomServiceId}",
             "/api/v1/contracts/{contractId}",
-            "/api/v1/user/my-info",
             "/api/v1/Payment/add",
-            "/api/v1/Payment/{paymentId}",            "/api/v1/user/change-password",
+            "/api/v1/Payment/{paymentId}",
             "/api/v1/user/student/{userId}",
+            "/api/v1/bills/payment/{billId}",
+            "/api/v1/user/my-info",
+            "/api/v1/user/change-password",
 
 
 
@@ -69,6 +72,17 @@ public class SecurityConfig {
             "/api/v1/user/list",
             "/api/v1/user/update/{userId}",
             "/api/v1/user/{userId}",
+            "/api/v1/user/admin/my-info",
+            "/api/v1/user/admin/{userId}",
+            "/api/v1/user/admin/change-password",
+
+
+    };
+    private final String[] STAFF_ENDPOINTS = {
+            "/api/v1/user/staff/my-info","/api/v1/rooms/staff/list","/api/v1/rooms/staff/{roomId}","/api/v1/utility-services/staff/list",
+            "/api/v1/room-services/room/staff/{roomId}","/api/v1/contracts/staff/list","/api/v1/user/staff/{userId}"
+            ,"/api/v1/utility-services/staff/{utilityServiceId}","/api/v1/room-services/staff/delete/{roomId}",
+            "/api/v1/room-services/staff/add"
 
     };
 
@@ -106,6 +120,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, ADMIN_ENDPOINTS)
                         .hasRole(Role.ADMIN.name())
 
+                        .requestMatchers(HttpMethod.POST, STAFF_ENDPOINTS)
+                        .hasRole(Role.STAFF.name())
+                        .requestMatchers(HttpMethod.GET, STAFF_ENDPOINTS)
+                        .hasRole(Role.STAFF.name())
+                        .requestMatchers(HttpMethod.PUT, STAFF_ENDPOINTS)
+                        .hasRole(Role.STAFF.name())
+                        .requestMatchers(HttpMethod.DELETE, STAFF_ENDPOINTS)
+                        .hasRole(Role.STAFF.name())
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer

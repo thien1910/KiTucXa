@@ -8,6 +8,7 @@ import com.project.KiTucXa.Dto.Update.BillUpdateDto;
 import com.project.KiTucXa.Entity.Bill;
 import com.project.KiTucXa.Entity.Contract;
 import com.project.KiTucXa.Entity.Room;
+import com.project.KiTucXa.Enum.BillStatus;
 import com.project.KiTucXa.Enum.ContractStatus;
 import com.project.KiTucXa.Enum.PaymentMethod;
 import com.project.KiTucXa.Exception.AppException;
@@ -145,5 +146,28 @@ public class BillService {
                 })
                 .collect(Collectors.toList());
     }
+    public BillResponse simplePayment(String billId, BillUpdateDto billUpdateDto) {
+        Bill bill = billRepository.findById(billId)
+                .orElseThrow(() -> new AppException(ErrorCode.BILL_NOT_FOUND));
+
+        // Cập nhật ngày thanh toán = hôm nay
+        bill.setPaymentDate(java.sql.Date.valueOf(java.time.LocalDate.now()));
+
+        // Cập nhật phương thức thanh toán (nếu có)
+        if (billUpdateDto.getPaymentMethod() != null) {
+            bill.setPaymentMethod(billUpdateDto.getPaymentMethod());
+        }
+
+        // Cập nhật trạng thái hóa đơn
+        bill.setBillStatus(BillStatus.PAID);
+
+        bill = billRepository.save(bill);
+
+        BillResponse response = billMapper.toBillResponse(bill);
+        response.setFullName(bill.getContract().getUser().getFullName());
+        return response;
+    }
+
+
 
 }

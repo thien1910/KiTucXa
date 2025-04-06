@@ -80,5 +80,16 @@ public class BillController {
     public List<BillResponse> getBillsByUserIdbyAdmin(@PathVariable String userId) {
         return billService.getBillsByUserId(userId);
     }
+    @PutMapping("/payment/{billId}")
+    public BillResponse simplePayment(
+            @PathVariable("billId") String billId,
+            @RequestBody BillUpdateDto billUpdateDto) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
+        return billService.simplePayment(billId, billUpdateDto);
+    }
+
 
 }

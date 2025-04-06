@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Data
@@ -40,20 +42,24 @@ public class UserService {
 
     // tự hiểu tạo tài khoản mới là tài khoản cho student
 
-    public UserResponse createUser(UserCreationRequest request){
+    // Trong UserService hoặc Controller
+    public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByuserName(request.getUserName()))
             throw new AppException(ErrorCode.USER_EXITED);
 
         User user = userMapper.toUser(request);
         user.setPassWord(passwordEncoder.encode(request.getPassWord()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.STUDENT.name());
-
+        // Lấy roles từ client
+        Set<String> roles = request.getRoles().stream()
+                .map(String::toUpperCase)      // chuẩn hóa chữ hoa
+                .collect(Collectors.toSet());
         user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
+
+
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));

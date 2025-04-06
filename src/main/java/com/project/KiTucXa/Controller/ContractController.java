@@ -30,7 +30,10 @@ public class ContractController {
     public List<ContractResponse> getAllContracts() {
         return contractService.getAllContracts();
     }
-
+    @GetMapping("/staff/list")
+    public List<ContractResponse> getAllContractsByStaff() {
+        return contractService.getAllContracts();
+    }
     @GetMapping("/{contractId}")
     public ContractResponse getContractById(
             @PathVariable("contractId") String contractId) {

@@ -2,6 +2,7 @@ package com.project.KiTucXa.Service;
 
 import com.project.KiTucXa.Dto.Request.RoomDto;
 import com.project.KiTucXa.Dto.Response.RoomResponse;
+import com.project.KiTucXa.Dto.Update.AssignRoom;
 import com.project.KiTucXa.Dto.Update.RoomUpdateDto;
 import com.project.KiTucXa.Entity.Room;
 import com.project.KiTucXa.Entity.User;
@@ -72,4 +73,18 @@ public class RoomService {
         }
         roomRepository.deleteById(roomId);
     }
+    public RoomResponse asignRoomToStaff(String roomId, AssignRoom assignRoom) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+        // Giao phòng cho nhân viên trực ban
+        User staff = userRepository.findById(assignRoom.getUserId())
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        room.setUser(staff);  // Gán nhân viên cho phòng (có thể là một trường mới trong `Room`)
+
+        room = roomRepository.save(room);
+        return roomMapper.toRoomResponse(room);
+    }
+
 }

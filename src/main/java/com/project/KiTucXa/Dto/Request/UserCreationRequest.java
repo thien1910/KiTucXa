@@ -2,11 +2,14 @@ package com.project.KiTucXa.Dto.Request;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import com.project.KiTucXa.Enum.Gender;
 import com.project.KiTucXa.Enum.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -28,7 +31,8 @@ public class UserCreationRequest {
     @Enumerated(EnumType.STRING)
     Status status;
     String country;
-
+    @NotEmpty(message = "Vai trò không được để trống")
+    private Set<String> roles;
     public UserCreationRequest(String testuser, String password, String testUser, Gender gender, String number, String number1, Status status, String vietnam) {
     }
 }

@@ -29,9 +29,18 @@ public class UtilityServiceController {
     public List<UtilityServiceResponse> getAllUtilityServices() {
         return utilityServiceService.getAllUtilityServices();
     }
+    @GetMapping("/staff/list")
+    public List<UtilityServiceResponse> StaffgetAllUtilityServices() {
+        return utilityServiceService.getAllUtilityServices();
+    }
 
     @GetMapping("/{utilityServiceId}")
     public UtilityServiceResponse getRoom(
+            @PathVariable("utilityServiceId") String utilityServiceId) {
+        return utilityServiceService.getUtilityServiceById(utilityServiceId);
+    }
+    @GetMapping("/staff/{utilityServiceId}")
+    public UtilityServiceResponse getRoomByStaff(
             @PathVariable("utilityServiceId") String utilityServiceId) {
         return utilityServiceService.getUtilityServiceById(utilityServiceId);
     }

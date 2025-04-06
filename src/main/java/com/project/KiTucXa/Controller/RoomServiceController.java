@@ -24,6 +24,12 @@ public class RoomServiceController {
         apiResponse.setResult(roomServiceService.createRoomService(roomServiceDto));
         return apiResponse;
     }
+    @PostMapping("/staff/add")
+    ApiResponse<RoomServiceResponse> createRoomServiceByStaff(@RequestBody @Valid RoomServiceDto roomServiceDto) {
+        ApiResponse<RoomServiceResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(roomServiceService.createRoomService(roomServiceDto));
+        return apiResponse;
+    }
 
     @GetMapping("/list")
     List<RoomServiceResponse> getAllRoomService() {
@@ -39,9 +45,18 @@ public class RoomServiceController {
     public ResponseEntity<List<RoomServiceResponse>> getRoomServicesByRoomId(@PathVariable String roomId) {
         return ResponseEntity.ok(roomServiceService.getRoomServicesByRoomId(roomId));
     }
+    @GetMapping("/room/staff/{roomId}")
+    public ResponseEntity<List<RoomServiceResponse>> getRoomServicesByRoomIdByStaff(@PathVariable String roomId) {
+        return ResponseEntity.ok(roomServiceService.getRoomServicesByRoomId(roomId));
+    }
 
     @DeleteMapping("/delete/{roomServiceId}")
     String deleteRoomService (@PathVariable String roomServiceId){
+        roomServiceService.deleteRoomService(roomServiceId);
+        return "RoomService has been Delete";
+    }
+    @DeleteMapping("/staff/delete/{roomServiceId}")
+    String deleteRoomServiceByStaff (@PathVariable String roomServiceId){
         roomServiceService.deleteRoomService(roomServiceId);
         return "RoomService has been Delete";
     }

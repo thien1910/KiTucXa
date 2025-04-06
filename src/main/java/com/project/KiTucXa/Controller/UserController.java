@@ -74,8 +74,19 @@ public class UserController {
                 .result(userService.getUser(userId))
                 .build();
     }
+
     @GetMapping("/manager/{userId}")
     ApiResponse<UserResponse> getUserByIdByManager(@PathVariable("userId") String userId){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        // thêm SCOPE và userName đăng nhập (Vd: SCOPE_MANAGER)
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(userId))
+                .build();
+    }
+    @GetMapping("/staff/{userId}")
+    ApiResponse<UserResponse> getUserByIdByStaff(@PathVariable("userId") String userId){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         // thêm SCOPE và userName đăng nhập (Vd: SCOPE_MANAGER)
         log.info("Username: {}", authentication.getName());
@@ -98,6 +109,19 @@ public class UserController {
                 .result(userService.getMyInfo())
                 .build();
     }
+    @GetMapping("/manager/my-info")
+    public UserResponse getMyInfoByManager() {
+        return userService.getMyInfo();
+    }
+    @GetMapping("/staff/my-info")
+    public UserResponse getMyInfoByStaff() {
+        return userService.getMyInfo();
+    }
+    @GetMapping("/admin/my-info")
+    public UserResponse getMyInfoByAdmin() {
+        return userService.getMyInfo();
+    }
+
     @PutMapping("/{userId}")
     ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -109,6 +133,15 @@ public class UserController {
     }
     @PutMapping("/student/{userId}")
     ApiResponse<UserResponse> updateUserByStudent(@PathVariable String userId, @RequestBody UserUpdateRequest request){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(userId, request))
+                .build();
+    }
+    @PutMapping("/admin/{userId}")
+    ApiResponse<UserResponse> updateUserByAdmin(@PathVariable String userId, @RequestBody UserUpdateRequest request){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("Username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
@@ -131,6 +164,13 @@ public class UserController {
 
     @PutMapping("/change-password")
     ApiResponse<String> changePassword(@RequestBody @Valid PasswordUpdateDto request) {
+        userService.changePassword(request);
+        return ApiResponse.<String>builder()
+                .result("Password has been changed successfully")
+                .build();
+    }
+    @PutMapping("/admin/change-password")
+    ApiResponse<String> changePasswordByAdmin(@RequestBody @Valid PasswordUpdateDto request) {
         userService.changePassword(request);
         return ApiResponse.<String>builder()
                 .result("Password has been changed successfully")

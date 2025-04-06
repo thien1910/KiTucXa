@@ -1,6 +1,7 @@
 package com.project.KiTucXa.Controller;
 
 
+import com.project.KiTucXa.Dto.Update.AssignRoom;
 import jakarta.validation.Valid;
 import com.project.KiTucXa.Dto.Request.ApiResponse;
 import com.project.KiTucXa.Dto.Request.RoomDto;
@@ -42,10 +43,27 @@ public class RoomController {
             @RequestBody RoomUpdateDto roomUpdateDto) {
         return roomService.updateRoom(roomId, roomUpdateDto);
     }
+    @PutMapping("/asign/{roomId}")
+    public RoomResponse asignRoom(
+            @PathVariable("roomId") String roomId,
+            @RequestBody AssignRoom assignRoom) {
+        return roomService.asignRoomToStaff(roomId, assignRoom);
+    }
 
     @DeleteMapping("/delete/{roomId}")
     public String deleteRoom(@PathVariable("roomId") String roomId) {
         roomService.deleteRoom(roomId);
         return "Room has been deleted";
     }
+    @GetMapping("/staff/list")
+    public List<RoomResponse> getAllStaffRooms() {
+        return roomService.getAllRoom();
+    }
+
+    @GetMapping("/staff/{roomId}")
+    public RoomResponse StaffgetRoom(
+            @PathVariable("roomId") String roomId) {
+        return roomService.getRoom(roomId);
+    }
+
 }
